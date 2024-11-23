@@ -1,0 +1,9 @@
+fastapi==0.98.0
+uvicorn
+pyjwt
+pydantic==1.10.7 
+jsonschema
+orjson
+typer
+pytest
+httpx

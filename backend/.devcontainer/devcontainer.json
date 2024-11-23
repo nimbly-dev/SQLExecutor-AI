@@ -1,0 +1,15 @@
+{
+  "name": "SQLExecutor Backend",
+  "context": "..",
+  "dockerComposeFile": "../../docker-compose.yml",
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "settings": {
+    "python.pythonPath": "/app/.venv/bin/python",
+    "python.terminal.activateEnvironment": true
+  },
+  "extensions": [
+    "ms-python.python",
+    "ms-python.vscode-pylance"
+  ]
+}
