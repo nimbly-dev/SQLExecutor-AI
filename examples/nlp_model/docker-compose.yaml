@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  sample_nlp_model:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      TRANSFORMERS_CACHE: "/app/.cache"  # Optional: Cache Hugging Face models inside the container
+      APP_ENV: development
+      PYTHONPATH: /app  
+    volumes:
+      - ./cache:/app/.cache  # Optional: Persist cache for Hugging Face models
+      - ./app:/app  
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
