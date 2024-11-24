@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  python_backend:
+  backend:
     build:
       context: ./backend
     ports:
