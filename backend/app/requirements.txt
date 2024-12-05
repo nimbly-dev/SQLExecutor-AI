@@ -7,3 +7,6 @@ orjson
 typer
 pytest
 httpx
+pymongo==3.11
+python-dotenv
+dnspython
