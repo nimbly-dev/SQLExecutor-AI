@@ -13,3 +13,8 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}  # Pass the OpenAI API key as an environment variable
     volumes:
       - ./app:/app
+
+
+networks:
+  shared_network:
+    external: true
