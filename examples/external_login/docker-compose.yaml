@@ -12,3 +12,7 @@ services:
     volumes:
       - ./app:/app
 
+
+networks:
+  shared_network:
+    external: true

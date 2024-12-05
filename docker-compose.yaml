@@ -11,3 +11,7 @@ services:
     environment:
       APP_ENV: development
       PYTHONPATH: /app  
+
+networks:
+  shared_network:
+    external: true
