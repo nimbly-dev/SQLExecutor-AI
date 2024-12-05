@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  external_login:
+  openai_model_wrapper:
     build:
       context: .
       dockerfile: Dockerfile

@@ -1,0 +1,1 @@
+This example applications are not included on the main application. These are just for development purposes. 
