@@ -1,0 +1,61 @@
+{
+    "schema_name": "invalid_column_constraint_schema",
+    "description": "Schema for managing e-commerce data, including users and orders.sssss",
+    "tables": {
+      "users": {
+        "description": "Stores user account information",
+        "synonyms": ["customers", "accounts"],
+        "columns": {
+          "user_id": {
+            "type": "INTEGER",
+            "constraints": ["INVALID_CONSTRAINT", "NOT NULL"]
+          },
+          "name": {
+            "type": "TEXT",
+            "description": "Full name of the user",
+            "constraints": ["NOT NULL"]
+          },
+          "email": {
+            "type": "TEXT",
+            "constraints": ["UNIQUE", "NOT NULL"]
+          }
+        },
+        "relationships": {}
+      },
+      "orders": {
+        "description": "Stores order details",
+        "synonyms": ["purchases", "transactions"],
+        "columns": {
+          "order_id": {
+            "type": "INTEGER",
+            "description": "Unique identifier for each order",
+            "constraints": ["PRIMARY KEY", "NOT NULL"]
+          },
+          "user_id": {
+            "type": "INTEGER",
+            "description": "References the user placing the order",
+            "constraints": ["FOREIGN KEY"],
+            "references": {
+              "table": "users",
+              "column": "user_id"
+            }
+          },
+          "amount": {
+            "type": "DECIMAL",
+            "description": "Total order amount",
+            "constraints": ["NOT NULL"]
+          }
+        },
+        "relationships": {
+          "users": {
+            "description": "Each order is associated with a user.",
+            "table": "users",
+            "on": "orders.user_id = users.user_id",
+            "type": "INNER"
+          }
+        }
+      }
+    },
+    "filter_rules": ["${filter_rule_1}"]
+  }
+  

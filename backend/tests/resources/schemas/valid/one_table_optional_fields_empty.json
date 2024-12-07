@@ -1,0 +1,29 @@
+{
+  "schema_name": "inventory_management",
+  "description": "Schema for managing product inventory",
+  "filter_rules": [],
+  "tables": {
+      "products": {
+          "synonyms": ["items", "stock"],
+          "columns": {
+              "product_id": {
+                  "type": "INTEGER",
+                  "constraints": ["PRIMARY KEY", "NOT NULL"]
+              },
+              "product_name": {
+                  "type": "TEXT",
+                  "constraints": ["NOT NULL"]
+              },
+              "price": {
+                  "type": "DECIMAL",
+                  "constraints": ["NOT NULL"]
+              },
+              "stock_quantity": {
+                  "type": "INTEGER",
+                  "constraints": ["NOT NULL"]
+              }
+          },
+          "relationships": {} 
+      }
+  }
+}

@@ -1,0 +1,96 @@
+{
+    "schema_name": "ecommerc123e",
+    "description": "Schema for managing e-commerce platform data.",
+    "filter_rules": ["${ecommerce_ruleset}"],
+    "tables": {
+        "users": {
+            "description": "Stores user account information",
+            "synonyms": ["customers", "accounts"],
+            "columns": {
+                "user_id": {
+                    "type": "INTEGER",
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "synonyms": ["id", "account_id"]
+                },
+                "name": {
+                    "type": "TEXT",
+                    "description": "Full name of the user",
+                    "constraints": ["NOT NULL"],
+                    "synonyms": ["full_name"]
+                },
+                "email": {
+                    "type": "TEXT",
+                    "constraints": ["UNIQUE", "NOT NULL"],
+                    "synonyms": ["user_email"]
+                }
+            },
+            "relationships": []
+        },
+        "orders": {
+            "description": "Stores order details for users",
+            "synonyms": ["purchases", "transactions"],
+            "columns": {
+                "order_id": {
+                    "type": "INTEGER",
+                    "description": "Unique identifier for each order",
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "synonyms": ["transaction_id"]
+                },
+                "user_id": {
+                    "type": "INTEGER",
+                    "description": "References the user placing the order",
+                    "constraints": ["FOREIGN KEY"],
+                    "synonyms": ["customer_id"],
+                    "references": {
+                        "table": "users",
+                        "column": "user_id"
+                    }
+                },
+                "amount": {
+                    "type": "DECIMAL",
+                    "description": "Total order amount",
+                    "constraints": ["NOT NULL"],
+                    "synonyms": ["total_price"]
+                }
+            },
+            "relationships": {
+                "users": {
+                    "description": "Each order is placed by a user.",
+                    "table": "users",
+                    "on": "orders.user_id = users.user_id",
+                    "type": "INNER"
+                }
+            }
+        },
+        "products": {
+            "description": "Stores product details available for purchase",
+            "synonyms": ["items", "goods"],
+            "columns": {
+                "product_id": {
+                    "type": "INTEGER",
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "synonyms": ["item_id"]
+                },
+                "product_name": {
+                    "type": "TEXT",
+                    "description": "Name of the product",
+                    "constraints": ["NOT NULL"],
+                    "synonyms": ["item_name"]
+                },
+                "price": {
+                    "type": "DECIMAL",
+                    "description": "Price of the product",
+                    "constraints": ["NOT NULL"],
+                    "synonyms": ["product_price"]
+                },
+                "stock_quantity": {
+                    "type": "INTEGER",
+                    "description": "Available quantity of the product in stock",
+                    "constraints": ["NOT NULL"],
+                    "synonyms": ["inventory_count"]
+                }
+            },
+            "relationships": []
+        }
+    }
+}
