@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi.exceptions import RequestValidationError
+from pydantic import ValidationError  
 from pymongo.errors import PyMongoError 
 from utils.database import mongodb
 from config import settings 
 
 from api.routers.tenant_manager import router as tenant_manager_router
+from api.routers.schema_manager import router as schema_manager_router
 from api.core.exceptions.default_exception_handler import database_exception_handler, http_exception_handler, validation_exception_handler
+
+from api.core.services.schema_manager.schema_manager_service import SchemaManagerService
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -15,7 +19,10 @@ app = FastAPI(
 
 @app.on_event("startup")
 async def startup_db_client():
+    # Establish MongoDB connection first
     await mongodb.connect()  
+    # Initialize indexes
+    await SchemaManagerService.create_indexes()
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
@@ -40,6 +47,8 @@ async def health_check():
 app.add_exception_handler(PyMongoError, database_exception_handler)
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(ValidationError, validation_exception_handler)
 
 # Register routers here
 app.include_router(tenant_manager_router, prefix="/tenant-manager/api", tags=["Tenant Manager"])
+app.include_router(schema_manager_router, prefix="/schema-manager/api", tags=["Schema Manager"])
