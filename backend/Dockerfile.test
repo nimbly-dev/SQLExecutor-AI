@@ -1,0 +1,23 @@
+# Dockerfile.test
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Copy the app directory into the container
+COPY ./app /app
+
+# Copy the tests directory into the container
+COPY ./tests /tests
+
+# Install dependencies, including test dependencies
+RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN pip install pytest pytest-mock pytest-asyncio
+
+# Set PYTHONPATH to include /app
+ENV PYTHONPATH=/app
+
+# Print PYTHONPATH and verify if it's set correctly before running tests
+RUN echo "PYTHONPATH is: $PYTHONPATH"
+
+# Ensure we run tests from the correct directory
+CMD ["pytest", "/app/tests"]
