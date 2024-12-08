@@ -1,0 +1,43 @@
+{
+    "ruleset_name": "ecommerce_ruleset2",
+    "description": "Ruleset for managing access to the e-commerce schema with JWT-based user context",
+    "default_action": "DENY",
+    "global_access_policy": {
+        "tables": {
+            "users": {
+                "columns": {
+                    "allow": "*",
+                    "deny": ["password"]
+                },
+                "condition": "TRUE"
+            }
+        }
+    },
+    "table_access_policy": {
+        "tables": {
+            "users": {
+                "condition": "users.user_id = ${jwt.user_id}"
+            },
+            "orders": {
+                "columns": {
+                    "allow": ["order_id", "amount", "user_id"],
+                    "deny": ["status"]
+                }
+            }
+        }
+    },
+    "user_specific_access_policy": [
+        {
+            "user_identifier": "string@example.com",
+            "tables": {
+                "users": {
+                    "columns": {
+                        "allow": ["id", "email"],
+                        "deny": []
+                    },
+                    "condition": "TRUE"
+                }
+            }
+        }
+    ]
+}

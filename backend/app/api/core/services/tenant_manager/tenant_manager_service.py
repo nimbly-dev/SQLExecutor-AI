@@ -1,5 +1,6 @@
 from utils.database import mongodb
 from fastapi import HTTPException
+
 from model.tenant import Tenant
 from model.requests.tenant_manager.update_tenant_request import UpdateTenantRequestModel
 

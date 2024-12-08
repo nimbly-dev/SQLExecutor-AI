@@ -10,7 +10,6 @@ router = APIRouter()
 async def add_schema(tenant_id: str, schema_request: AddSchemaRequest):
     return await SchemaManagerService.add_schema(tenant_id=tenant_id, schema_request=schema_request)
 
-
 @router.get("/schemas/{tenant_id}/{schema_name}")
 async def get_schema(tenant_id: str, schema_name: str):
     return await SchemaManagerService.get_schema(tenant_id=tenant_id, schema_name=schema_name)

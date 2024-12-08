@@ -17,17 +17,37 @@ async def http_exception_handler(request, exc: HTTPException):
 
 async def validation_exception_handler(request: Request, exc: Exception):
     if isinstance(exc, ValidationError):
+        # Handle Pydantic ValidationErrors
         error_detail = []
         for error in exc.errors():
             error_detail.append({
-                "msg": error["msg"],  
-                "type": error["type"],  
+                "field": " -> ".join(str(loc) for loc in error.get("loc", [])),  
+                "msg": error["msg"], 
+                "type": error["type"], 
             })
+        
         return JSONResponse(
-            status_code=400,
-            content={"detail": error_detail},
+            status_code=400, 
+            content={
+                "error": "Validation Error",
+                "detail": error_detail,
+            },
         )
+    
+    elif isinstance(exc, ValueError):
+        return JSONResponse(
+            status_code=400,  
+            content={
+                "error": "Validation Error",
+                "detail": [{"msg": str(exc)}],  
+            },
+        )
+
+    # Handle other exceptions (generic)
     return JSONResponse(
         status_code=500,
-        content={"detail": [{"msg": "Internal Server Error"}]},
+        content={
+            "error": "Internal Server Error",
+            "detail": [{"msg": "An unexpected error occurred."}],
+        },
     )
