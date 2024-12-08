@@ -19,6 +19,7 @@ class Schema(BaseModel):
         return values
 
     class Config:
+        # Encode table and column to dictionary
         json_encoders = {
             ObjectId: str,
             Table: lambda v: v.dict(),  

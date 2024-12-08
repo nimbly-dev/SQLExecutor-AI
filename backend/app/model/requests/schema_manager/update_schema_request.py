@@ -6,7 +6,7 @@ import re
 
 class UpdateSchemaRequest(BaseModel):
     schema_name: str  
-    description: Optional[str] = None
+    description: str = None
     tables: Dict[str, Table]  
     filter_rules: Optional[List[str]] = [] 
     
