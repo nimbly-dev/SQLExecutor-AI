@@ -4,42 +4,76 @@ from fastapi import HTTPException
 
 from model.tenant import Tenant
 from utils.database import mongodb
+from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
-from model.requests.tenant_manager.update_tenant_request import UpdateTenantRequestModel 
-
+from model.requests.tenant_manager.update_tenant_request import UpdateTenantRequestModel
+from model.responses.tenant_manager.add_tenant_response import AddTenantResponse 
 
 @pytest.mark.asyncio
 class TestTenantManagerService:
 
     @mock.patch("utils.database.mongodb.db")
-    async def test_add_tenant(self, mock_db):
+    @mock.patch("utils.tenant_manager.setting_utils.SettingUtils.initialize_default_tenant_settings")
+    async def test_add_tenant(self, mock_initialize_settings, mock_db):
         # Arrange
         tenant_data = Tenant(tenant_id="tenant123", tenant_name="Tenant 123")
-        mock_collection = mock.AsyncMock()  
+        tenant_dict = tenant_data.dict()
+        tenant_dict["settings"] = {}
+        
+        mock_collection = mock.AsyncMock()
         mock_db.__getitem__.return_value = mock_collection
-        mock_collection.find_one.return_value = None  
+        mock_collection.find_one.side_effect = [None, tenant_dict]
+        mock_initialize_settings.return_value = {"settings": {}}
 
         # Act
         result = await TenantManagerService.add_tenant(tenant_data)
 
         # Assert
         mock_collection.insert_one.assert_called_once_with(tenant_data.dict())
-        assert result == {"message": "Tenant created successfully"}
+        mock_initialize_settings.assert_called_once_with(tenant_id="tenant123")
+        mock_collection.find_one.assert_called_with({"tenant_id": "tenant123"})
+        assert result["message"] == "Tenant created successfully"
+        assert result["tenant"] == AddTenantResponse(**tenant_dict)
 
     @mock.patch("utils.database.mongodb.db")
     async def test_add_tenant_already_exists(self, mock_db):
         # Arrange
         tenant_data = Tenant(tenant_id="tenant123", tenant_name="Tenant 123")
-        mock_collection = mock.AsyncMock()  
+        mock_collection = mock.AsyncMock()
         mock_db.__getitem__.return_value = mock_collection
-        mock_collection.find_one.return_value = {"tenant_id": "tenant123"}  
+        mock_collection.find_one.return_value = {"tenant_id": "tenant123"}
 
-        # Act & Assert
+        # Act
+        with pytest.raises(HTTPException) as exc:
+            await TenantManagerService.add_tenant(tenant_data)
+            
+        # Assert
+        assert exc.value.status_code == 400
+        assert exc.value.detail == "A tenant with this tenant_id already exists"
+
+    @mock.patch("utils.database.mongodb.db")
+    @mock.patch("utils.tenant_manager.setting_utils.SettingUtils.initialize_default_tenant_settings")
+    async def test_add_tenant_initialization_failure(self, mock_initialize_settings, mock_db):
+        # Arrange
+        tenant_data = Tenant(tenant_id="tenant123", tenant_name="Tenant 123")
+        _ = tenant_data.dict()
+        
+        mock_collection = mock.AsyncMock()
+        mock_db.__getitem__.return_value = mock_collection
+        mock_collection.find_one.side_effect = [None]
+        mock_initialize_settings.side_effect = Exception("Initialization failed")
+
+        # Act
         with pytest.raises(HTTPException) as exc:
             await TenantManagerService.add_tenant(tenant_data)
 
-        assert exc.value.status_code == 400
-        assert exc.value.detail == "A tenant with this tenant_id already exists"
+        mock_collection.insert_one.assert_called_once_with(tenant_data.dict())
+        mock_initialize_settings.assert_called_once_with(tenant_id="tenant123")
+        mock_collection.delete_one.assert_called_once_with({"tenant_id": "tenant123"})
+        
+        # Assert
+        assert exc.value.status_code == 500
+        assert "Failed to initialize tenant" in exc.value.detail
         
         
     @mock.patch("utils.database.mongodb.db")

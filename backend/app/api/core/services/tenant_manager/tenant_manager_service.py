@@ -3,6 +3,8 @@ from fastapi import HTTPException
 
 from model.tenant import Tenant
 from model.requests.tenant_manager.update_tenant_request import UpdateTenantRequestModel
+from model.responses.tenant_manager.add_tenant_response import AddTenantResponse
+from utils.tenant_manager.setting_utils import SettingUtils
 
 class TenantManagerService:
     
@@ -15,9 +17,22 @@ class TenantManagerService:
                 status_code=400,
                 detail="A tenant with this tenant_id already exists"
             )
+
+        try:
+            await collection.insert_one(tenant.dict())
+            await SettingUtils.initialize_default_tenant_settings(tenant_id=tenant.tenant_id)
+            tenant_data = await collection.find_one({"tenant_id": tenant.tenant_id})
             
-        await collection.insert_one(tenant.dict())
-        return {"message": "Tenant created successfully"}
+            return {
+                "message": "Tenant created successfully",
+                "tenant": AddTenantResponse(**tenant_data)
+            }
+        except Exception as e:
+            await collection.delete_one({"tenant_id": tenant.tenant_id})
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to initialize tenant. Rolled back changes. Error: {str(e)}"
+            )
 
     @staticmethod
     async def get_tenant(tenant_id: str):

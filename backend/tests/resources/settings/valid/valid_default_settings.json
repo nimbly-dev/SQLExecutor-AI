@@ -1,0 +1,26 @@
+{
+    "BASE_MODEL_LLM_URL":{
+        "setting_basic_name": "Base Model LLM URL",
+        "setting_value": "{BASE_URL_FOR_LLM_API_URL}",
+        "setting_category": "LLM_GENERATION",
+        "is_custom_setting": false
+    },
+    "MODEL_INTENT_ENDPOINT":{
+        "setting_basic_name": "Base Model Intent Endpoint",        
+        "setting_value": "/intent-generation",
+        "setting_category": "LLM_GENERATION",
+        "is_custom_setting": false
+    },
+    "MODEL_GENERATION_ENDPOINT":{
+        "setting_basic_name": "Base Model LLM SQL-Generation Endpoint",        
+        "setting_value": "/sql-generation",
+        "setting_category": "LLM_GENERATION",
+        "is_custom_setting": false
+    },
+    "USE_DEFAULT_MODEL":{
+        "setting_basic_name": "Default Toggle to use SQL-Executor's LLM Model",        
+        "setting_value": "true",
+        "setting_category": "LLM_GENERATION",
+        "is_custom_setting": false
+    }
+}

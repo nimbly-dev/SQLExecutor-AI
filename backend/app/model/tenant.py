@@ -1,10 +1,13 @@
 from pydantic import BaseModel, Field, root_validator
-from typing import Optional
+from typing import Optional, Dict
 from bson import ObjectId
+
+from model.setting import Setting
 
 class Tenant(BaseModel):
     tenant_id: str = Field(..., max_length=36)
     tenant_name: str = Field(..., description="Name of the tenant")
+    settings: Optional[Dict[str, Setting]] = {}
     _id: Optional[str]
 
     @root_validator(pre=True)

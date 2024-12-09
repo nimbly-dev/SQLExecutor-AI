@@ -13,6 +13,7 @@ from api.core.exceptions.default_exception_handler import database_exception_han
 
 from api.core.services.schema_manager.schema_manager_service import SchemaManagerService
 from api.core.services.ruleset_manager.ruleset_manager_service import RulesetManagerService
+from api.core.services.tenant_manager.tenant_settings_service import TenantSettingsService
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -26,6 +27,7 @@ async def startup_db_client():
     # Initialize indexes
     await SchemaManagerService.create_indexes()
     await RulesetManagerService.create_indexes()
+    await TenantSettingsService.create_indexes()
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
