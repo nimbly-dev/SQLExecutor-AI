@@ -2,7 +2,6 @@ import logging
 from typing import Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-import openai
 from openai import OpenAI
 from config import settings
 

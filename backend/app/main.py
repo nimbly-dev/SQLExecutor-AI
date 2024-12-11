@@ -9,11 +9,13 @@ from config import settings
 from api.routers.tenant_manager import router as tenant_manager_router
 from api.routers.schema_manager import router as schema_manager_router
 from api.routers.ruleset_manager import router as ruleset_manager_router
+from api.routers.sql_generation import router as sql_generation_router
 from api.core.exceptions.default_exception_handler import database_exception_handler, http_exception_handler, validation_exception_handler
 
 from api.core.services.schema_manager.schema_manager_service import SchemaManagerService
 from api.core.services.ruleset_manager.ruleset_manager_service import RulesetManagerService
 from api.core.services.tenant_manager.tenant_settings_service import TenantSettingsService
+
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -58,3 +60,4 @@ app.add_exception_handler(ValidationError, validation_exception_handler)
 app.include_router(tenant_manager_router, prefix="/tenant-manager/api", tags=["Tenant Manager"])
 app.include_router(schema_manager_router, prefix="/schema-manager/api", tags=["Schema Manager"])
 app.include_router(ruleset_manager_router, prefix="/ruleset-manager/api", tags=["Ruleset Manager"])
+app.include_router(sql_generation_router, prefix="/sql-generation/api", tags=["SQL Generation"])

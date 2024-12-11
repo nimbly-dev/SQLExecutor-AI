@@ -6,20 +6,26 @@ Supported Settings
 {
     "settings":{
         "BASE_MODEL_LLM_URL":{
-            "setting_basic_name": "Base Model LLM Url",
+            "setting_basic_name": "Base Model LLM URL",
             "setting_value": "{BASE_URL_FOR_LLM_API_URL}",
             "setting_category": "LLM_GENERATION",
             "is_custom_setting": false
         },
         "MODEL_INTENT_ENDPOINT":{
-            "setting_basic_name": "Base Model LLM Url",        
+            "setting_basic_name": "Base Model Intent Endpoint",        
             "setting_value": "/intent-generation",
             "setting_category": "LLM_GENERATION",
             "is_custom_setting": false
         },
         "MODEL_GENERATION_ENDPOINT":{
-            "setting_basic_name": "Base Model LLM Url",        
+            "setting_basic_name": "Base Model LLM SQL-Generation Endpoint",        
             "setting_value": "/sql-generation",
+            "setting_category": "LLM_GENERATION",
+            "is_custom_setting": false
+        },
+        "USE_DEFAULT_MODEL":{
+            "setting_basic_name": "Default Toggle to use SQL-Executor's LLM Model",        
+            "setting_value": "true",
             "setting_category": "LLM_GENERATION",
             "is_custom_setting": false
         }
@@ -38,3 +44,7 @@ Post PoC Tasks
     - Alternative Approach is to use MongoDB BSON-encoded data or use GridFS
 5. Restructurize API URL
 6. Revisit UT coverage for service codes
+7. Under Query Scope and SQL Generation, add confidence level:
+    - A threshold can be set where it will retry the output if confidence level is low
+    - This can be enabled on Tenant Settings
+    - Add two new boolean settings (QUERY_SCOPE_CONFIDENCE_LEVEL_THRESHOLD, SQL_GENERATION_CONFIDENCE_LEVEL_THRESHOLD)
