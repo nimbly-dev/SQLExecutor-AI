@@ -6,7 +6,7 @@ from model.requests.tenant_manager.add_setting_to_tenant_request import AddSetti
 from model.tenant import Tenant
 from model.setting import Setting
 from api.core.services.tenant_manager.tenant_settings_service import TenantSettingsService
-from tests.utils.test_utils import RESOURCES_PATH
+from tests.testing_utilities.test_utils import RESOURCES_PATH
 
 @pytest.mark.asyncio
 class TestTenantSettingsService:
