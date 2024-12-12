@@ -11,7 +11,7 @@ from model.ruleset import Ruleset
 from utils.database import mongodb
 from model.tenant import Tenant
 from pydantic import ValidationError
-from tests.utils.test_utils import RESOURCES_PATH
+from tests.testing_utilities.test_utils import RESOURCES_PATH
 
 @pytest.mark.asyncio
 class TestSchemaManagerService:
