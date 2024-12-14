@@ -11,6 +11,8 @@ services:
     environment:
       APP_ENV: development
       PYTHONPATH: /app  
+    networks:
+      - shared_network
 
   backend_tests:
     build:
@@ -18,12 +20,14 @@ services:
       dockerfile: Dockerfile.test
     volumes:
       - ./backend/app:/app
-      - ./backend/tests:/app/tests  # Mount the tests to /app/tests to keep consistency
+      - ./backend/tests:/app/tests
     environment:
-      PYTHONPATH: /app  # Ensure PYTHONPATH is set to /app inside the container
-    command: pytest /app/tests  # Run pytest inside the /app/tests directory
-
+      PYTHONPATH: /app
+    command: pytest /app/tests
+    networks:
+      - shared_network
 
 networks:
   shared_network:
-    external: true
+    driver: bridge
+    name: shared_network  # This ensures the network is explicitly named

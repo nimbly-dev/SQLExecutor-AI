@@ -42,7 +42,7 @@ def login(request: LoginRequest):
     user = users_db.get(request.username)
     if not user or user["password"] != request.password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-    access_token = create_access_token(data={"sub": request.username, "roles": user["roles"]})
+    access_token = create_access_token(data={"tenant_id":"TENANT_TST2","sub": request.username, "roles": user["roles"]})
     active_sessions.add(request.username)
     return {"access_token": access_token, "token_type": "bearer"}
 
