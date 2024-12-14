@@ -24,6 +24,54 @@
             "setting_category": "LLM_GENERATION",
             "is_custom_setting": false
         },
+        "EXTERNAL_JWT_LOGIN_ENDPOINT":{
+            "setting_basic_name": "External JWT Login Endpoint",        
+            "setting_value": "http://external-login-app:8000/login",
+            "setting_category": "EXTERNAL_JWT_AUTH",
+            "is_custom_setting": false
+        },
+        "EXTERNAL_JWT_AUTH_FIELD":{
+            "setting_basic_name": "External JWT Authentication Field",        
+            "setting_value": "username",
+            "setting_category": "EXTERNAL_JWT_AUTH",
+            "is_custom_setting": false
+        },
+        "EXTERNAL_JWT_AUTH_PASSKEY_FIELD":{
+            "setting_basic_name": "External JWT Passkey Field",        
+            "setting_value": "password",
+            "setting_category": "EXTERNAL_JWT_AUTH",
+            "is_custom_setting": false
+        },
+        "EXTERNAL_JWT_LOGOUT_ENDPOINT":{
+            "setting_basic_name": "External JWT Logout Endpoint",        
+            "setting_value": "http://external-login-app:8000/logout",
+            "setting_category": "EXTERNAL_JWT_AUTH",
+            "is_custom_setting": false
+        },
+        "EXTERNAL_JWT_SECRET_KEY":{
+            "setting_basic_name": "External JWT Secret Key",        
+            "setting_value": "demo_secret_key_123456",
+            "setting_category": "EXTERNAL_JWT_AUTH",
+            "is_custom_setting": false
+        },
+        "EXTERNAL_JWT_USER_IDENTIFIER_FIELD":{
+            "setting_basic_name": "External JWT User Identifier Field",        
+            "setting_value": "sub",
+            "setting_category": "EXTERNAL_JWT_AUTH",
+            "is_custom_setting": false
+        },
+        "EXTERNAL_JWT_CUSTOM_FIELDS":{
+            "setting_basic_name": "External JWT Custom Fields",        
+            "setting_value": "['roles']",
+            "setting_category": "EXTERNAL_JWT_AUTH",
+            "is_custom_setting": false
+        },
+        "TENANT_APPLICATION_TOKEN":{
+            "setting_basic_name": "Tenant SQLExecutor Application Token",        
+            "setting_value": "8e92ee043d1135daa3e942a89a6c9f113eb72d289f9b6b58eb3dfeb77727e752",
+            "setting_category": "EXTERNAL_JWT_AUTH",
+            "is_custom_setting": false
+        },
         "IGNORE_MISSING_COLUMN_ON_QUERY_SCOPE":{
             "setting_basic_name": "Ignore Missing Columns on query scope",        
             "setting_value": "true",

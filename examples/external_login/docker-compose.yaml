@@ -11,6 +11,8 @@ services:
       - PYTHONPATH=/app
     volumes:
       - ./app:/app
+    networks:
+      - shared_network
 
 
 networks:

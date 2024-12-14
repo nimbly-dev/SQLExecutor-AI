@@ -49,3 +49,5 @@ Post PoC Tasks
     - This can be enabled on Tenant Settings
     - Add two new boolean settings (QUERY_SCOPE_CONFIDENCE_LEVEL_THRESHOLD, SQL_GENERATION_CONFIDENCE_LEVEL_THRESHOLD)
 8. Change Settings Document Schema to allow grouping of settings_category by dict-key. 
+9. Add Settings description to Settings Document Schema
+10. Create UNIFIED root level logging for Backend
