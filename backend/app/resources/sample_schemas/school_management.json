@@ -1,0 +1,171 @@
+{
+    "schema_name": "school_management",
+    "description": "Schema for managing students, courses, and faculty data.",
+    "filter_rules": ["${school_ruleset}"],
+    "tables": {
+        "students": {
+            "description": "Stores student information",
+            "synonyms": ["pupils", "learners"],
+            "columns": {
+                "student_id": {
+                    "type": "INTEGER",
+                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                },
+                "name": {
+                    "type": "TEXT",
+                    "description": "Student full name",
+                    "constraints": ["NOT NULL"]
+                },
+                "email": {
+                    "type": "TEXT",
+                    "constraints": ["UNIQUE", "NOT NULL"]
+                },
+                "birth_date": {
+                    "type": "DATE",
+                    "description": "Date of birth of the student",
+                    "constraints": ["NOT NULL"]
+                }
+            },
+            "relationships": {
+                "enrollments": {
+                    "description": "Student can have multiple enrollments",
+                    "table": "enrollments",
+                    "on": "students.student_id = enrollments.student_id",
+                    "type": "INNER"
+                }
+            }
+        },
+        "courses": {
+            "description": "Stores course details",
+            "synonyms": ["classes", "programs"],
+            "columns": {
+                "course_id": {
+                    "type": "INTEGER",
+                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                },
+                "title": {
+                    "type": "TEXT",
+                    "description": "Course title",
+                    "constraints": ["NOT NULL"]
+                },
+                "credits": {
+                    "type": "INTEGER",
+                    "description": "Number of credits for the course",
+                    "constraints": ["NOT NULL"]
+                },
+                "department_id": {
+                    "type": "INTEGER",
+                    "description": "References the department offering the course",
+                    "constraints": ["FOREIGN KEY", "NOT NULL"],
+                    "references": {
+                        "table": "departments",
+                        "column": "department_id"
+                    }
+                }
+            },
+            "relationships": {
+                "departments": {
+                    "description": "Course belongs to a department",
+                    "table": "departments",
+                    "on": "courses.department_id = departments.department_id",
+                    "type": "INNER"
+                }
+            }
+        },
+        "enrollments": {
+            "description": "Stores enrollment information",
+            "synonyms": ["registrations", "enrollments_data"],
+            "columns": {
+                "enrollment_id": {
+                    "type": "INTEGER",
+                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                },
+                "student_id": {
+                    "type": "INTEGER",
+                    "description": "References the enrolled student",
+                    "constraints": ["FOREIGN KEY", "NOT NULL"],
+                    "references": {
+                        "table": "students",
+                        "column": "student_id"
+                    }
+                },
+                "course_id": {
+                    "type": "INTEGER",
+                    "description": "References the course being taken",
+                    "constraints": ["FOREIGN KEY", "NOT NULL"],
+                    "references": {
+                        "table": "courses",
+                        "column": "course_id"
+                    }
+                },
+                "enrollment_date": {
+                    "type": "DATE",
+                    "description": "Date of enrollment",
+                    "constraints": ["NOT NULL"]
+                }
+            },
+            "relationships": {
+                "students": {
+                    "description": "Enrollment is associated with a student",
+                    "table": "students",
+                    "on": "enrollments.student_id = students.student_id",
+                    "type": "INNER"
+                },
+                "courses": {
+                    "description": "Enrollment is associated with a course",
+                    "table": "courses",
+                    "on": "enrollments.course_id = courses.course_id",
+                    "type": "INNER"
+                }
+            }
+        },
+        "teachers": {
+            "description": "Stores teacher information",
+            "synonyms": ["instructors", "professors"],
+            "columns": {
+                "teacher_id": {
+                    "type": "INTEGER",
+                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                },
+                "name": {
+                    "type": "TEXT",
+                    "description": "Teacher full name",
+                    "constraints": ["NOT NULL"]
+                },
+                "email": {
+                    "type": "TEXT",
+                    "constraints": ["UNIQUE", "NOT NULL"]
+                },
+                "hire_date": {
+                    "type": "DATE",
+                    "description": "Date when teacher was hired",
+                    "constraints": ["NOT NULL"]
+                }
+            },
+            "relationships": {
+                "courses": {
+                    "description": "Teacher can teach multiple courses",
+                    "table": "courses",
+                    "on": "courses.teacher_id = teachers.teacher_id",
+                    "type": "INNER"
+                }
+            }
+        },
+        "departments": {
+            "description": "Stores department details",
+            "synonyms": ["faculties", "sections"],
+            "columns": {
+                "department_id": {
+                    "type": "INTEGER",
+                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                },
+                "name": {
+                    "type": "TEXT",
+                    "description": "Department name",
+                    "constraints": ["NOT NULL"]
+                }
+            },
+            "relationships": {}
+        }
+    }
+}

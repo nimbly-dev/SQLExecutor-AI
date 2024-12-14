@@ -1,9 +1,3 @@
-import json
-
-from utils.database import mongodb
-from fastapi import HTTPException
-from typing import Dict
-
 from model.tenant import Tenant
 from model.setting import Setting
 from model.schema import Schema
@@ -15,6 +9,7 @@ class PostProcessQueryScopeSettingsUtils:
     @staticmethod
     def remove_missing_columns_from_query_scope(schema: Schema, query_scope: QueryScope) -> QueryScope:
         """
+        Key: (IGNORE_MISSING_COLUMN_ON_QUERY_SCOPE) 
         Removes columns from query_scope that do not exist in the schema.
 
         Args:
