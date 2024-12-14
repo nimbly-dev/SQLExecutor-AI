@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.core.services.schema_manager.schema_manager_service import SchemaManagerService
+from api.core.services.schema.schema_manager_service import SchemaManagerService
 from model.requests.schema_manager.add_schema_request import AddSchemaRequest
 from model.requests.schema_manager.update_schema_request import UpdateSchemaRequest
 

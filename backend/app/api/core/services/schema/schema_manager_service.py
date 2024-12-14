@@ -1,12 +1,16 @@
+from typing import List, Dict, Any
+
 from utils.database import mongodb
 from pymongo.errors import DuplicateKeyError
 from fastapi import HTTPException
 from pymongo import ASCENDING
+from typing import List
 
 from model.schema import Schema
 from model.tenant import Tenant
 from model.requests.schema_manager.add_schema_request import AddSchemaRequest
 from model.requests.schema_manager.update_schema_request import UpdateSchemaRequest
+from model.responses.schema.schema_tables_response import SchemaTablesResponse, ColumnResponse, TableResponse
 
 class SchemaManagerService:
     
@@ -65,6 +69,79 @@ class SchemaManagerService:
         
         return Schema(**schema)
     
+    @staticmethod
+    async def get_schemas(tenant_id: str) -> List[Schema]:
+        collection = mongodb.db["schemas"]
+
+        schemas_cursor = collection.find({"tenant_id": tenant_id})
+        schemas = []
+
+        try:
+            async for schema_data in schemas_cursor:
+                schemas.append(Schema(**schema_data))
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to parse schema data for tenant '{tenant_id}': {e}"
+            )
+            
+        if not schemas:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No schemas found for tenant '{tenant_id}'."
+            )
+
+        return schemas
+    
+    
+    @staticmethod
+    async def get_schema_tables(tenant_id: str) -> List[SchemaTablesResponse]:
+        """
+        Fetches the schema_name and tables (including columns) for each schema for a given tenant.
+
+        Args:
+            tenant_id (str): The tenant ID.
+
+        Returns:
+            List[SchemaTablesResponse]: A list of schemas with their tables and columns.
+        """
+        collection = mongodb.db["schemas"]
+        schemas_cursor = collection.find(
+            {"tenant_id": tenant_id},  # Query filter
+            {"schema_name": 1, "tables": 1}  # Projection to fetch only schema_name and tables
+        )
+
+        schemas = []
+        async for schema_data in schemas_cursor:
+            tables = []
+            for table_name, table_obj in schema_data["tables"].items():
+                columns = [
+                    ColumnResponse(
+                        column_name=col_name,
+                        type=col_data.get("type", "UNKNOWN"),
+                        description=col_data.get("description"),
+                        constraints=col_data.get("constraints", [])
+                    )
+                    for col_name, col_data in table_obj["columns"].items()
+                ]
+                tables.append(TableResponse(
+                    table_name=table_name,
+                    columns=columns
+                ))
+
+            schemas.append(SchemaTablesResponse(
+                schema_name=schema_data["schema_name"],
+                tables=tables
+            ))
+
+        if not schemas:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No schemas found for tenant '{tenant_id}'."
+            )
+
+        return schemas
+
     
     @staticmethod
     async def update_schema(tenant_id: str, schema_name: str, update_schema_request: UpdateSchemaRequest):

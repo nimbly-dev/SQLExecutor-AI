@@ -12,7 +12,7 @@ from api.routers.sql_generation import router as sql_generation_router
 from api.routers.external_authentication_wrapper import router as external_authentication_router
 from api.core.exceptions.default_exception_handler import database_exception_handler, http_exception_handler, validation_exception_handler
 
-from api.core.services.schema_manager.schema_manager_service import SchemaManagerService
+from api.core.services.schema.schema_manager_service import SchemaManagerService
 from api.core.services.ruleset_manager.ruleset_manager_service import RulesetManagerService
 from api.core.services.tenant_manager.tenant_settings_service import TenantSettingsService
 from api.core.services.authentication.session_manager_service import SessionManagerService
