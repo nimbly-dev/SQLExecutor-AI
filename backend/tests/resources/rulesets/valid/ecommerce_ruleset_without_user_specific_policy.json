@@ -1,33 +1,81 @@
 {
+    "tenant_id": "TENANT_TST2",
     "ruleset_name": "ecommerce_ruleset2",
     "description": "Ruleset for managing access to the e-commerce schema with JWT-based user context",
     "default_action": "DENY",
+    "conditions": {
+        "is_admin": "'admin' in ${jwt.custom_fields.roles}",
+        "is_user": "${jwt.custom_fields.roles} == ['user']",
+        "is_active_user": "${jwt.custom_fields.active} == True"
+    },
     "global_access_policy": {
         "tables": {
             "users": {
                 "columns": {
-                    "allow": "*",
+                    "allow": [],
                     "deny": ["password"]
                 },
-                "condition": "TRUE"
+                "condition": "True"
             }
         }
     },
-    "table_access_policy": {
-        "tables": {
-            "users": {
-                "columns": {
-                    "allow": ["user_id", "name", "email"],
-                    "deny": ["password"]
-                },
-                "condition": "users.user_id = ${jwt.user_id}"
+    "group_access_policy": {
+        "user_group": {
+            "description": "Access control for user-related data.",
+            "criteria": {
+                "matching_criteria": {
+                    "roles": ["user"],
+                    "active": true
+                }
             },
-            "orders": {
-                "columns": {
-                    "allow": ["order_id", "amount", "user_id"],
-                    "deny": ["status"]
+            "tables": {
+                "users": {
+                    "columns": {
+                        "allow": ["user_id", "name", "email"],
+                        "deny": ["password"]
+                    }
+                }
+            }
+        },
+        "order_group": {
+            "description": "Access control for order-related data.",
+            "criteria": {
+                "matching_criteria": {
+                    "roles": ["user", "admin"],
+                    "active": true
                 },
-                "condition": "orders.user_id = ${jwt.user_id} OR ${jwt.role} = 'admin'"
+                "condition": "(${conditions.is_user} OR ${conditions.is_admin})"
+            },
+            "tables": {
+                "orders": {
+                    "columns": {
+                        "allow": ["order_id", "amount", "user_id"],
+                        "deny": ["status"]
+                    }
+                }
+            }
+        },
+        "admin_group": {
+            "description": "Full access for admin users excluding global denies.",
+            "criteria": {
+                "matching_criteria": {
+                    "roles": ["admin"],
+                    "active": true
+                }
+            },
+            "tables": {
+                "users": {
+                    "columns": {
+                        "allow": ["*"],
+                        "deny": ["password"]
+                    }
+                },
+                "orders": {
+                    "columns": {
+                        "allow": ["*"],
+                        "deny": []
+                    }
+                }
             }
         }
     }

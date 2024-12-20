@@ -1,0 +1,127 @@
+{
+    "tenant_id": "TENANT_TST2",
+    "ruleset_name": "order_ruleset",
+    "description": "Simplified ruleset for users, specialized users, and admins with enhanced definitions.",
+    "default_action": "DENY",
+    "conditions": {
+        "is_admin": "'admin' in ${jwt.custom_fields.roles}",
+        "is_special_user": "'elevated_access' == ${jwt.custom_fields.otherField}",
+        "is_active_user": "${jwt.custom_fields.active} == True"
+    },
+    "global_access_policy": {
+        "tables": {
+            "orders": {
+                "columns": {
+                    "allow": [],
+                    "deny": ["password"]
+                },
+                "condition": "True"
+            },
+            "customers": {
+                "columns": {
+                    "allow": [],
+                    "deny": ["password", "credit_card_number"]
+                },
+                "condition": "True"
+            },
+            "payments": {
+                "columns": {
+                    "allow": [],
+                    "deny": ["credit_card_number", "password"]
+                },
+                "condition": "True"
+            }
+        }
+    },
+    "group_access_policy": {
+        "normal_user_group": {
+            "description": "General access for normal users.",
+            "criteria": {
+                "matching_criteria": {
+                    "roles": ["user"],
+                    "active": true
+                }
+            },
+            "tables": {
+                "orders": {
+                    "columns": {
+                        "allow": ["order_id", "customer_id", "order_date"],
+                        "deny": []
+                    }
+                },
+                "customers": {
+                    "columns": {
+                        "allow": ["customer_id", "name", "email"],
+                        "deny": ["phone_number"]
+                    }
+                }
+            }
+        },
+        "elevated_user_group": {
+            "description": "Group-based elevated access.",
+            "criteria": {
+                "matching_criteria": {
+                    "roles": ["elevated"],
+                    "active": true
+                },
+                "condition": "${conditions.is_active_user} AND ${conditions.is_special_user}"
+            },
+            "tables": {
+                "orders": {
+                    "columns": {
+                        "allow": ["order_id", "customer_id", "order_date", "total_amount"],
+                        "deny": []
+                    }
+                },
+                "customers": {
+                    "columns": {
+                        "allow": ["*"],
+                        "deny": []
+                    }
+                }
+            }
+        },
+        "admin_group": {
+            "description": "Full access for admin users excluding global denies.",
+            "criteria": {
+                "matching_criteria": {
+                    "roles": ["admin"],
+                    "active": true
+                }
+            },
+            "tables": {
+                "orders": {
+                    "columns": {
+                        "allow": ["*"],
+                        "deny": []
+                    }
+                },
+                "customers": {
+                    "columns": {
+                        "allow": ["*"],
+                        "deny": []
+                    }
+                },
+                "payments": {
+                    "columns": {
+                        "allow": ["*"],
+                        "deny": []
+                    }
+                }
+            }
+        }
+    },
+    "user_specific_access_policy": [
+        {
+            "user_identifier": "specific_user@example.com",
+            "tables": {
+                "orders": {
+                    "columns": {
+                        "allow": ["order_id", "order_date", "total_amount"],
+                        "deny": []
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,12 +1,14 @@
 import jwt
 import logging
 
+from pydantic import ValidationError
 from fastapi import Depends, HTTPException, Header
 from utils.database import mongodb
 from uuid import UUID
 from datetime import datetime, timezone
 from model.setting import Setting
 from model.tenant import Tenant
+from model.session_data import SessionData
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +21,7 @@ def decode_jwt(token: str, secret_key: str):
     except jwt.InvalidTokenError:
         return 'Invalid token'
     
-async def authenticate_session(x_session_id: str = Header(...)):
+async def authenticate_session(x_session_id: str = Header(...)) -> SessionData:
     """Authenticate session by validating session ID and expiration."""
     try:
         session_uuid = UUID(x_session_id)
@@ -27,6 +29,7 @@ async def authenticate_session(x_session_id: str = Header(...)):
         logger.warning("Invalid session ID format: %s", x_session_id)
         raise HTTPException(status_code=400, detail="Invalid session ID format")
 
+    # Retrieve session from MongoDB
     session = await mongodb.db["sessions"].find_one({"session_id": session_uuid})
     if not session:
         logger.warning("Session not found: %s", session_uuid)
@@ -37,7 +40,11 @@ async def authenticate_session(x_session_id: str = Header(...)):
         logger.warning("Session expired: %s", session_uuid)
         raise HTTPException(status_code=401, detail="Session has expired")
 
-    return session
+    try:
+        return SessionData(**session)
+    except ValidationError as e:
+        logger.error("Invalid session data: %s", e)
+        raise HTTPException(status_code=500, detail="Invalid session data format")
 
 
 async def validate_api_key(x_api_key: str = Header(...), tenant_id: str = None):

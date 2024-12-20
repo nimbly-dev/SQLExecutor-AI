@@ -1,0 +1,127 @@
+{
+    "tenant_id": "TENANT_TST2",
+    "ruleset_name": "order_ruleset",
+    "description": "Refined ruleset for secure and granular access control.",
+    "default_action": "DENY",
+    "global_access_policy": {
+        "tables": {
+            "orders": {
+                "columns": {
+                    "allow": [],
+                    "deny": [
+                        "password"
+                    ]
+                },
+                "condition": "TRUE"
+            },
+            "customers": {
+                "columns": {
+                    "allow": [],
+                    "deny": [
+                        "password"
+                    ]
+                },
+                "condition": "TRUE"
+            },
+            "payments": {
+                "columns": {
+                    "allow": [],
+                    "deny": [
+                        "credit_card_number",
+                        "password"
+                    ]
+                },
+                "condition": "TRUE"
+            }
+        }
+    },
+    "table_access_policy": {
+        "tables": {
+            "orders": {
+                "columns": {
+                    "allow": [
+                        "order_id",
+                        "customer_id",
+                        "order_date",
+                        "total_amount"
+                    ],
+                    "deny": []
+                },
+                "condition": "orders.customer_id == ${jwt.user_id} OR 'admin' IN ${jwt.custom_fields.roles} OR 'sales_rep' IN ${jwt.custom_fields.roles}"
+            },
+            "customers": {
+                "columns": {
+                    "allow": [
+                        "customer_id",
+                        "name",
+                        "email",
+                        "phone_number"
+                    ],
+                    "deny": [
+                        "address"
+                    ]
+                },
+                "condition": "'sales_rep' IN ${jwt.custom_fields.roles} OR 'admin' IN ${jwt.custom_fields.roles} OR 'user' IN ${jwt.custom_fields.roles}"
+            },
+            "payments": {
+                "columns": {
+                    "allow": [
+                        "payment_id",
+                        "order_id",
+                        "payment_date",
+                        "amount_paid",
+                        "payment_method"
+                    ],
+                    "deny": []
+                },
+                "condition": "'accountant' IN ${jwt.custom_fields.roles} AND ${jwt.custom_fields.permissions} IN ['view_payments', 'process_payments']"
+            }
+        }
+    },
+    "user_specific_access_policy": [
+        {
+            "user_identifier": "specific_user@example.com",
+            "tables": {
+                "orders": {
+                    "columns": {
+                        "allow": [
+                            "order_id",
+                            "order_date"
+                        ],
+                        "deny": [
+                            "total_amount"
+                        ]
+                    },
+                    "condition": "${jwt.custom_fields.otherField} == 'special_access'"
+                },
+                "customers": {
+                    "columns": {
+                        "allow": [
+                            "customer_name",
+                            "customer_id",
+                            "name"
+                        ],
+                        "deny": [
+                            "email",
+                            "phone_number"
+                        ]
+                    },
+                    "condition": "${jwt.custom_fields.preferences.notifications} == TRUE"
+                },
+                "payments": {
+                    "columns": {
+                        "allow": [
+                            "payment_id",
+                            "payment_date"
+                        ],
+                        "deny": [
+                            "amount_paid",
+                            "payment_method"
+                        ]
+                    },
+                    "condition": "'viewer' IN ${jwt.roles} AND ${jwt.custom_fields.permissions} IN ['read_only']"
+                }
+            }
+        }
+    ]
+}

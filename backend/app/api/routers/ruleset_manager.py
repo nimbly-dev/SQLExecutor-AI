@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.core.services.ruleset_manager.ruleset_manager_service import RulesetManagerService
+from api.core.services.ruleset.ruleset_manager_service import RulesetManagerService
 from model.requests.ruleset_manager.add_ruleset_request import AddRulesetRequest
 
 router = APIRouter()

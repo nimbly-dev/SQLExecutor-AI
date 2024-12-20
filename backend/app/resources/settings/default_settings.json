@@ -60,9 +60,9 @@
             "setting_category": "EXTERNAL_JWT_AUTH",
             "is_custom_setting": false
         },
-        "EXTERNAL_JWT_CUSTOM_FIELDS":{
+        "EXTERNAL_JWT_CUSTOM_FIELDS": {
             "setting_basic_name": "External JWT Custom Fields",        
-            "setting_value": "['roles']",
+            "setting_value": "['roles', 'active', 'preferences', 'permissions', 'otherField']",
             "setting_category": "EXTERNAL_JWT_AUTH",
             "is_custom_setting": false
         },
@@ -72,8 +72,8 @@
             "setting_category": "EXTERNAL_JWT_AUTH",
             "is_custom_setting": false
         },
-        "IGNORE_MISSING_COLUMN_ON_QUERY_SCOPE":{
-            "setting_basic_name": "Ignore Missing Columns on query scope",        
+        "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE":{
+            "setting_basic_name": "Remove Missing Columns on query scope",        
             "setting_value": true,
             "setting_category": "POST_PROCESS_QUERYSCOPE",
             "is_custom_setting": false
