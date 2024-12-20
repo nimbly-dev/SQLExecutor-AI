@@ -64,7 +64,7 @@ class ExternalJWTAuthorizationServiceWrapper:
         jwt_custom_fields = eval(settings.get("EXTERNAL_JWT_CUSTOM_FIELDS", {}).setting_value if "EXTERNAL_JWT_CUSTOM_FIELDS" in settings else "[]")
         user_identifier_field = settings.get("EXTERNAL_JWT_USER_IDENTIFIER_FIELD", {}).setting_value if "EXTERNAL_JWT_USER_IDENTIFIER_FIELD" in settings else None
         external_jwt_secret_key = settings.get("EXTERNAL_JWT_SECRET_KEY", {}).setting_value if "EXTERNAL_JWT_SECRET_KEY" in settings else None
-
+        print(jwt_custom_fields)
         if not access_token:
             raise ValueError("Access token is missing in the user token.")
         if not (jwt_custom_fields and user_identifier_field and external_jwt_secret_key):

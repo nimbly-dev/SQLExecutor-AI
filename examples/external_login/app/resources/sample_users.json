@@ -2,15 +2,109 @@
     "test_user": {
         "username": "test_user",
         "password": "test_password",
-        "roles": [
-            "user"
-        ]
+        "roles": ["user"],
+        "active": true,
+        "preferences": {
+            "vip": false,
+            "notifications": true
+        },
+        "permissions": ["read_only"],
+        "otherField": "test_value"
     },
     "admin": {
         "username": "admin",
         "password": "admin_password",
-        "roles": [
-            "admin"
-        ]
+        "roles": ["admin"],
+        "active": true,
+        "preferences": {
+            "vip": true,
+            "notifications": false
+        },
+        "permissions": ["read_write"],
+        "otherField": "admin_value"
+    },
+    "specific_user": {
+        "username": "specific_user@example.com",
+        "password": "specific_password",
+        "roles": ["user"],
+        "active": true,
+        "preferences": {
+            "vip": false,
+            "notifications": true
+        },
+        "permissions": ["read_only"],
+        "otherField": "specific_access"
+    },
+    "inactive_user": {
+        "username": "inactive_user",
+        "password": "inactive_password",
+        "roles": ["user"],
+        "active": false,
+        "preferences": {
+            "vip": false,
+            "notifications": true
+        },
+        "permissions": ["read_only"],
+        "otherField": "inactive_value"
+    },
+    "sales_rep_user": {
+        "username": "sales_rep_user",
+        "password": "sales_rep_password",
+        "roles": ["sales_rep"],
+        "active": true,
+        "preferences": {
+            "vip": false,
+            "notifications": true
+        },
+        "permissions": ["manage_customers"],
+        "otherField": "sales_rep_value"
+    },
+    "payment_processor": {
+        "username": "payment_processor",
+        "password": "payment_password",
+        "roles": ["accountant"],
+        "active": true,
+        "preferences": {
+            "vip": false,
+            "notifications": false
+        },
+        "permissions": ["process_payments", "view_payments"],
+        "otherField": "processor_value"
+    },
+    "viewer_user": {
+        "username": "viewer_user",
+        "password": "viewer_password",
+        "roles": ["viewer"],
+        "active": true,
+        "preferences": {
+            "vip": false,
+            "notifications": false
+        },
+        "permissions": ["read_only"],
+        "otherField": "viewer_access_value"
+    },
+    "manager_user": {
+        "username": "manager_user",
+        "password": "manager_password",
+        "roles": ["sales_rep", "accountant", "manager"],
+        "active": true,
+        "preferences": {
+            "vip": true,
+            "notifications": true
+        },
+        "permissions": ["manage_customers", "process_payments", "view_payments"],
+        "otherField": "manager_value"
+    },
+    "elevated_user": {
+        "username": "elevated_user",
+        "password": "elevated_password",
+        "roles": ["elevated"],
+        "active": true,
+        "preferences": {
+            "vip": true,
+            "notifications": true
+        },
+        "permissions": ["read_write"],
+        "otherField": "elevated_access"
     }
 }

@@ -12,31 +12,31 @@ from model.responses.ruleset_manager.ruleset_response import RulesetResponse
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
 
 class RulesetManagerService:
-    
+
     @staticmethod
     async def create_indexes():
         # Enforce uniqueness on the schema_name field within the same tenant
         collection_schema = mongodb.db["rulesets"]
         collection_schema.create_index([("tenant_id", ASCENDING), ("ruleset_name", ASCENDING)], unique=True)
-    
+
     @staticmethod    
     async def add_ruleset(tenant_id: str, ruleset_request: AddRulesetRequest): 
         tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
-        
+
         # Create Ruleset Data from the request
         ruleset_data = Ruleset(
             tenant_id=tenant.tenant_id,
-            ruleset_name = ruleset_request.ruleset_name,
-            description = ruleset_request.description,
-            default_action = ruleset_request.default_action,
-            global_access_policy= ruleset_request.global_access_policy,
-            table_access_policy=  ruleset_request.table_access_policy,
-            user_specific_access_policy= ruleset_request.user_specific_access_policy
+            ruleset_name=ruleset_request.ruleset_name,
+            description=ruleset_request.description,
+            conditions=ruleset_request.conditions,
+            default_action=ruleset_request.default_action,
+            global_access_policy=ruleset_request.global_access_policy,
+            group_access_policy=ruleset_request.group_access_policy,
+            user_specific_access_policy=ruleset_request.user_specific_access_policy
         )
-        
-        # Insert schema into the schemas collection
+
         collection_schema = mongodb.db["rulesets"]
-        
+
         try:
             result = await collection_schema.insert_one(ruleset_data.dict())
             return {"message": "Ruleset added successfully", "ruleset_id": str(result.inserted_id)}
@@ -45,24 +45,23 @@ class RulesetManagerService:
                 status_code=400,
                 detail=f"Ruleset with the name '{ruleset_data.ruleset_name}' already exists for this tenant."
             )       
-        
-        
+
     @staticmethod
     async def get_ruleset(tenant_id: str, ruleset_name: str):
-        #Call get_tenant to Check if tenant exists
+        # Call get_tenant to Check if tenant exists
         tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
-        
+
         collection = mongodb.db["rulesets"]
         ruleset = await collection.find_one({"tenant_id": tenant.tenant_id, "ruleset_name": ruleset_name})
-                
+
         if not ruleset:
             raise HTTPException(
                 status_code=404,
                 detail=f"No Ruleset found with name '{ruleset_name}' for tenant '{tenant.tenant_id}'."
             )
-        
-        return Ruleset(**ruleset)
-    
+
+        return RulesetResponse(**ruleset)
+
     @staticmethod
     async def update_ruleset(tenant_id: str, ruleset_name: str, update_ruleset_request: AddRulesetRequest):
         tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
@@ -78,9 +77,6 @@ class RulesetManagerService:
 
         update_ruleset_data = update_ruleset_request.dict(exclude_unset=True)
         fields_to_update = {key: value for key, value in update_ruleset_data.items() if value is not None}
-
-        if "user_specific_access_policy" not in update_ruleset_data or update_ruleset_data.get("user_specific_access_policy") is None:
-            fields_to_update["user_specific_access_policy"] = []  # Set to empty list if Undefined or Null
 
         try:
             if fields_to_update:
@@ -114,7 +110,7 @@ class RulesetManagerService:
     @staticmethod
     async def delete_ruleset(tenant_id: str, ruleset_name: str):
         tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
-        
+
         collection = mongodb.db["rulesets"]
         result = await collection.delete_one({"tenant_id": tenant.tenant_id, "ruleset_name": ruleset_name})
         if result.deleted_count == 0:
@@ -122,5 +118,5 @@ class RulesetManagerService:
                 status_code=404,
                 detail="Ruleset not found"
             )
-            
+
         return {"message": "Ruleset deleted successfully"}

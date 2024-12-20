@@ -39,11 +39,27 @@ def health_check():
 
 @app.post("/login", response_model=Token)
 def login(request: LoginRequest):
-    user = users_db.get(request.username)
+    # Find the user by matching the username field in the dictionary values
+    user = next((details for username, details in users_db.items() if details["username"] == request.username), None)
+
     if not user or user["password"] != request.password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-    access_token = create_access_token(data={"tenant_id":"TENANT_TST2","sub": request.username, "roles": user["roles"]})
+
+
+    # Create JWT access token with all user fields
+    access_token = create_access_token(data={
+        "tenant_id": "TENANT_TST2",
+        "sub": request.username,
+        "roles": user["roles"],
+        "active": user["active"],
+        "preferences": user["preferences"],
+        "permissions": user["permissions"],
+        "otherField": user["otherField"]
+    })
+
+    # Add user to active sessions
     active_sessions.add(request.username)
+
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/logout")
