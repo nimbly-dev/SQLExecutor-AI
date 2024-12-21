@@ -2,7 +2,7 @@ import aiohttp
 import logging
 import jwt
 from datetime import datetime, timezone
-
+from typing import Dict
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
 from model.requests.authentication.auth_login_request import AuthLoginRequest
 from model.tenant import Tenant
@@ -97,3 +97,4 @@ class ExternalJWTAuthorizationServiceWrapper:
             user_identifier=user_identifier_value,
             expiration= datetime.fromtimestamp(exp_timestamp, tz=timezone.utc).isoformat() if exp_timestamp else None
         )
+

@@ -89,14 +89,14 @@
             }
         },
         "POST_PROCESS_QUERYSCOPE": {
-            "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": {
+            "TENANT_SETTING_REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": {
                 "setting_basic_name": "Remove Missing Columns on query scope",
                 "setting_value": "true",
                 "is_custom_setting": false,
                 "setting_description": "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE description not provided",
                 "setting_default_value": "true"
             },
-            "IGNORE_COLUMN_WILDCARDS": {
+            "TENANT_SETTING_IGNORE_COLUMN_WILDCARDS": {
                 "setting_basic_name": "Ignore Column Wildcards",
                 "setting_value": "true",
                 "is_custom_setting": false,

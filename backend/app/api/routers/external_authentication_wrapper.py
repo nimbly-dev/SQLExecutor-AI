@@ -15,7 +15,7 @@ async def login_external_user(login_request: AuthLoginRequest):
     
     response_user_token = await ExternalJWTAuthorizationServiceWrapper.call_external_login(tenant=tenant,auth_request=login_request)
     decoded_token: DecodedJwtToken = ExternalJWTAuthorizationServiceWrapper.decode_json_token(tenant=tenant,user_token=response_user_token)
-    session_data = await SessionManagerService.create_jwt_session(decoded_jwt_token=decoded_token)
+    session_data = await SessionManagerService.create_jwt_session(decoded_jwt_token=decoded_token, tenant= tenant)
     return session_data
 
 
