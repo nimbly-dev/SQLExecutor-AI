@@ -7,28 +7,30 @@ from api.core.services.tenant_manager.tenant_manager_service import TenantManage
 from model.requests.authentication.auth_login_request import AuthLoginRequest
 from model.tenant import Tenant
 from model.decoded_jwt_token import DecodedJwtToken
+from api.core.constants.tenant.settings_categories import(
+    EXTERNAL_JWT_AUTH_CATEGORY_KEY,
+    LLM_GENERATION_CATEGORY_KEY,
+    POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
+)
+from utils.tenant_manager.setting_utils import SettingUtils
 
 class ExternalJWTAuthorizationServiceWrapper:
-    
+
     @staticmethod
     async def call_external_login(tenant: Tenant, auth_request: AuthLoginRequest):
         # Get settings
         settings = tenant.settings or {}
-        login_endpoint_setting = settings.get("EXTERNAL_JWT_LOGIN_ENDPOINT")
-        auth_field_setting = settings.get("EXTERNAL_JWT_AUTH_FIELD")
-        passkey_field_setting = settings.get("EXTERNAL_JWT_AUTH_PASSKEY_FIELD")
 
-        # Validate tenant settings
-        if not login_endpoint_setting or not login_endpoint_setting.setting_value:
+        login_endpoint = SettingUtils.get_setting_value(settings, EXTERNAL_JWT_AUTH_CATEGORY_KEY, "EXTERNAL_JWT_LOGIN_ENDPOINT")
+        auth_field = SettingUtils.get_setting_value(settings, EXTERNAL_JWT_AUTH_CATEGORY_KEY, "EXTERNAL_JWT_AUTH_FIELD")
+        passkey_field = SettingUtils.get_setting_value(settings, EXTERNAL_JWT_AUTH_CATEGORY_KEY, "EXTERNAL_JWT_AUTH_PASSKEY_FIELD")
+
+        if not login_endpoint:
             raise ValueError("Login endpoint is not defined for the tenant.")
-        if not auth_field_setting or not auth_field_setting.setting_value:
+        if not auth_field:
             raise ValueError("Authentication field is not defined for the tenant.")
-        if not passkey_field_setting or not passkey_field_setting.setting_value:
+        if not passkey_field:
             raise ValueError("Passkey field is not defined for the tenant.")
-
-        login_endpoint = login_endpoint_setting.setting_value
-        auth_field = auth_field_setting.setting_value
-        passkey_field = passkey_field_setting.setting_value
 
         # Construct payload dynamically
         payload = {
@@ -59,12 +61,10 @@ class ExternalJWTAuthorizationServiceWrapper:
 
         # Extract required settings
         access_token = user_token.get("access_token")
+        jwt_custom_fields = eval(SettingUtils.get_setting_value(settings, EXTERNAL_JWT_AUTH_CATEGORY_KEY, "EXTERNAL_JWT_CUSTOM_FIELDS") or "[]")
+        user_identifier_field = SettingUtils.get_setting_value(settings, EXTERNAL_JWT_AUTH_CATEGORY_KEY, "EXTERNAL_JWT_USER_IDENTIFIER_FIELD")
+        external_jwt_secret_key = SettingUtils.get_setting_value(settings, EXTERNAL_JWT_AUTH_CATEGORY_KEY, "EXTERNAL_JWT_SECRET_KEY")
 
-        # Safely retrieve `setting_value` from the Setting object
-        jwt_custom_fields = eval(settings.get("EXTERNAL_JWT_CUSTOM_FIELDS", {}).setting_value if "EXTERNAL_JWT_CUSTOM_FIELDS" in settings else "[]")
-        user_identifier_field = settings.get("EXTERNAL_JWT_USER_IDENTIFIER_FIELD", {}).setting_value if "EXTERNAL_JWT_USER_IDENTIFIER_FIELD" in settings else None
-        external_jwt_secret_key = settings.get("EXTERNAL_JWT_SECRET_KEY", {}).setting_value if "EXTERNAL_JWT_SECRET_KEY" in settings else None
-        print(jwt_custom_fields)
         if not access_token:
             raise ValueError("Access token is missing in the user token.")
         if not (jwt_custom_fields and user_identifier_field and external_jwt_secret_key):

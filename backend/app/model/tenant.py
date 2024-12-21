@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, root_validator
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from bson import ObjectId
 
 from model.setting import Setting
@@ -7,9 +7,9 @@ from model.setting import Setting
 class Tenant(BaseModel):
     tenant_id: str = Field(..., max_length=36)
     tenant_name: str = Field(..., description="Name of the tenant")
-    settings: Optional[Dict[str, Setting]] = {}
+    settings: Optional[Dict[str, Dict[str, Setting]]] = {}
     _id: Optional[str]
-
+    
     @root_validator(pre=True)
     def check_tenant_id_length(cls, values):
         tenant_id = values.get('tenant_id')
@@ -21,3 +21,4 @@ class Tenant(BaseModel):
         json_encoders = {
             ObjectId: str
         }
+

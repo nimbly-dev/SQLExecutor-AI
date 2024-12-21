@@ -12,6 +12,10 @@ from api.core.services.schema.schema_manager_service import SchemaManagerService
 from utils.query_scope.validate_query_scope_utils import ValidateQueryScopeUtils
 from utils.query_scope.post_process_query_scope_settings_utils import PostProcessQueryScopeSettingsUtils
 from utils.query_scope.query_scope_utils import expand_columns
+from utils.tenant_manager.setting_utils import SettingUtils
+from api.core.constants.tenant.settings_categories import (
+    POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
+)
 
 class QueryScopeResolver:
     """
@@ -27,10 +31,9 @@ class QueryScopeResolver:
         :param query_scope: Parsed query scope to be resolved.
         """
         self.session_data = session_data
-        self.settings = settings or {} 
+        self.settings = settings or {}
         self.query_scope = query_scope
         self.schemas = []
-        
 
     async def match_user_query_to_schema(self, tenant_id: str) -> Union[Dict[str, List[str]], Any]:
         """
@@ -41,10 +44,19 @@ class QueryScopeResolver:
         """
         await self._fetch_and_validate_schemas(tenant_id)
         return await self._resolve_matched_schema(tenant_id)
-    
+
     def resolve_query_scope(self, matched_schema: Schema) -> QueryScope:
-        REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE = self._get_setting_toggle(setting_key="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE")
-        IGNORE_COLUMN_WILDCARDS = self._get_setting_toggle(setting_key="IGNORE_COLUMN_WILDCARDS")
+        REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE = SettingUtils.get_setting_value(
+            settings=self.settings,
+            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
+            setting_key="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE"
+        )
+
+        IGNORE_COLUMN_WILDCARDS = SettingUtils.get_setting_value(
+            settings=self.settings,
+            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
+            setting_key="IGNORE_COLUMN_WILDCARDS"
+        )
 
         missing_columns = []
 
@@ -82,7 +94,7 @@ class QueryScopeResolver:
                     "missing_columns": missing_columns
                 }
             )
-            
+
         return self.query_scope
 
     async def _fetch_and_validate_schemas(self, tenant_id: str) -> None:
@@ -117,7 +129,13 @@ class QueryScopeResolver:
         matched_result = SchemaDiscoveryService.get_best_matching_schemas(
             query_scope=self.query_scope,
             schemas=self.schemas,
-            tenant_settings={"IGNORE_COLUMN_WILDCARDS": self._get_setting_toggle(setting_key="IGNORE_COLUMN_WILDCARDS")}
+            tenant_settings={
+                "IGNORE_COLUMN_WILDCARDS": SettingUtils.get_setting_value(
+                    settings=self.settings,
+                    category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
+                    setting_key="IGNORE_COLUMN_WILDCARDS"
+                )
+            }
         )
 
         # Handle single string match or list with one match
@@ -133,28 +151,9 @@ class QueryScopeResolver:
             )
             
         # Multiple Rulesets not supported in this PoC
-        if len(self.schema.filter_rules) > 1:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Multiple rulesets found in schema '{self.schema.schema_name}'. "
-                    "SQLExecutor does not currently support multiple rulesets."
-            )
-
-        # Handle no matches
+        # If there's a reference to `self.schema`, ensure you're referencing a valid schema object
         raise HTTPException(status_code=404, detail="No matching schemas found.")
 
-    
-    def _get_setting_toggle(self, setting_key:str) -> bool:
-        setting = self.settings.get(setting_key)
-        if setting and hasattr(setting, "setting_value"):
-            value = str(setting.setting_value).strip().lower()
-            # Explicitly check for truthy values
-            if value in {"true", "1", "yes", "on"}:
-                return True
-            elif value in {"false", "0", "no", "off"}:
-                return False
-        return False
-        
     def _soft_preprocess_tables(self):
         """
         Soft pre-process table names and associated column names in the query scope
@@ -170,15 +169,14 @@ class QueryScopeResolver:
             else:
                 raise AttributeError(f"Expected SchemaTablesResponse object, but got {type(schema)}")
 
-        # Debug: Print valid table names
         print(f"Valid tables: {valid_tables}")
 
-        # Preprocess table names in the query scope
         corrected_tables = []
-        table_name_mapping = {}  # To track corrections for columns
+        table_name_mapping = {}
+
         for table in self.query_scope.entities.tables:
             if table in valid_tables:
-                corrected_tables.append(table)  # Table is already valid
+                corrected_tables.append(table)
                 table_name_mapping[table] = table
             elif table + "s" in valid_tables:  # Check for missing 's'
                 corrected_name = table + "s"
@@ -191,14 +189,10 @@ class QueryScopeResolver:
                 table_name_mapping[table] = corrected_name
                 print(f"Soft fix applied: '{table}' -> '{corrected_name}'")
             else:
-                corrected_tables.append(table)  # Leave the table as-is if no match
+                corrected_tables.append(table)
                 table_name_mapping[table] = table
                 print(f"No soft fix applied for: '{table}'")
 
-        # Debug: Print corrected tables
-        print(f"Corrected tables: {corrected_tables}")
-
-        # Update column names in the query scope based on corrected table names
         corrected_columns = []
         for column in self.query_scope.entities.columns:
             if "." in column:
@@ -208,9 +202,7 @@ class QueryScopeResolver:
             else:
                 corrected_columns.append(column)
 
-        # Debug: Print corrected columns
         print(f"Corrected columns: {corrected_columns}")
 
-        # Update the query scope with corrected table and column names
         self.query_scope.entities.tables = corrected_tables
         self.query_scope.entities.columns = corrected_columns

@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from model.setting import Setting
 from model.tenant import Tenant
 from model.session_data import SessionData
+from utils.tenant_manager.setting_utils import SettingUtils
+from api.core.constants.tenant.settings_categories import EXTERNAL_JWT_AUTH_CATEGORY_KEY
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +56,13 @@ async def validate_api_key(x_api_key: str = Header(...), tenant_id: str = None):
         logger.warning("Tenant not found: %s", tenant_id)
         raise HTTPException(status_code=404, detail="Tenant not found")
 
-    api_key_setting = (Tenant(**tenant_data).settings or {}).get("TENANT_APPLICATION_TOKEN")
-    if not api_key_setting or x_api_key != api_key_setting.setting_value:
+    tenant = Tenant(**tenant_data)
+    api_key_setting = SettingUtils.get_setting_value(
+        settings=tenant.settings,
+        category_key=EXTERNAL_JWT_AUTH_CATEGORY_KEY,
+        setting_key="TENANT_APPLICATION_TOKEN"
+    )
+
+    if not api_key_setting or x_api_key != api_key_setting:
         logger.warning("Invalid API Key for tenant: %s", tenant_id)
         raise HTTPException(status_code=403, detail="Invalid API Key")
