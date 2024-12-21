@@ -1,151 +1,280 @@
-# import pytest
-# from unittest import mock
-# import uuid
-# from datetime import datetime, timedelta
-# from fastapi import HTTPException
-# from model.session_data import SessionData
-# from model.query_scope import QueryScope, Entities
-# from model.responses.schema.schema_tables_response import SchemaTablesResponse, TableResponse
-# from api.core.services.schema.schema_discovery_service import SchemaDiscoveryService
-# from api.core.services.schema.schema_manager_service import SchemaManagerService
-# from utils.query_scope.validate_query_scope_utils import ValidateQueryScopeUtils
-# from api.core.resolvers.query_scope.query_scope_resolver import QueryScopeResolver
+import pytest
+from unittest import mock
+from unittest.mock import AsyncMock, MagicMock
+
+from fastapi import HTTPException
+
+# Import the necessary models and services
+from api.core.resolvers.query_scope.query_scope_resolver import QueryScopeResolver
+from model.session_data import SessionData
+from model.query_scope import QueryScope, Entities
+from model.schema import Schema
+from model.setting import Setting
+from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
 
 
-# class TestQueryScopeResolver:
+class TestQueryScopeResolver:
+    """
+    Unit tests for the QueryScopeResolver class.
+    """
 
-#     @pytest.fixture
-#     def session_data(self) -> SessionData:
-#         return SessionData(
-#             session_id=uuid.uuid4(),
-#             tenant_id="tenant1",
-#             user_id="user1",
-#             custom_fields={"roles": ["admin"]},
-#             created_at=datetime.utcnow(),
-#             expires_at=datetime.utcnow() + timedelta(hours=1)
-#         )
+    @pytest.fixture
+    def sample_session_data(self):
+        return SessionData(
+            session_id="509e74ba-8d1f-4ab9-9eb0-91648debd095",
+            tenant_id="TENANT_TST2",
+            user_id="test_user",
+            custom_fields={
+                "roles": ["user"],
+                "active": True,
+                "preferences": {
+                    "vip": False,
+                    "notifications": True
+                },
+                "permissions": ["read_only"],
+                "otherField": "test_value"
+            },
+            created_at="2024-12-21T11:08:40.925734+00:00",
+            expires_at="2024-12-21T11:23:40+00:00",
+            session_settings={
+                "SQL_GENERATION": {
+                    "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": Setting(
+                        setting_description="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE description not provided",
+                        setting_basic_name="Remove Missing Columns on query scope",
+                        setting_default_value="true",
+                        setting_value="true",
+                        is_custom_setting=False
+                    ),
+                    "IGNORE_COLUMN_WILDCARDS": Setting(
+                        setting_description="IGNORE_COLUMN_WILDCARDS description not provided",
+                        setting_basic_name="Ignore Column Wildcards",
+                        setting_default_value="true",
+                        setting_value="true",
+                        is_custom_setting=False
+                    )
+                }
+            }
+        )
 
-#     @pytest.fixture
-#     def query_scope(self) -> QueryScope:
-#         return QueryScope(
-#             intent="fetch_data",
-#             entities=Entities(
-#                 tables=["products", "orders"],
-#                 columns=["products.product_id", "orders.order_id"]
-#             )
-#         )
+    @pytest.fixture
+    def sample_query_scope(self):
+        return QueryScope(
+            intent="test_intent",
+            entities=Entities(
+                tables=["users", "orders"],
+                columns=["users.id", "users.password", "orders.amount"]
+            )
+        )
 
-#     @pytest.fixture
-#     def settings(self) -> dict:
-#         return {"IGNORE_COLUMN_WILDCARDS": mock.Mock(setting_value=True)}
+    @pytest.fixture
+    def sample_settings(self):
+        return {
+            "POST_PROCESS_QUERYSCOPE": {
+                "REMOVE_SENSITIVE_COLUMNS": Setting(
+                    setting_description="Removes sensitive columns that were declared on schema",
+                    setting_basic_name="Remove sensitive columns",
+                    setting_default_value="true",
+                    setting_value="true",
+                    is_custom_setting=False
+                ),
+                "IGNORE_COLUMN_WILDCARDS": Setting(
+                    setting_description="IGNORE_COLUMN_WILDCARDS description not provided",
+                    setting_basic_name="Ignore Column Wildcards",
+                    setting_default_value="true",
+                    setting_value="true",
+                    is_custom_setting=False
+                )
+            }
+        }
 
-#     @pytest.fixture
-#     def schemas(self) -> list:
-#         return [
-#             SchemaTablesResponse(
-#                 schema_name="schema1",
-#                 tables=[
-#                     TableResponse(table_name="products", columns=[]),
-#                     TableResponse(table_name="categories", columns=[])
-#                 ]
-#             ),
-#             SchemaTablesResponse(
-#                 schema_name="schema2",
-#                 tables=[
-#                     TableResponse(table_name="orders", columns=[]),
-#                     TableResponse(table_name="customers", columns=[])
-#                 ]
-#             )
-#         ]
+    @mock.patch('api.core.services.query_scope.query_scope_preparation_service.QueryScopePreparationService.prepare_query_scope', new_callable=AsyncMock)
+    @mock.patch('api.core.services.query_scope.query_scope_resolution_service.QueryScopeResolutionService.match_schema', new_callable=AsyncMock)
+    @pytest.mark.asyncio
+    async def test_match_user_query_to_schema_success(
+        self,
+        mock_match_schema,
+        mock_prepare_query_scope,
+        sample_session_data,
+        sample_query_scope,
+        sample_settings
+    ):
+        # Arrange
+        tenant_id = sample_session_data.tenant_id
 
-#     @pytest.mark.asyncio
-#     @mock.patch.object(SchemaManagerService, "get_schema_tables")
-#     @mock.patch.object(SchemaManagerService, "get_schema")
-#     @mock.patch.object(SchemaDiscoveryService, "get_best_matching_schemas")
-#     async def test_match_user_query_to_schema_single_match(
-#         self, mock_get_best_matching_schemas, mock_get_schema, mock_get_schema_tables, session_data, query_scope, settings, schemas
-#     ):
-#         # Arrange
-#         tenant_id = session_data.tenant_id
+        mock_schema = MagicMock(spec=Schema, schema_name="public")
+        mock_prepare_query_scope.return_value = [mock_schema]
+        mock_match_schema.return_value = mock_schema
 
-#         mock_get_schema_tables.return_value = schemas
-#         mock_get_best_matching_schemas.return_value = "schema1"  
-#         mock_get_schema.return_value = schemas[0]
+        resolver = QueryScopeResolver(
+            session_data=sample_session_data,
+            settings=sample_settings,
+            query_scope=sample_query_scope
+        )
 
-#         resolver = QueryScopeResolver(session_data, settings, query_scope)
+        # Act
+        result = await resolver.match_user_query_to_schema(tenant_id=tenant_id)
 
-#         # Act
-#         result = await resolver.match_user_query_to_schema(tenant_id)
+        # Assert
+        mock_prepare_query_scope.assert_awaited_once_with(
+            tenant_id=tenant_id,
+            query_scope=sample_query_scope
+        )
+        mock_match_schema.assert_awaited_once_with(
+            tenant_id=tenant_id,
+            schemas=[mock_schema],
+            query_scope=sample_query_scope,
+            tenant_settings={
+                "IGNORE_COLUMN_WILDCARDS": "true"
+            }
+        )
+        assert result == mock_schema
 
-#         # Assert
-#         mock_get_schema_tables.assert_called_once_with(tenant_id=tenant_id)
-#         mock_get_best_matching_schemas.assert_called_once_with(
-#             query_scope=query_scope, schemas=schemas, tenant_settings={"IGNORE_COLUMN_WILDCARDS": True}
-#         )
-#         mock_get_schema.assert_called_once_with(tenant_id=tenant_id, schema_name="schema1")  
-#         assert result == schemas[0]
+    @mock.patch('api.core.services.query_scope.query_scope_preparation_service.QueryScopePreparationService.prepare_query_scope', new_callable=AsyncMock)
+    @mock.patch('api.core.services.query_scope.query_scope_resolution_service.QueryScopeResolutionService.match_schema', new_callable=AsyncMock)
+    @pytest.mark.asyncio
+    async def test_match_user_query_to_schema_preparation_failure(
+        self,
+        mock_match_schema,
+        mock_prepare_query_scope,
+        sample_session_data,
+        sample_query_scope,
+        sample_settings
+    ):
+        # Arrange
+        tenant_id = sample_session_data.tenant_id
 
+        mock_prepare_query_scope.side_effect = HTTPException(status_code=500, detail="Preparation failed.")
 
+        resolver = QueryScopeResolver(
+            session_data=sample_session_data,
+            settings=sample_settings,
+            query_scope=sample_query_scope
+        )
 
-#     @pytest.mark.asyncio
-#     @mock.patch.object(SchemaManagerService, "get_schema_tables")
-#     @mock.patch.object(SchemaDiscoveryService, "get_best_matching_schemas")
-#     async def test_match_user_query_to_schema_multiple_match_error(
-#         self, mock_get_best_matching_schemas, mock_get_schema_tables, session_data, query_scope, settings, schemas
-#     ):
-#         # Arrange
-#         tenant_id = session_data.tenant_id
-#         mock_get_schema_tables.return_value = schemas
-#         mock_get_best_matching_schemas.return_value = ["schema1", "schema2"]
+        # Act
+        with pytest.raises(HTTPException) as exc_info:
+            await resolver.match_user_query_to_schema(tenant_id=tenant_id)
 
-#         resolver = QueryScopeResolver(session_data, settings, query_scope)
+        
+        # Assert
+        assert exc_info.value.status_code == 500
+        assert exc_info.value.detail == "Preparation failed."
 
-#         # Act
-#         with pytest.raises(HTTPException) as exc_info:
-#             await resolver.match_user_query_to_schema(tenant_id)
+        mock_prepare_query_scope.assert_awaited_once_with(
+            tenant_id=tenant_id,
+            query_scope=sample_query_scope
+        )
+        mock_match_schema.assert_not_called()
 
-#         # Assert
-#         assert exc_info.value.status_code == 400
-#         assert exc_info.value.detail == "Multiple Schemas matched, SQLExecutor does not currently support this"
+    @mock.patch('api.core.services.query_scope.query_scope_preparation_service.QueryScopePreparationService.prepare_query_scope', new_callable=AsyncMock)
+    @mock.patch('api.core.services.query_scope.query_scope_resolution_service.QueryScopeResolutionService.match_schema', new_callable=AsyncMock)
+    @pytest.mark.asyncio
+    async def test_match_user_query_to_schema_matching_failure(
+        self,
+        mock_match_schema,
+        mock_prepare_query_scope,
+        sample_session_data,
+        sample_query_scope,
+        sample_settings
+    ):
+        # Arrange
+        tenant_id = sample_session_data.tenant_id
 
-#     @pytest.mark.asyncio
-#     @mock.patch.object(SchemaManagerService, "get_schema_tables")
-#     @mock.patch.object(SchemaDiscoveryService, "get_best_matching_schemas")
-#     async def test_match_user_query_to_schema_no_match_error(
-#         self, mock_get_best_matching_schemas, mock_get_schema_tables, session_data, query_scope, settings, schemas
-#     ):
-#         # Arrange
-#         tenant_id = session_data.tenant_id
-#         mock_get_schema_tables.return_value = schemas
-#         mock_get_best_matching_schemas.return_value = []
+        mock_schema = MagicMock(spec=Schema, schema_name="public")
+        mock_prepare_query_scope.return_value = [mock_schema]
+        mock_match_schema.side_effect = HTTPException(status_code=400, detail="Matching failed.")
 
-#         resolver = QueryScopeResolver(session_data, settings, query_scope)
+        resolver = QueryScopeResolver(
+            session_data=sample_session_data,
+            settings=sample_settings,
+            query_scope=sample_query_scope
+        )
 
-#         # Act
-#         with pytest.raises(HTTPException) as exc_info:
-#             await resolver.match_user_query_to_schema(tenant_id)
+        # Act
+        with pytest.raises(HTTPException) as exc_info:
+            await resolver.match_user_query_to_schema(tenant_id=tenant_id)
 
-#         # Assert
-#         assert exc_info.value.status_code == 404
-#         assert exc_info.value.detail == "No matching schemas found."
+        # Assert
+        assert exc_info.value.status_code == 400
+        assert exc_info.value.detail == "Matching failed."
 
-#     @pytest.mark.asyncio
-#     @mock.patch.object(SchemaManagerService, "get_schema_tables")
-#     @mock.patch.object(ValidateQueryScopeUtils, "validate_tables_exist_in_schemas")
-#     async def test_fetch_and_validate_schemas_table_not_found_error(
-#         self, mock_validate_tables_exist_in_schemas, mock_get_schema_tables, session_data, query_scope, settings, schemas
-#     ):
-#         # Arrange
-#         tenant_id = session_data.tenant_id
-#         mock_get_schema_tables.return_value = schemas
-#         mock_validate_tables_exist_in_schemas.return_value = False
+        mock_prepare_query_scope.assert_awaited_once_with(
+            tenant_id=tenant_id,
+            query_scope=sample_query_scope
+        )
+        mock_match_schema.assert_awaited_once_with(
+            tenant_id=tenant_id,
+            schemas=[mock_schema],
+            query_scope=sample_query_scope,
+            tenant_settings={
+                "IGNORE_COLUMN_WILDCARDS": "true"
+            }
+        )
 
-#         resolver = QueryScopeResolver(session_data, settings, query_scope)
+    @mock.patch('api.core.services.query_scope.query_scope_resolution_service.QueryScopeResolutionService.process_query_scope', return_value=MagicMock(spec=QueryScope))
+    def test_resolve_query_scope_success(
+        self,
+        mock_process_query_scope,
+        sample_session_data,
+        sample_query_scope,
+        sample_settings
+    ):
+        # Arrange
+        matched_schema = MagicMock(spec=Schema, schema_name="public")
+        resolver = QueryScopeResolver(
+            session_data=sample_session_data,
+            settings=sample_settings,
+            query_scope=sample_query_scope
+        )
 
-#         # Act 
-#         with pytest.raises(HTTPException) as exc_info:
-#             await resolver._fetch_and_validate_schemas(tenant_id)
+        # Act
+        result = resolver.resolve_query_scope(matched_schema=matched_schema)
 
-#         # Assert
-#         assert exc_info.value.status_code == 400
-#         assert exc_info.value.detail == "One or more tables in the user request do not exist in the schemas."
+        # Assert
+        mock_process_query_scope.assert_called_once_with(
+            matched_schema=matched_schema,
+            query_scope=sample_query_scope,
+            session_data=sample_session_data,
+            settings=sample_settings
+        )
+        assert result is not None  
+
+    @mock.patch('api.core.services.query_scope.query_scope_resolution_service.QueryScopeResolutionService.process_query_scope', side_effect=HTTPException(
+        status_code=400,
+        detail={
+            "message": "No valid columns remain after processing the input query.",
+            "matched_schema": "public",
+            "missing_columns": []
+        }
+    ))
+    def test_resolve_query_scope_processing_failure(
+        self,
+        mock_process_query_scope,
+        sample_session_data,
+        sample_query_scope,
+        sample_settings
+    ):
+        # Arrange
+        matched_schema = MagicMock(spec=Schema, schema_name="public")
+        resolver = QueryScopeResolver(
+            session_data=sample_session_data,
+            settings=sample_settings,
+            query_scope=sample_query_scope
+        )
+
+        # Act
+        with pytest.raises(HTTPException) as exc_info:
+            resolver.resolve_query_scope(matched_schema=matched_schema)
+
+        # Assert
+        assert exc_info.value.status_code == 400
+        assert exc_info.value.detail["message"] == "No valid columns remain after processing the input query."
+        assert exc_info.value.detail["matched_schema"] == "public"
+        assert exc_info.value.detail["missing_columns"] == []
+
+        mock_process_query_scope.assert_called_once_with(
+            matched_schema=matched_schema,
+            query_scope=sample_query_scope,
+            session_data=sample_session_data,
+            settings=sample_settings
+        )
