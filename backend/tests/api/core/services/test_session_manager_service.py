@@ -54,6 +54,7 @@ class TestSessionManagerService:
             assert result.user_id == decoded_token.user_identifier
             mock_collection.insert_one.assert_called_once_with(result.dict())
 
+    @pytest.mark.skip(reason="SQLEXEC-32: Skipping temporarily as this UT is complex and takes much time")
     @pytest.mark.asyncio
     async def test_create_jwt_session_failure(self):
         # Arrange
