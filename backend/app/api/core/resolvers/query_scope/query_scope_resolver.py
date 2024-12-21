@@ -57,8 +57,25 @@ class QueryScopeResolver:
             category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
             setting_key="IGNORE_COLUMN_WILDCARDS"
         )
+        
+        REMOVE_SENSITIVE_COLUMNS = SettingUtils.get_setting_value(
+            settings=self.settings,
+            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
+            setting_key="REMOVE_SENSITIVE_COLUMNS"
+        )
 
         missing_columns = []
+        
+        if REMOVE_SENSITIVE_COLUMNS:
+            schema_sensitive_columns = {
+                f"{table_name}.{column_name}"
+                for table_name, table in matched_schema.tables.items()
+                for column_name, column in table.columns.items()
+                if column.is_sensitive_column
+            }
+            self.query_scope.entities.columns = [
+                column for column in self.query_scope.entities.columns if column not in schema_sensitive_columns
+            ]
 
         if REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE:
             self.query_scope, missing_columns = PostProcessQueryScopeSettingsUtils.remove_missing_columns_from_query_scope(

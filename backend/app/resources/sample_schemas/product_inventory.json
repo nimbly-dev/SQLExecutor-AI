@@ -9,12 +9,16 @@
             "columns": {
                 "product_id": {
                     "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": true
                 },
                 "name": {
                     "type": "TEXT",
                     "description": "Product name",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "category_id": {
                     "type": "INTEGER",
@@ -23,12 +27,16 @@
                     "references": {
                         "table": "categories",
                         "column": "category_id"
-                    }
+                    },
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "price": {
                     "type": "DECIMAL",
                     "description": "Product price",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 }
             },
             "relationships": {
@@ -36,7 +44,8 @@
                     "description": "Product belongs to category",
                     "table": "categories",
                     "on": "products.category_id = categories.category_id",
-                    "type": "INNER"
+                    "type": "INNER",
+                    "exclude_description_on_generate_sql": false
                 }
             }
         },
@@ -46,12 +55,16 @@
             "columns": {
                 "category_id": {
                     "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": true
                 },
                 "name": {
                     "type": "TEXT",
                     "description": "Category name",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 }
             },
             "relationships": {}
@@ -62,16 +75,22 @@
             "columns": {
                 "supplier_id": {
                     "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": true
                 },
                 "name": {
                     "type": "TEXT",
                     "description": "Supplier name",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "contact_email": {
                     "type": "TEXT",
-                    "constraints": ["UNIQUE", "NOT NULL"]
+                    "constraints": ["UNIQUE", "NOT NULL"],
+                    "is_sensitive_column": true,
+                    "exclude_description_on_generate_sql": true
                 }
             },
             "relationships": {}

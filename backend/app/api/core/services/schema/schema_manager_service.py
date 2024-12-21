@@ -16,35 +16,30 @@ class SchemaManagerService:
     
     @staticmethod
     async def create_indexes():
-        # Enforce uniqueness on the schema_name field within the same tenant
         collection_schema = mongodb.db["schemas"]
         collection_schema.create_index([("tenant_id", ASCENDING), ("schema_name", ASCENDING)], unique=True)
-    
+
     @staticmethod
     async def add_schema(tenant_id: str, schema_request: AddSchemaRequest):
         collection_tenant = mongodb.db["tenants"]
         tenant_dict = await collection_tenant.find_one({"tenant_id": tenant_id})
-        
-        # If tenant is not found, raise an HTTPException
+
         if not tenant_dict:
             raise HTTPException(
                 status_code=404,
                 detail="Tenant not found"
             )
 
-        # Convert the tenant data to the Tenant model
         tenant = Tenant(**tenant_dict)
-        
-        # Create Schema Data from the request
         schema_data = Schema(
             tenant_id=tenant.tenant_id,
             schema_name=schema_request.schema_name,
             description=schema_request.description,
             tables=schema_request.tables,
-            filter_rules=schema_request.filter_rules
+            filter_rules=schema_request.filter_rules,
+            exclude_description_on_generate_sql=schema_request.exclude_description_on_generate_sql
         )
-        
-        # Insert schema into the schemas collection
+
         collection_schema = mongodb.db["schemas"]
         
         try:
@@ -68,11 +63,10 @@ class SchemaManagerService:
             )
         
         return Schema(**schema)
-    
+
     @staticmethod
     async def get_schemas(tenant_id: str) -> List[Schema]:
         collection = mongodb.db["schemas"]
-
         schemas_cursor = collection.find({"tenant_id": tenant_id})
         schemas = []
 
@@ -84,7 +78,7 @@ class SchemaManagerService:
                 status_code=500,
                 detail=f"Failed to parse schema data for tenant '{tenant_id}': {e}"
             )
-            
+
         if not schemas:
             raise HTTPException(
                 status_code=404,
@@ -92,23 +86,13 @@ class SchemaManagerService:
             )
 
         return schemas
-    
-    
+
     @staticmethod
     async def get_schema_tables(tenant_id: str) -> List[SchemaTablesResponse]:
-        """
-        Fetches the schema_name and tables (including columns) for each schema for a given tenant.
-
-        Args:
-            tenant_id (str): The tenant ID.
-
-        Returns:
-            List[SchemaTablesResponse]: A list of schemas with their tables and columns.
-        """
         collection = mongodb.db["schemas"]
         schemas_cursor = collection.find(
-            {"tenant_id": tenant_id},  # Query filter
-            {"schema_name": 1, "tables": 1}  # Projection to fetch only schema_name and tables
+            {"tenant_id": tenant_id},
+            {"schema_name": 1, "tables": 1}
         )
 
         schemas = []
@@ -120,7 +104,8 @@ class SchemaManagerService:
                         column_name=col_name,
                         type=col_data.get("type", "UNKNOWN"),
                         description=col_data.get("description"),
-                        constraints=col_data.get("constraints", [])
+                        constraints=col_data.get("constraints", []),
+                        is_sensitive_column=col_data.get("is_sensitive_column", False)
                     )
                     for col_name, col_data in table_obj["columns"].items()
                 ]
@@ -142,7 +127,6 @@ class SchemaManagerService:
 
         return schemas
 
-    
     @staticmethod
     async def update_schema(tenant_id: str, schema_name: str, update_schema_request: UpdateSchemaRequest):
         update_schema_data = update_schema_request.dict(exclude_unset=True)
@@ -156,7 +140,6 @@ class SchemaManagerService:
         update_schema_data.pop("schema_name", None)
 
         collection = mongodb.db["schemas"]
-        # Check if the schema exists
         schema = await collection.find_one({"tenant_id": tenant_id, "schema_name": schema_name})
         if not schema:
             raise HTTPException(
@@ -169,7 +152,6 @@ class SchemaManagerService:
             {"$set": update_schema_data}
         )
 
-        # Check if the update matched any documents
         if result.matched_count == 0:
             raise HTTPException(
                 status_code=404,
@@ -187,6 +169,5 @@ class SchemaManagerService:
                 status_code=404,
                 detail="Schema not found"
             )
-            
+        
         return {"message": "Schema deleted successfully"}
-    

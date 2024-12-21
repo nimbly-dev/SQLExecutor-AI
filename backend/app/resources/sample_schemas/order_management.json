@@ -9,7 +9,9 @@
             "columns": {
                 "order_id": {
                     "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": true
                 },
                 "customer_id": {
                     "type": "INTEGER",
@@ -18,17 +20,23 @@
                     "references": {
                         "table": "customers",
                         "column": "customer_id"
-                    }
+                    },
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "order_date": {
                     "type": "DATE",
                     "description": "Date when the order was placed",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "total_amount": {
                     "type": "DECIMAL",
                     "description": "Total amount of the order",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 }
             },
             "relationships": {
@@ -36,7 +44,8 @@
                     "description": "Each order is placed by a customer",
                     "table": "customers",
                     "on": "orders.customer_id = customers.customer_id",
-                    "type": "INNER"
+                    "type": "INNER",
+                    "exclude_description_on_generate_sql": false
                 }
             }
         },
@@ -46,21 +55,29 @@
             "columns": {
                 "customer_id": {
                     "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": true
                 },
                 "name": {
                     "type": "TEXT",
                     "description": "Full name of the customer",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "email": {
                     "type": "TEXT",
-                    "constraints": ["UNIQUE", "NOT NULL"]
+                    "constraints": ["UNIQUE", "NOT NULL"],
+                    "is_sensitive_column": true,
+                    "exclude_description_on_generate_sql": true
                 },
                 "phone_number": {
                     "type": "TEXT",
                     "description": "Phone number of the customer",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": true,
+                    "exclude_description_on_generate_sql": true
                 }
             },
             "relationships": {}
@@ -71,7 +88,9 @@
             "columns": {
                 "payment_id": {
                     "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": true
                 },
                 "order_id": {
                     "type": "INTEGER",
@@ -80,22 +99,30 @@
                     "references": {
                         "table": "orders",
                         "column": "order_id"
-                    }
+                    },
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "payment_date": {
                     "type": "DATE",
                     "description": "Date of the payment",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "amount_paid": {
                     "type": "DECIMAL",
                     "description": "Amount paid by the customer",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "payment_method": {
                     "type": "TEXT",
                     "description": "Method of payment",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 }
             },
             "relationships": {
@@ -103,7 +130,8 @@
                     "description": "Payment is associated with an order",
                     "table": "orders",
                     "on": "payments.order_id = orders.order_id",
-                    "type": "INNER"
+                    "type": "INNER",
+                    "exclude_description_on_generate_sql": false
                 }
             }
         }

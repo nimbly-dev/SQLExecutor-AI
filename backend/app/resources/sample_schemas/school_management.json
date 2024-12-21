@@ -9,21 +9,29 @@
             "columns": {
                 "student_id": {
                     "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": true
                 },
                 "name": {
                     "type": "TEXT",
                     "description": "Student full name",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "email": {
                     "type": "TEXT",
-                    "constraints": ["UNIQUE", "NOT NULL"]
+                    "constraints": ["UNIQUE", "NOT NULL"],
+                    "is_sensitive_column": true,
+                    "exclude_description_on_generate_sql": true
                 },
                 "birth_date": {
                     "type": "DATE",
                     "description": "Date of birth of the student",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 }
             },
             "relationships": {
@@ -31,7 +39,8 @@
                     "description": "Student can have multiple enrollments",
                     "table": "enrollments",
                     "on": "students.student_id = enrollments.student_id",
-                    "type": "INNER"
+                    "type": "INNER",
+                    "exclude_description_on_generate_sql": false
                 }
             }
         },
@@ -41,17 +50,23 @@
             "columns": {
                 "course_id": {
                     "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": true
                 },
                 "title": {
                     "type": "TEXT",
                     "description": "Course title",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "credits": {
                     "type": "INTEGER",
                     "description": "Number of credits for the course",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "department_id": {
                     "type": "INTEGER",
@@ -60,7 +75,9 @@
                     "references": {
                         "table": "departments",
                         "column": "department_id"
-                    }
+                    },
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 }
             },
             "relationships": {
@@ -68,7 +85,8 @@
                     "description": "Course belongs to a department",
                     "table": "departments",
                     "on": "courses.department_id = departments.department_id",
-                    "type": "INNER"
+                    "type": "INNER",
+                    "exclude_description_on_generate_sql": false
                 }
             }
         },
@@ -78,7 +96,9 @@
             "columns": {
                 "enrollment_id": {
                     "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
+                    "constraints": ["PRIMARY KEY", "NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": true
                 },
                 "student_id": {
                     "type": "INTEGER",
@@ -87,7 +107,9 @@
                     "references": {
                         "table": "students",
                         "column": "student_id"
-                    }
+                    },
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "course_id": {
                     "type": "INTEGER",
@@ -96,12 +118,16 @@
                     "references": {
                         "table": "courses",
                         "column": "course_id"
-                    }
+                    },
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 },
                 "enrollment_date": {
                     "type": "DATE",
                     "description": "Date of enrollment",
-                    "constraints": ["NOT NULL"]
+                    "constraints": ["NOT NULL"],
+                    "is_sensitive_column": false,
+                    "exclude_description_on_generate_sql": false
                 }
             },
             "relationships": {
@@ -109,63 +135,17 @@
                     "description": "Enrollment is associated with a student",
                     "table": "students",
                     "on": "enrollments.student_id = students.student_id",
-                    "type": "INNER"
+                    "type": "INNER",
+                    "exclude_description_on_generate_sql": false
                 },
                 "courses": {
                     "description": "Enrollment is associated with a course",
                     "table": "courses",
                     "on": "enrollments.course_id = courses.course_id",
-                    "type": "INNER"
+                    "type": "INNER",
+                    "exclude_description_on_generate_sql": false
                 }
             }
-        },
-        "teachers": {
-            "description": "Stores teacher information",
-            "synonyms": ["instructors", "professors"],
-            "columns": {
-                "teacher_id": {
-                    "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
-                },
-                "name": {
-                    "type": "TEXT",
-                    "description": "Teacher full name",
-                    "constraints": ["NOT NULL"]
-                },
-                "email": {
-                    "type": "TEXT",
-                    "constraints": ["UNIQUE", "NOT NULL"]
-                },
-                "hire_date": {
-                    "type": "DATE",
-                    "description": "Date when teacher was hired",
-                    "constraints": ["NOT NULL"]
-                }
-            },
-            "relationships": {
-                "courses": {
-                    "description": "Teacher can teach multiple courses",
-                    "table": "courses",
-                    "on": "courses.teacher_id = teachers.teacher_id",
-                    "type": "INNER"
-                }
-            }
-        },
-        "departments": {
-            "description": "Stores department details",
-            "synonyms": ["faculties", "sections"],
-            "columns": {
-                "department_id": {
-                    "type": "INTEGER",
-                    "constraints": ["PRIMARY KEY", "NOT NULL"]
-                },
-                "name": {
-                    "type": "TEXT",
-                    "description": "Department name",
-                    "constraints": ["NOT NULL"]
-                }
-            },
-            "relationships": {}
         }
     }
 }

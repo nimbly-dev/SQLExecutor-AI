@@ -6,9 +6,11 @@ VALID_CONSTRAINTS = {"PRIMARY KEY", "NOT NULL", "UNIQUE", "FOREIGN KEY"}
 
 class Column(BaseModel):
     type: str 
-    description: Optional[str] = None  
+    description: Optional[str] = None
     constraints: Optional[List[str]] = []  
-    synonyms: Optional[List[str]] = []  
+    synonyms: Optional[List[str]] = []
+    exclude_description_on_generate_sql: bool
+    is_sensitive_column: bool
     
     @root_validator(pre=True)
     def check_values(cls, values):

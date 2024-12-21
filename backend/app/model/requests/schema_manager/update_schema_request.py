@@ -6,10 +6,11 @@ import re
 
 class UpdateSchemaRequest(BaseModel):
     schema_name: str  
-    description: str = None
+    description: Optional[str] = None
     tables: Dict[str, Table]  
+    exclude_description_on_generate_sql: bool  
     filter_rules: Optional[List[str]] = [] 
-    
+
     @validator('schema_name')
     def validate_schema_name(cls, v):
         if not isinstance(v, str):

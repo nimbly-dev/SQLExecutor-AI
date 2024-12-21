@@ -8,6 +8,7 @@ class Schema(BaseModel):
     _id: Optional[str]
     schema_name: str
     description: str
+    exclude_description_on_generate_sql: bool
     tables: Dict[str, Table]
     filter_rules: Optional[List[str]] = []
 
