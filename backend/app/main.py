@@ -31,7 +31,7 @@ async def startup_db_client():
     # Initialize indexes
     await SchemaManagerService.create_indexes()
     await RulesetManagerService.create_indexes()
-    await TenantSettingsService.create_indexes()
+    # await TenantSettingsService.create_indexes()
     await SessionManagerService.initialize_ttl_index()
 
 @app.on_event("shutdown")

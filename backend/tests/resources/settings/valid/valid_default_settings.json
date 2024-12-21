@@ -1,26 +1,108 @@
 {
-    "BASE_MODEL_LLM_URL":{
-        "setting_basic_name": "Base Model LLM URL",
-        "setting_value": "{BASE_URL_FOR_LLM_API_URL}",
-        "setting_category": "LLM_GENERATION",
-        "is_custom_setting": false
-    },
-    "MODEL_INTENT_ENDPOINT":{
-        "setting_basic_name": "Base Model Intent Endpoint",        
-        "setting_value": "/intent-generation",
-        "setting_category": "LLM_GENERATION",
-        "is_custom_setting": false
-    },
-    "MODEL_GENERATION_ENDPOINT":{
-        "setting_basic_name": "Base Model LLM SQL-Generation Endpoint",        
-        "setting_value": "/sql-generation",
-        "setting_category": "LLM_GENERATION",
-        "is_custom_setting": false
-    },
-    "USE_DEFAULT_MODEL":{
-        "setting_basic_name": "Default Toggle to use SQL-Executor's LLM Model",        
-        "setting_value": "true",
-        "setting_category": "LLM_GENERATION",
-        "is_custom_setting": false
+    "settings": {
+        "LLM_GENERATION": {
+            "BASE_MODEL_LLM_URL": {
+                "setting_basic_name": "Base Model LLM URL",
+                "setting_value": "{BASE_URL_FOR_LLM_API_URL}",
+                "is_custom_setting": false,
+                "setting_description": "BASE_MODEL_LLM_URL description not provided",
+                "setting_default_value": null
+            },
+            "MODEL_INTENT_ENDPOINT": {
+                "setting_basic_name": "Base Model Intent Endpoint",
+                "setting_value": "/intent-generation",
+                "is_custom_setting": false,
+                "setting_description": "MODEL_INTENT_ENDPOINT description not provided",
+                "setting_default_value": null
+            },
+            "MODEL_GENERATION_ENDPOINT": {
+                "setting_basic_name": "Base Model LLM SQL-Generation Endpoint",
+                "setting_value": "/sql-generation",
+                "is_custom_setting": false,
+                "setting_description": "MODEL_GENERATION_ENDPOINT description not provided",
+                "setting_default_value": null
+            },
+            "USE_DEFAULT_MODEL": {
+                "setting_basic_name": "Default Toggle to use SQL-Executor's LLM Model",
+                "setting_value": "true",
+                "is_custom_setting": false,
+                "setting_description": "USE_DEFAULT_MODEL description not provided",
+                "setting_default_value": null
+            }
+        },
+        "EXTERNAL_JWT_AUTH": {
+            "EXTERNAL_JWT_LOGIN_ENDPOINT": {
+                "setting_basic_name": "External JWT Login Endpoint",
+                "setting_value": "http://external-login-app:8000/login",
+                "is_custom_setting": false,
+                "setting_description": "EXTERNAL_JWT_LOGIN_ENDPOINT description not provided",
+                "setting_default_value": null
+            },
+            "EXTERNAL_JWT_AUTH_FIELD": {
+                "setting_basic_name": "External JWT Authentication Field",
+                "setting_value": "username",
+                "is_custom_setting": false,
+                "setting_description": "EXTERNAL_JWT_AUTH_FIELD description not provided",
+                "setting_default_value": null
+            },
+            "EXTERNAL_JWT_AUTH_PASSKEY_FIELD": {
+                "setting_basic_name": "External JWT Passkey Field",
+                "setting_value": "password",
+                "is_custom_setting": false,
+                "setting_description": "EXTERNAL_JWT_AUTH_PASSKEY_FIELD description not provided",
+                "setting_default_value": null
+            },
+            "EXTERNAL_JWT_LOGOUT_ENDPOINT": {
+                "setting_basic_name": "External JWT Logout Endpoint",
+                "setting_value": "http://external-login-app:8000/logout",
+                "is_custom_setting": false,
+                "setting_description": "EXTERNAL_JWT_LOGOUT_ENDPOINT description not provided",
+                "setting_default_value": null
+            },
+            "EXTERNAL_JWT_SECRET_KEY": {
+                "setting_basic_name": "External JWT Secret Key",
+                "setting_value": "demo_secret_key_123456",
+                "is_custom_setting": false,
+                "setting_description": "EXTERNAL_JWT_SECRET_KEY description not provided",
+                "setting_default_value": null
+            },
+            "EXTERNAL_JWT_USER_IDENTIFIER_FIELD": {
+                "setting_basic_name": "External JWT User Identifier Field",
+                "setting_value": "sub",
+                "is_custom_setting": false,
+                "setting_description": "EXTERNAL_JWT_USER_IDENTIFIER_FIELD description not provided",
+                "setting_default_value": null
+            },
+            "EXTERNAL_JWT_CUSTOM_FIELDS": {
+                "setting_basic_name": "External JWT Custom Fields",
+                "setting_value": "['roles', 'active', 'preferences', 'permissions', 'otherField']",
+                "is_custom_setting": false,
+                "setting_description": "EXTERNAL_JWT_CUSTOM_FIELDS description not provided",
+                "setting_default_value": null
+            },
+            "TENANT_APPLICATION_TOKEN": {
+                "setting_basic_name": "Tenant SQLExecutor Application Token",
+                "setting_value": "8e92ee043d1135daa3e942a89a6c9f113eb72d289f9b6b58eb3dfeb77727e752",
+                "is_custom_setting": false,
+                "setting_description": "TENANT_APPLICATION_TOKEN description not provided",
+                "setting_default_value": ""
+            }
+        },
+        "POST_PROCESS_QUERYSCOPE": {
+            "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": {
+                "setting_basic_name": "Remove Missing Columns on query scope",
+                "setting_value": "true",
+                "is_custom_setting": false,
+                "setting_description": "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE description not provided",
+                "setting_default_value": "true"
+            },
+            "IGNORE_COLUMN_WILDCARDS": {
+                "setting_basic_name": "Ignore Column Wildcards",
+                "setting_value": "true",
+                "is_custom_setting": false,
+                "setting_description": "IGNORE_COLUMN_WILDCARDS description not provided",
+                "setting_default_value": "true"
+            }
+        }
     }
 }
