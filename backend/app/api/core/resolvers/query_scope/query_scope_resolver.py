@@ -13,6 +13,7 @@ from utils.query_scope.validate_query_scope_utils import ValidateQueryScopeUtils
 from utils.query_scope.post_process_query_scope_settings_utils import PostProcessQueryScopeSettingsUtils
 from utils.query_scope.query_scope_utils import expand_columns
 from utils.tenant_manager.setting_utils import SettingUtils
+from utils.session.session_utils import get_session_setting
 from api.core.constants.tenant.settings_categories import (
     POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
 )
@@ -46,17 +47,18 @@ class QueryScopeResolver:
         return await self._resolve_matched_schema(tenant_id)
 
     def resolve_query_scope(self, matched_schema: Schema) -> QueryScope:
-        REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE = SettingUtils.get_setting_value(
-            settings=self.settings,
-            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
-            setting_key="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE"
+        REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE = get_session_setting(
+            session_settings=self.session_data.session_settings,
+            category="SQL_GENERATION",
+            key="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE"
         )
 
-        IGNORE_COLUMN_WILDCARDS = SettingUtils.get_setting_value(
-            settings=self.settings,
-            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
-            setting_key="IGNORE_COLUMN_WILDCARDS"
+        IGNORE_COLUMN_WILDCARDS = get_session_setting(
+            session_settings=self.session_data.session_settings,
+            category="SQL_GENERATION",
+            key="IGNORE_COLUMN_WILDCARDS"
         )
+
         
         REMOVE_SENSITIVE_COLUMNS = SettingUtils.get_setting_value(
             settings=self.settings,

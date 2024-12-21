@@ -6,15 +6,18 @@ from fastapi import HTTPException
 from api.core.services.authentication.session_manager_service import SessionManagerService
 from model.decoded_jwt_token import DecodedJwtToken
 from model.session_data import SessionData
+from model.tenant import Tenant
+from model.setting import Setting
 from utils.database import mongodb
 
 
 class TestSessionManagerService:
+    
     @pytest.mark.asyncio
     async def test_create_jwt_session_success(self):
         # Arrange
         mock_collection = mock.AsyncMock()
-        with mock.patch.object(mongodb, "db", { "sessions": mock_collection }):
+        with mock.patch.object(mongodb, "db", {"sessions": mock_collection}):
             decoded_token = DecodedJwtToken(
                 tenant_id="TENANT_TST1",
                 custom_fields={"roles": ["admin"]},
@@ -22,8 +25,28 @@ class TestSessionManagerService:
                 expiration="2024-12-15T08:00:00+00:00",
             )
 
+            # Mock tenant with proper Setting objects
+            tenant = Tenant(
+                tenant_id="TENANT_TST1",
+                tenant_name="Test Tenant",
+                settings={
+                    "POST_PROCESS_QUERYSCOPE": {
+                        "TENANT_SETTING_REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": Setting(
+                            setting_basic_name="Remove Missing Columns on query scope",
+                            setting_value="true",
+                            setting_description="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE description not provided"
+                        ),
+                        "TENANT_SETTING_IGNORE_COLUMN_WILDCARDS": Setting(
+                            setting_basic_name="Ignore Column Wildcards",
+                            setting_value="true",
+                            setting_description="IGNORE_COLUMN_WILDCARDS description not provided"
+                        )
+                    }
+                }
+            )
+
             # Act
-            result = await SessionManagerService.create_jwt_session(decoded_token)
+            result = await SessionManagerService.create_jwt_session(decoded_token, tenant)
 
             # Assert
             assert isinstance(result, SessionData)
@@ -35,8 +58,10 @@ class TestSessionManagerService:
     async def test_create_jwt_session_failure(self):
         # Arrange
         mock_collection = mock.AsyncMock()
-        mock_collection.insert_one.side_effect = Exception("Database error")
-        with mock.patch.object(mongodb, "db", { "sessions": mock_collection }):
+        mock_collection.insert_one.side_effect = pymongo.errors.PyMongoError("Database error")
+
+        with mock.patch.object(mongodb, "db", {"sessions": mock_collection}):
+            # Create the decoded token
             decoded_token = DecodedJwtToken(
                 tenant_id="TENANT_TST1",
                 custom_fields={"roles": ["admin"]},
@@ -44,9 +69,32 @@ class TestSessionManagerService:
                 expiration="2024-12-15T08:00:00+00:00",
             )
 
-            # Act and Assert
+            # Mock tenant with proper Setting objects
+            tenant = Tenant(
+                tenant_id="TENANT_TST1",
+                tenant_name="Test Tenant",
+                settings={
+                    "POST_PROCESS_QUERYSCOPE": {
+                        "TENANT_SETTING_REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": Setting(
+                            setting_basic_name="Remove Missing Columns on query scope",
+                            setting_value="true",
+                            setting_description="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE description not provided"
+                        ),
+                        "TENANT_SETTING_IGNORE_COLUMN_WILDCARDS": Setting(
+                            setting_basic_name="Ignore Column Wildcards",
+                            setting_value="true",
+                            setting_description="IGNORE_COLUMN_WILDCARDS description not provided"
+                        )
+                    }
+                }
+            )
+
+            # Act 
             with pytest.raises(ValueError, match="Failed to create session: Database error"):
-                await SessionManagerService.create_jwt_session(decoded_token)
+                # Pass the tenant parameter here (FIX)
+                await SessionManagerService.create_jwt_session(decoded_token, tenant)
+
+            # Assert
             mock_collection.insert_one.assert_called_once()
 
     @pytest.mark.asyncio
