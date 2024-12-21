@@ -33,7 +33,7 @@ class TestExternalJWTAuthorizationServiceWrapper:
     async def test_call_external_login_success(self, mock_client_session):
         tenant_id = "tenant123"
         auth_request = AuthLoginRequest(
-            auth_field="test_user",
+            auth_field="test_user", 
             auth_passkey_field="test_password",
             auth_tenant_id=tenant_id
         )

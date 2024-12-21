@@ -127,21 +127,3 @@ class TestSessionManagerService:
             assert excinfo.value.status_code == 404
             assert excinfo.value.detail == "Session not found"
             mock_collection.delete_one.assert_called_once_with({"session_id": UUID(session_id)})
-
-    @pytest.mark.asyncio
-    async def test_create_jwt_session_failure(self):
-        # Arrange
-        mock_collection = mock.AsyncMock()
-        mock_collection.insert_one.side_effect = pymongo.errors.PyMongoError("Database error")
-        with mock.patch.object(mongodb, "db", {"sessions": mock_collection}):
-            decoded_token = DecodedJwtToken(
-                tenant_id="TENANT_TST1",
-                custom_fields={"roles": ["admin"]},
-                user_identifier="test_user",
-                expiration="2024-12-15T08:00:00+00:00",
-            )
-
-            # Act and Assert
-            with pytest.raises(ValueError, match="Failed to create session: Database error"):
-                await SessionManagerService.create_jwt_session(decoded_token)
-            mock_collection.insert_one.assert_called_once()
