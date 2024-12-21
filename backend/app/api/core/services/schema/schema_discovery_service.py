@@ -24,6 +24,12 @@ class SchemaDiscoveryService:
 
         Returns:
             Union[str, List[str]]: A single schema name if exactly one match, or a list of schema names if multiple schemas are tied.
+
+        Scoring:
+            - 2 points for each matching table name.
+            - 1 point for each matching column name.
+            - 2 bonus points for table synonyms match.
+            - 1 bonus point for column synonyms match.
         """
         query_tables = set(query_scope.entities.tables)
         query_columns = set(query_scope.entities.columns)
@@ -56,8 +62,17 @@ class SchemaDiscoveryService:
             table_matches = query_tables & schema_tables
             column_matches = expanded_columns & flattened_schema_columns
 
-            # Calculate score: 2 points per table match, 1 point per column match
-            score = len(table_matches) * 2 + len(column_matches)
+            # Scoring logic
+            score = len(table_matches) * 2  
+            score += len(column_matches)    
+
+
+            for table in schema.tables:
+                if table.table_name in query_tables or any(syn in query_tables for syn in table.synonyms):
+                    score += 2  
+                for column in table.columns:
+                    if column.column_name in query_columns or any(syn in query_columns for syn in column.synonyms):
+                        score += 1  
 
             if score > 0:
                 matches.append({"schema_name": schema.schema_name, "score": score})

@@ -7,9 +7,10 @@ import re
 class AddSchemaRequest(BaseModel):
     schema_name: str  
     description: str
-    tables: Dict[str, Table]  
+    tables: Dict[str, Table]
+    exclude_description_on_generate_sql: bool  
     filter_rules: Optional[List[str]] = [] 
-    
+
     @validator('schema_name')
     def validate_schema_name(cls, v):
         if not isinstance(v, str):
@@ -31,5 +32,3 @@ class AddSchemaRequest(BaseModel):
         if description and len(description) > 64:
             raise ValueError("description must not exceed 64 characters")
         return values
-    
-    

@@ -102,6 +102,13 @@
                 "is_custom_setting": false,
                 "setting_description": "IGNORE_COLUMN_WILDCARDS description not provided",
                 "setting_default_value": "true"
+            },
+            "REMOVE_SENSITIVE_COLUMNS":{
+                "setting_basic_name": "Remove sensitive columns",
+                "setting_value": "true",
+                "is_custom_setting": false,
+                "setting_description": "Removes sensitive columns that were declared on schema",
+                "setting_default_value": "true"
             }
         }
     }

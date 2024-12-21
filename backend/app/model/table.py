@@ -7,7 +7,8 @@ class Table(BaseModel):
     columns: Dict[str, Column]
     description: Optional[str] = None  
     synonyms: Optional[List[str]] = []  
-    relationships: Optional[Dict[str, Joins]] = {}  
+    relationships: Optional[Dict[str, Joins]] = {} 
+    exclude_description_on_generate_sql: bool 
 
     @root_validator(pre=True)
     def check_description_length(cls, values):

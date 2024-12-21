@@ -6,6 +6,7 @@ VALID_JOIN_TYPES = {"INNER", "LEFT", "RIGHT", "OUTER"}
 
 class Joins(BaseModel):
     description: Optional[str] = None
+    exclude_description_on_generate_sql: bool 
     table: str  
     on: str  
     type: str 
