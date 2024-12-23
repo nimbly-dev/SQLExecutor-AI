@@ -4,8 +4,8 @@ from pymongo import ASCENDING
 from pymongo.errors import DuplicateKeyError
 
 from typing import Union, List
-from model.ruleset import Ruleset
-from model.tenant import Tenant
+from model.ruleset.ruleset_model import Ruleset
+from model.tenant.tenant import Tenant
 from model.requests.ruleset_manager.add_ruleset_request import AddRulesetRequest
 from model.responses.ruleset_manager.ruleset_response import RulesetResponse
 

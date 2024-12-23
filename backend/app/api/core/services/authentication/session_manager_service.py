@@ -10,10 +10,10 @@ from datetime import datetime, timezone
 from uuid import uuid4
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from model.decoded_jwt_token import DecodedJwtToken
-from model.session_data import SessionData
-from model.tenant import Tenant
-from model.session_data_setting import SessionDataSetting
+from model.authentication.decoded_jwt_token import DecodedJwtToken
+from model.authentication.session_data import SessionData
+from model.tenant.tenant import Tenant
+from model.authentication.session_data_setting import SessionDataSetting
 from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.constants.tenant.settings_categories import(
     POST_PROCESS_QUERYSCOPE_CATEGORY_KEY

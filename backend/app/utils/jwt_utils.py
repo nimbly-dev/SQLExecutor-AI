@@ -6,9 +6,9 @@ from fastapi import Depends, HTTPException, Header
 from utils.database import mongodb
 from uuid import UUID
 from datetime import datetime, timezone
-from model.setting import Setting
-from model.tenant import Tenant
-from model.session_data import SessionData
+from model.tenant.setting import Setting
+from model.tenant.tenant import Tenant
+from model.authentication.session_data import SessionData
 from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.constants.tenant.settings_categories import EXTERNAL_JWT_AUTH_CATEGORY_KEY
 

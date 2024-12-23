@@ -3,7 +3,7 @@ from typing import Dict, Any, Optional
 from uuid import UUID
 from datetime import datetime
 
-from model.session_data_setting import SessionDataSetting
+from model.authentication.session_data_setting import SessionDataSetting
 
 class SessionData(BaseModel):
     session_id: UUID = Field(..., description="A unique session identifier.")

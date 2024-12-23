@@ -4,8 +4,8 @@ from unittest import mock
 from fastapi import HTTPException
 from model.requests.tenant_manager.add_setting_to_tenant_request import AddSettingToTenantRequest
 from model.requests.tenant_manager.update_setting_to_tenant_request import UpdateSettingRequest
-from model.tenant import Tenant
-from model.setting import Setting
+from model.tenant.tenant import Tenant
+from model.tenant.setting import Setting
 from api.core.services.tenant_manager.tenant_settings_service import TenantSettingsService
 from tests.testing_utilities.test_utils import RESOURCES_PATH
 

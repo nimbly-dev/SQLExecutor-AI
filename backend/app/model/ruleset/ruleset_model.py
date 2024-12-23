@@ -2,9 +2,9 @@ from pydantic import BaseModel, Field, root_validator
 from typing import Optional, Dict, List
 from bson import ObjectId
 
-from model.global_access_policy import GlobalAccessPolicy
-from model.group_access_policy import GroupAccessPolicy
-from model.user_specific_access_policy import UserSpecificAccessPolicy
+from model.ruleset.global_access_policy import GlobalAccessPolicy
+from model.ruleset.group_access_policy import GroupAccessPolicy
+from model.ruleset.user_specific_access_policy import UserSpecificAccessPolicy
 
 class Ruleset(BaseModel):
     _id: Optional[str]

@@ -1,8 +1,8 @@
-from model.tenant import Tenant
-from model.setting import Setting
-from model.schema import Schema
-from model.query_scope import QueryScope
-from model.entities import Entities
+from model.tenant.tenant import Tenant
+from model.tenant.setting import Setting
+from model.schema.schema import Schema
+from model.query_scope.query_scope import QueryScope
+from model.query_scope.entities import Entities
 from typing import List, Dict, Any, Union
 
 class PostProcessQueryScopeSettingsUtils:

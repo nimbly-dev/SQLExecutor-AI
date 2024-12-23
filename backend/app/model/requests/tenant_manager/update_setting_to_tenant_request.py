@@ -1,6 +1,6 @@
 from pydantic import BaseModel, validator, Field
 from typing import Dict, List
-from model.setting import Setting
+from model.tenant.setting import Setting
 
 class UpdateSettingRequest(BaseModel):
     __root__: Dict[str, Setting]

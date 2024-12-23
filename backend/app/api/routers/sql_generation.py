@@ -7,11 +7,11 @@ from api.core.services.ruleset.ruleset_manager_service import RulesetManagerServ
 from api.core.resolvers.query_scope.query_scope_resolver import QueryScopeResolver
 from api.core.resolvers.access_control.user_access_control_resolver import AccessControlResolver
 
-from model.tenant import Tenant
-from model.schema import Schema
-from model.ruleset import Ruleset
+from model.tenant.tenant import Tenant
+from model.schema.schema import Schema
+from model.ruleset.ruleset_model import Ruleset
 from model.requests.sql_generation.user_input_request import UserInputRequest
-from model.session_data import SessionData
+from model.authentication.session_data import SessionData
 
 from utils.jwt_utils import authenticate_session
 from utils.ruleset.ruleset_utils import extract_ruleset_name

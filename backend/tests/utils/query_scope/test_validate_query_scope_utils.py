@@ -1,7 +1,7 @@
 import pytest
 from typing import List
 from unittest import mock
-from model.query_scope import QueryScope, Entities
+from model.query_scope.query_scope import QueryScope, Entities
 from model.responses.schema.schema_tables_response import SchemaTablesResponse, TableResponse
 from utils.query_scope.validate_query_scope_utils import ValidateQueryScopeUtils
 

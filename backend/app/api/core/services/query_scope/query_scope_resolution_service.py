@@ -2,9 +2,9 @@ import logging
 from typing import List, Dict, Any, Union
 from fastapi import HTTPException
 
-from model.session_data import SessionData
-from model.query_scope import QueryScope
-from model.schema import Schema
+from model.authentication.session_data import SessionData
+from model.query_scope.query_scope import QueryScope
+from model.schema.schema import Schema
 from model.responses.schema.schema_tables_response import SchemaTablesResponse
 from api.core.services.schema.schema_discovery_service import SchemaDiscoveryService
 from api.core.services.schema.schema_manager_service import SchemaManagerService

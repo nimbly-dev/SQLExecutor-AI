@@ -4,10 +4,10 @@ from unittest import mock
 from uuid import UUID
 from fastapi import HTTPException
 from api.core.services.authentication.session_manager_service import SessionManagerService
-from model.decoded_jwt_token import DecodedJwtToken
-from model.session_data import SessionData
-from model.tenant import Tenant
-from model.setting import Setting
+from model.authentication.decoded_jwt_token import DecodedJwtToken
+from model.authentication.session_data import SessionData
+from model.tenant.tenant import Tenant
+from model.tenant.setting import Setting
 from utils.database import mongodb
 
 

@@ -2,9 +2,9 @@ from typing import Optional, Dict, List
 from pydantic import BaseModel, Field, root_validator
 import re
 
-from model.group_access_policy import GroupAccessPolicy
-from model.global_access_policy import GlobalAccessPolicy
-from model.user_specific_access_policy import UserSpecificAccessPolicy
+from model.ruleset.group_access_policy import GroupAccessPolicy
+from model.ruleset.global_access_policy import GlobalAccessPolicy
+from model.ruleset.user_specific_access_policy import UserSpecificAccessPolicy
 
 class AddRulesetRequest(BaseModel):
     ruleset_name: str = Field(..., min_length=8, description="Name of the ruleset (minimum 8 characters).")

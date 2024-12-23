@@ -6,8 +6,8 @@ import logging
 import json
 
 from config import settings
-from model.tenant import Tenant
-from model.query_scope import QueryScope
+from model.tenant.tenant import Tenant
+from model.query_scope.query_scope import QueryScope
 from model.requests.sql_generation.user_input_request import UserInputRequest
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
 

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, root_validator, validator
 from typing import Optional, Dict, List
-from model.table import Table
+from model.schema.table import Table
 
 import re
 

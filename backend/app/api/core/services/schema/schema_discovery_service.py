@@ -4,9 +4,9 @@ from fastapi import HTTPException
 from pymongo import ASCENDING
 from typing import List, Dict, Union
 
-from model.schema import Schema
-from model.tenant import Tenant
-from model.query_scope import QueryScope
+from model.schema.schema import Schema
+from model.tenant.tenant import Tenant
+from model.query_scope.query_scope import QueryScope
 from model.responses.schema.schema_tables_response import SchemaTablesResponse
 
 from utils.query_scope.query_scope_utils import expand_columns

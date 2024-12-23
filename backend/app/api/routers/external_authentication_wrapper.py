@@ -4,8 +4,8 @@ from api.core.services.authentication.external_jwt_authentication_service_wrappe
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
 from api.core.services.authentication.session_manager_service import SessionManagerService
 from model.requests.authentication.auth_login_request import AuthLoginRequest
-from model.decoded_jwt_token import DecodedJwtToken
-from model.tenant import Tenant
+from model.authentication.decoded_jwt_token import DecodedJwtToken
+from model.tenant.tenant import Tenant
 
 router = APIRouter()
 
