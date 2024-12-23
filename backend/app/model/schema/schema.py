@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, root_validator
 from typing import Optional, Dict, List
 from bson import ObjectId
-from model.table import Table, Column 
+from model.schema.table import Table, Column 
 
 class Schema(BaseModel):
     tenant_id: str = Field(..., max_length=36)

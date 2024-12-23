@@ -1,6 +1,6 @@
 from typing import List
-from model.schema import Schema
-from model.query_scope import QueryScope
+from model.schema.schema import Schema
+from model.query_scope.query_scope import QueryScope
 from model.responses.schema.schema_tables_response import SchemaTablesResponse
 
 class ValidateQueryScopeUtils:

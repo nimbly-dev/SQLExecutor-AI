@@ -2,7 +2,7 @@ import pytest
 from unittest import mock
 from fastapi import HTTPException
 
-from model.tenant import Tenant
+from model.tenant.tenant import Tenant
 from utils.database import mongodb
 from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService

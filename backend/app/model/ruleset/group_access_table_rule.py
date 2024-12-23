@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, root_validator
 from typing import Dict, List, Union
 import re
 
-from model.group_access_column_rule import GroupAccessColumnRule
+from model.ruleset.group_access_column_rule import GroupAccessColumnRule
 
 class GroupAccessTableRule(BaseModel):
     columns: GroupAccessColumnRule

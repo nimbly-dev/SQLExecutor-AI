@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from model.entities import Entities
+from model.query_scope.entities import Entities
 
 class QueryScope(BaseModel):
     intent: str

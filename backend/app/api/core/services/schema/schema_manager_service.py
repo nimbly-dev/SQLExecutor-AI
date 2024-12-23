@@ -6,8 +6,8 @@ from fastapi import HTTPException
 from pymongo import ASCENDING
 from typing import List
 
-from model.schema import Schema
-from model.tenant import Tenant
+from model.schema.schema import Schema
+from model.tenant.tenant import Tenant
 from model.requests.schema_manager.add_schema_request import AddSchemaRequest
 from model.requests.schema_manager.update_schema_request import UpdateSchemaRequest
 from model.responses.schema.schema_tables_response import SchemaTablesResponse, ColumnResponse, TableResponse

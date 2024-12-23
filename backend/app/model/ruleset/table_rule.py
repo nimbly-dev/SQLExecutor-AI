@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, root_validator
 from typing import Dict, List, Union
 import re
 
-from model.column_rule import ColumnRule
+from model.ruleset.column_rule import ColumnRule
 
 class TableRule(BaseModel):
     columns: ColumnRule

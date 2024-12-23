@@ -1,7 +1,7 @@
 from pydantic import BaseModel, root_validator, Field
 from typing import Dict
-from model.group_access_table_rule import GroupAccessTableRule
-from model.criteria import Criteria
+from model.ruleset.group_access_table_rule import GroupAccessTableRule
+from model.ruleset.criteria import Criteria
 
 class GroupAccessPolicy(BaseModel):
     description: str

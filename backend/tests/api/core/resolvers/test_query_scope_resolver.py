@@ -6,10 +6,10 @@ from fastapi import HTTPException
 
 # Import the necessary models and services
 from api.core.resolvers.query_scope.query_scope_resolver import QueryScopeResolver
-from model.session_data import SessionData
-from model.query_scope import QueryScope, Entities
-from model.schema import Schema
-from model.setting import Setting
+from model.authentication.session_data import SessionData
+from model.query_scope.query_scope import QueryScope, Entities
+from model.schema.schema import Schema
+from model.tenant.setting import Setting
 from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
 
 

@@ -3,11 +3,10 @@ from typing import List
 from fastapi import HTTPException
 
 
-from model.query_scope import QueryScope
+from model.query_scope.query_scope import QueryScope
 from model.responses.schema.schema_tables_response import SchemaTablesResponse
 from api.core.services.schema.schema_manager_service import SchemaManagerService
 from utils.query_scope.validate_query_scope_utils import ValidateQueryScopeUtils
-
 
 logger = logging.getLogger(__name__)
 

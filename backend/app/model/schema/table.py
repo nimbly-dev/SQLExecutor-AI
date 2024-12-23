@@ -1,7 +1,7 @@
 from pydantic import BaseModel, root_validator
 from typing import Dict, Optional, List
-from model.column import Column
-from model.joins import Joins
+from model.schema.column import Column
+from model.schema.joins import Joins
 
 class Table(BaseModel):
     columns: Dict[str, Column]

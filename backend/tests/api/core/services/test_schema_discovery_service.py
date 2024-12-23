@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from model.query_scope import QueryScope, Entities
+from model.query_scope.query_scope import QueryScope, Entities
 from model.responses.schema.schema_tables_response import SchemaTablesResponse, TableResponse, ColumnResponse
 from api.core.services.schema.schema_discovery_service import SchemaDiscoveryService
 from fastapi import HTTPException

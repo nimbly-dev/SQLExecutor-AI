@@ -4,8 +4,8 @@ from utils.database import mongodb
 from fastapi import HTTPException
 from typing import Dict
 
-from model.tenant import Tenant
-from model.setting import Setting
+from model.tenant.tenant import Tenant
+from model.tenant.setting import Setting
 
 _DEFAULT_SETTINGS_PATH = '/app/resources/settings/default_settings.json'
 

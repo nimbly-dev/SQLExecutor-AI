@@ -1,4 +1,4 @@
-from model.session_data_setting import SessionDataSetting
+from model.authentication.session_data_setting import SessionDataSetting
 from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
 

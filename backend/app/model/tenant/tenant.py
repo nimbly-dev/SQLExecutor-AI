@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, root_validator
 from typing import Optional, Dict, List
 from bson import ObjectId
 
-from model.setting import Setting
+from model.tenant.setting import Setting
 
 class Tenant(BaseModel):
     tenant_id: str = Field(..., max_length=36)

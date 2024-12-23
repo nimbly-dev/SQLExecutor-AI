@@ -6,7 +6,7 @@ from api.core.services.schema.schema_manager_service import SchemaManagerService
 from model.responses.schema.schema_tables_response import SchemaTablesResponse, TableResponse, ColumnResponse
 from model.requests.schema_manager.add_schema_request import AddSchemaRequest 
 from model.requests.schema_manager.update_schema_request import UpdateSchemaRequest
-from model.schema import Schema
+from model.schema.schema import Schema
 
 from utils.database import mongodb
 

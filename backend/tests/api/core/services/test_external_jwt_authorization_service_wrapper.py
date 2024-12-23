@@ -3,9 +3,9 @@ import jwt
 from unittest import mock
 from api.core.services.authentication.external_jwt_authentication_service_wrapper import ExternalJWTAuthorizationServiceWrapper
 from model.requests.authentication.auth_login_request import AuthLoginRequest
-from model.tenant import Tenant
-from model.setting import Setting
-from model.decoded_jwt_token import DecodedJwtToken
+from model.tenant.tenant import Tenant
+from model.tenant.setting import Setting
+from model.authentication.decoded_jwt_token import DecodedJwtToken
 from jwt import ExpiredSignatureError, InvalidTokenError
 from api.core.constants.tenant.settings_categories import EXTERNAL_JWT_AUTH_CATEGORY_KEY
 from utils.tenant_manager.setting_utils import SettingUtils

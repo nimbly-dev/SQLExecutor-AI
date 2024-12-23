@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock
 from fastapi import HTTPException
 
 # Import the necessary models and services
-from model.session_data import SessionData
+from model.authentication.session_data import SessionData
 from model.query_scope import QueryScope, Entities
 from model.schema import Schema
 from model.responses.schema.schema_tables_response import SchemaTablesResponse, TableResponse

@@ -4,8 +4,8 @@ from fastapi import HTTPException
 from pymongo import ASCENDING
 
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
-from model.tenant import Tenant
-from model.setting import Setting
+from model.tenant.tenant import Tenant
+from model.tenant.setting import Setting
 from model.requests.tenant_manager.add_setting_to_tenant_request import AddSettingToTenantRequest
 from model.requests.tenant_manager.update_setting_to_tenant_request import UpdateSettingRequest
         

@@ -3,9 +3,9 @@ import logging
 from typing import List, Dict, Any, Union
 from fastapi import HTTPException
 
-from model.session_data import SessionData
-from model.query_scope import QueryScope
-from model.schema import Schema
+from model.authentication.session_data import SessionData
+from model.query_scope.query_scope import QueryScope
+from model.schema.schema import Schema
 from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.services.query_scope.query_scope_preparation_service import QueryScopePreparationService
 from api.core.services.query_scope.query_scope_resolution_service import QueryScopeResolutionService

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict
-from model.setting import Setting
+from model.tenant.setting import Setting
 
 
 class AddTenantResponse(BaseModel):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
 from api.core.services.tenant_manager.tenant_settings_service import TenantSettingsService
-from model.tenant import Tenant
+from model.tenant.tenant import Tenant
 from model.requests.tenant_manager.update_tenant_request import UpdateTenantRequestModel
 from model.requests.tenant_manager.add_setting_to_tenant_request import AddSettingToTenantRequest
 from model.requests.tenant_manager.update_setting_to_tenant_request import UpdateSettingRequest
