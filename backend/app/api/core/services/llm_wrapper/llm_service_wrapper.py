@@ -93,17 +93,19 @@ class LLMServiceWrapper:
                 presence_penalty=0
             )
 
-            # Extract SQL from response
-            generated_sql = response.choices[0].message.content
 
+            generated_sql = response.choices[0].message.content
             # Validate SQL syntax
             generated_sql = SQLUtils.normalize_sql(generated_sql)
-            if not (generated_sql.upper().startswith(("SELECT", "INSERT", "UPDATE", "DELETE"))):
+
+            usage = response.usage
+            # logging.info(f"Token Usage - Prompt: {usage.prompt_tokens}, Completion: {usage.completion_tokens}, Total: {usage.total_tokens}")
+            print(f"Token Usage - Prompt: {usage.prompt_tokens}, Completion: {usage.completion_tokens}, Total: {usage.total_tokens}")
+            
+            # Check for invalid SQL structure
+            if not generated_sql.strip().upper().startswith(("SELECT", "INSERT", "UPDATE", "DELETE")):
                 raise ValueError("Invalid SQL Syntax generated.")
 
-            # Log tokens
-            usage = response.usage
-            print(f"Token Usage - Prompt: {usage.prompt_tokens}, Completion: {usage.completion_tokens}, Total: {usage.total_tokens}")
 
             return generated_sql
 
@@ -113,3 +115,4 @@ class LLMServiceWrapper:
                 status_code=500,
                 detail=f"Failed to generate SQL query: {str(e)}"
             )
+
