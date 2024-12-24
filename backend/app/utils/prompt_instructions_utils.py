@@ -2,6 +2,10 @@ from config import settings
 
 class DefaultPromptInstructionsUtil:
 
+    SQL_PROMPT_INSTRUCTION = """
+    Translate the user request into an SQL query using the provided schema. Follow relationships, constraints, and types defined in the schema.
+    """
+    
     INTENT_INSTRUCTION = """
     Identify the intent (fetch_data, update_data, delete_data, insert_data, schema_info) and the entities 
     (tables and columns) based on the User Query. Ensure the following:
@@ -48,3 +52,6 @@ class DefaultPromptInstructionsUtil:
         """Return precomputed static content"""
         return DefaultPromptInstructionsUtil.INTENT_JSON_SCHEMA, DefaultPromptInstructionsUtil.INTENT_INSTRUCTION
     
+    @staticmethod
+    def get_sql_generation_instructions():
+        return DefaultPromptInstructionsUtil.SQL_PROMPT_INSTRUCTION
