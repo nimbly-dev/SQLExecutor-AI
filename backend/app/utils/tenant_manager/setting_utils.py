@@ -15,7 +15,14 @@ class SettingUtils:
     def get_setting_value(settings, category_key, setting_key):
         category_settings = settings.get(category_key, {})
         setting = category_settings.get(setting_key)
-        return setting.setting_value if setting else None
+        value = setting.setting_value if setting else None
+
+        # Convert string 'True'/'False' to boolean
+        if isinstance(value, str) and value.lower() in ["true", "false"]:
+            return value.lower() == "true"
+
+        return value
+
 
     @staticmethod
     async def initialize_default_tenant_settings(tenant_id: str):
