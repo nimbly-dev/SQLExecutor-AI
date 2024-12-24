@@ -48,8 +48,10 @@ async def generate_sql(tenant_id: str, user_request: UserInputRequest, session: 
     resolved_schema = schema_resolver.resolve_schema()
     
     access_resolver.has_access_to_scope(resolved_user_query_scope)
-    return resolved_schema
-    # return "Unimplemented"
+    
+    generated_sql = await LLMServiceWrapper.generate_sql_query(user_input=user_request, resolved_schema=resolved_schema)
+    return generated_sql
+
     
 @router.post("/{tenant_id}/{schema_name}")
 async def generate_sql_given_schema(tenant_id: str, schema_name: str, user_request: UserInputRequest, 
@@ -74,7 +76,11 @@ async def generate_sql_given_schema(tenant_id: str, schema_name: str, user_reque
     matched_ruleset: Ruleset = await RulesetManagerService.get_ruleset(tenant_id=tenant_id, ruleset_name=matched_ruleset_name)
     
     access_resolver = AccessControlResolver(session_data=session, ruleset=matched_ruleset, matched_schema=schema)
-    
     access_resolver.has_access_to_scope(resolved_user_query_scope)
-    return resolved_user_query_scope
+    
+    schema_resolver = SchemaResolver(session_data=session,tenant=tenant ,matched_schema=schema, query_scope=resolved_user_query_scope)
+    resolved_schema = schema_resolver.resolve_schema()
+    
+    generated_sql = await LLMServiceWrapper.generate_sql_query(user_input=user_request, resolved_schema=resolved_schema)
+    return generated_sql
     # return "Unimplemented"

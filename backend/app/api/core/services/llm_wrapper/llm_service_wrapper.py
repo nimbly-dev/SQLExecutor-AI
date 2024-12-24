@@ -1,4 +1,4 @@
-from utils.database import mongodb
+from typing import Dict
 from utils.prompt_instructions_utils import DefaultPromptInstructionsUtil
 from fastapi import HTTPException
 from openai import OpenAI
@@ -10,9 +10,10 @@ from model.tenant.tenant import Tenant
 from model.query_scope.query_scope import QueryScope
 from model.requests.sql_generation.user_input_request import UserInputRequest
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
+from utils.llm_wrapper.sql_generation_output_utils import SQLUtils
 
 class LLMServiceWrapper:
-    
+
     @staticmethod
     async def get_query_scope_using_default_mode(user_input: UserInputRequest) -> QueryScope:
         try:
@@ -53,17 +54,9 @@ class LLMServiceWrapper:
             completion_tokens = usage.completion_tokens
             total_tokens = usage.total_tokens
 
-            logging.info(f"Token Usage - Prompt: {prompt_tokens}, Completion: {completion_tokens}, Total: {total_tokens}")
-
-            # return {
-            #     "prompt": {
-            #         "input": user_input.input,
-            #         "token_input": prompt_tokens,
-            #         "token_output": completion_tokens,
-            #         "token_total": total_tokens
-            #     },
-            #     "query_scope": query_scope
-            # }
+            # logging.info(f"Token Usage - Prompt: {prompt_tokens}, Completion: {completion_tokens}, Total: {total_tokens}")
+            print(f"Token Usage - Prompt: {prompt_tokens}, Completion: {completion_tokens}, Total: {total_tokens}")
+            
             return query_scope
 
         except Exception as e:
@@ -71,4 +64,52 @@ class LLMServiceWrapper:
             raise HTTPException(
                 status_code=500,
                 detail=f"Failed to generate structured query scope: {str(e)}"
+            )
+
+    @staticmethod
+    async def generate_sql_query(user_input: UserInputRequest, resolved_schema: Dict) -> str:
+        try:
+            client = OpenAI(api_key=settings.OPENAI_API_KEY)
+            prompt_instruction = DefaultPromptInstructionsUtil.get_sql_generation_instructions()
+
+            messages = [
+                {
+                    "role": "system",
+                    "content": f"{prompt_instruction}\nSchema: {json.dumps(resolved_schema)}"
+                },
+                {
+                    "role": "user",
+                    "content": user_input.input
+                }
+            ]
+
+            response = client.chat.completions.create(
+                model=f"{settings.DEFAULT_APP_LLM_MODEL}",
+                messages=messages,
+                temperature=0.3,
+                max_tokens=256,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+
+            # Extract SQL from response
+            generated_sql = response.choices[0].message.content
+
+            # Validate SQL syntax
+            generated_sql = SQLUtils.normalize_sql(generated_sql)
+            if not (generated_sql.upper().startswith(("SELECT", "INSERT", "UPDATE", "DELETE"))):
+                raise ValueError("Invalid SQL Syntax generated.")
+
+            # Log tokens
+            usage = response.usage
+            print(f"Token Usage - Prompt: {usage.prompt_tokens}, Completion: {usage.completion_tokens}, Total: {usage.total_tokens}")
+
+            return generated_sql
+
+        except Exception as e:
+            logging.error(f"Error in generating SQL query: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to generate SQL query: {str(e)}"
             )
