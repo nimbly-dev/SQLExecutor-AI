@@ -4,7 +4,7 @@ from unittest import mock
 from fastapi import HTTPException
 from api.core.services.llm_wrapper.llm_service_wrapper import LLMServiceWrapper
 from utils.prompt_instructions_utils import DefaultPromptInstructionsUtil
-from model.query_scope import QueryScope
+from model.query_scope.query_scope import QueryScope
 from model.query_scope.entities import Entities
 from pydantic import ValidationError
 
