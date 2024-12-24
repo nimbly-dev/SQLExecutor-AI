@@ -4,6 +4,7 @@ class DefaultPromptInstructionsUtil:
 
     SQL_PROMPT_INSTRUCTION = """
     Translate the user request into an SQL query using the provided schema. Follow relationships, constraints, and types defined in the schema.
+    Output only the SQL and nothing else.
     """
     
     INTENT_INSTRUCTION = """

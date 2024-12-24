@@ -114,7 +114,7 @@ class SessionManagerService:
                         tenant_settings,
                         POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
                         "TENANT_SETTING_IGNORE_COLUMN_WILDCARDS"
-                    ) or "true",
+                    ) or "False",
                     setting_description="IGNORE_COLUMN_WILDCARDS description not provided"
                 )
             }

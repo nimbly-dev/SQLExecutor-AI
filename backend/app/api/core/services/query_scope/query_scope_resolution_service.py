@@ -74,30 +74,48 @@ class QueryScopeResolutionService:
         query_scope: QueryScope, 
         session_data: SessionData, 
         settings: Dict[str, Any]) -> QueryScope:
-        
-        """
-        Final processing of QueryScope using the matched schema. This includes removing
-        sensitive or missing columns, as well as expanding wildcard columns.
-        """
-        remove_missing = get_session_setting(
-            session_settings=session_data.session_settings,
-            category="SQL_GENERATION",
-            key="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE"
+
+        remove_missing = SettingUtils.get_setting_value(
+            settings=session_data.session_settings,
+            category_key="SQL_GENERATION",
+            setting_key="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE"
         )
-        ignore_wildcards = get_session_setting(
-            session_settings=session_data.session_settings,
-            category="SQL_GENERATION",
-            key="IGNORE_COLUMN_WILDCARDS"
+        ignore_wildcards = SettingUtils.get_setting_value(
+            settings=session_data.session_settings,
+            category_key="SQL_GENERATION",
+            setting_key="IGNORE_COLUMN_WILDCARDS"
         )
         remove_sensitive = SettingUtils.get_setting_value(
-            settings=settings,
-            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
+            settings=session_data.session_settings,
+            category_key="SQL_GENERATION",
             setting_key="REMOVE_SENSITIVE_COLUMNS"
         )
 
         missing_columns = []
 
-        # Remove sensitive columns
+        # Expand wildcard columns first
+        if not ignore_wildcards:
+            schema_columns = {
+                t_name: [col for col, data in tbl.columns.items() if not data.is_sensitive_column]
+                for t_name, tbl in matched_schema.tables.items()
+            }
+
+            expanded_cols = []
+            for col in query_scope.entities.columns:
+                if col.endswith(".*"):
+                    table_name = col.split(".*")[0]
+                    if table_name in schema_columns:
+                        expanded_cols.extend([f"{table_name}.{c}" for c in schema_columns[table_name]])
+                else:
+                    expanded_cols.append(col)
+
+            query_scope.entities.columns = list(expanded_cols)
+        else:
+            query_scope.entities.columns = [
+                col for col in query_scope.entities.columns if not col.endswith(".*")
+            ]
+
+        # Remove sensitive columns AFTER expansion
         if remove_sensitive:
             schema_sensitive_columns = {
                 f"{table_name}.{col_name}"
@@ -116,35 +134,16 @@ class QueryScopeResolutionService:
                 matched_schema, query_scope=query_scope
             )
 
-        # Expand or ignore wildcard columns
-        if not ignore_wildcards:
-            schema_tables = set(matched_schema.tables.keys())
-            schema_columns = {
-                t_name: list(tbl.columns.keys())
-                for t_name, tbl in matched_schema.tables.items()
-            }
-            expanded_cols = expand_columns(
-                query_columns=set(query_scope.entities.columns),
-                schema_tables=schema_tables,
-                schema_columns=schema_columns
-            )
-            query_scope.entities.columns = list(expanded_cols)
-        else:
-            query_scope.entities.columns = [
-                col for col in query_scope.entities.columns
-                if not col.endswith(".*")
-            ]
-
         # Check if any columns remain
         if not query_scope.entities.columns:
             raise HTTPException(
                 status_code=400,
                 detail={
-                    "message": "No valid columns remain after processing the input query. "
-                               "The requested columns do not match the schema.",
+                    "message": "No valid columns remain after processing the input query. The requested columns do not match the schema.",
                     "matched_schema": f"{matched_schema.schema_name}",
                     "missing_columns": missing_columns
                 }
             )
 
         return query_scope
+

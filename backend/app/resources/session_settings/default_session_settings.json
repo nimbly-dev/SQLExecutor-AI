@@ -3,12 +3,12 @@
         "SQL_GENERATION": {
             "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": {
                 "setting_basic_name": "Remove Missing Columns on query scope",
-                "setting_value": "true",
+                "setting_value": "False",
                 "setting_description": "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE description not provided"
             },
             "IGNORE_COLUMN_WILDCARDS": {
                 "setting_basic_name": "Ignore Column Wildcards",
-                "setting_value": "true",
+                "setting_value": "False",
                 "setting_description": "IGNORE_COLUMN_WILDCARDS description not provided"
             }
         }

@@ -98,10 +98,10 @@
             },
             "TENANT_SETTING_IGNORE_COLUMN_WILDCARDS": {
                 "setting_basic_name": "Ignore Column Wildcards",
-                "setting_value": "true",
+                "setting_value": false,
                 "is_custom_setting": false,
                 "setting_description": "IGNORE_COLUMN_WILDCARDS description not provided",
-                "setting_default_value": "true"
+                "setting_default_value": false
             },
             "REMOVE_SENSITIVE_COLUMNS":{
                 "setting_basic_name": "Remove sensitive columns",
