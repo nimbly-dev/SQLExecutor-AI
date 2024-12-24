@@ -107,8 +107,24 @@
                 "setting_basic_name": "Remove sensitive columns",
                 "setting_value": "true",
                 "is_custom_setting": false,
-                "setting_description": "Removes sensitive columns that were declared on schema",
+                "setting_description": "Removes sensitive columns upon post process queryscope",
                 "setting_default_value": "true"
+            }
+        },
+        "SCHEMA_RESOLVER":{
+            "REMOVE_SENSITIVE_COLUMNS":{
+                "setting_basic_name": "Remove sensitive columns",
+                "setting_value": true,
+                "is_custom_setting": false,
+                "setting_description": "Removes sensitive columns that were declared on schema",
+                "setting_default_value": true
+            },
+            "REMOVE_ALL_DESCRIPTIONS":{
+                "setting_basic_name": "Remove all descriptions",
+                "setting_value": false,
+                "is_custom_setting": false,
+                "setting_description": "Remove all descriptions regardless of 'exclude_description_on_generate_sql' field",
+                "setting_default_value": false          
             }
         }
     }

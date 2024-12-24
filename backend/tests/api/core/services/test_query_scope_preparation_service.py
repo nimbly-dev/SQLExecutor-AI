@@ -4,7 +4,8 @@ from unittest.mock import AsyncMock, MagicMock
 
 from fastapi import HTTPException
 
-from model.query_scope import QueryScope, Entities
+from model.query_scope.query_scope import QueryScope
+from model.query_scope.entities import Entities
 from model.responses.schema.schema_tables_response import SchemaTablesResponse, TableResponse
 from api.core.services.schema.schema_manager_service import SchemaManagerService
 from utils.query_scope.validate_query_scope_utils import ValidateQueryScopeUtils

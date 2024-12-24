@@ -11,6 +11,7 @@ class Schema(BaseModel):
     exclude_description_on_generate_sql: bool
     tables: Dict[str, Table]
     filter_rules: Optional[List[str]] = []
+    synonyms: Optional[str]
 
     @root_validator(pre=True)
     def check_description_length(cls, values):

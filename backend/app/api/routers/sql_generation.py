@@ -6,7 +6,9 @@ from api.core.services.schema.schema_manager_service import SchemaManagerService
 from api.core.services.ruleset.ruleset_manager_service import RulesetManagerService
 from api.core.resolvers.query_scope.query_scope_resolver import QueryScopeResolver
 from api.core.resolvers.access_control.user_access_control_resolver import AccessControlResolver
+from api.core.resolvers.schema.schema_resolver import SchemaResolver
 
+from model.schema.resolved_schema import ResolvedSchema
 from model.tenant.tenant import Tenant
 from model.schema.schema import Schema
 from model.ruleset.ruleset_model import Ruleset
@@ -41,9 +43,12 @@ async def generate_sql(tenant_id: str, user_request: UserInputRequest, session: 
     matched_ruleset: Ruleset = await RulesetManagerService.get_ruleset(tenant_id=tenant_id, ruleset_name=matched_ruleset_name)
     
     access_resolver = AccessControlResolver(session_data=session, ruleset=matched_ruleset, matched_schema=matched_schema)
+    schema_resolver = SchemaResolver(session_data=session,tenant=tenant ,matched_schema=matched_schema, query_scope=resolved_user_query_scope)
+    
+    resolved_schema = schema_resolver.resolve_schema()
     
     access_resolver.has_access_to_scope(resolved_user_query_scope)
-    return resolved_user_query_scope
+    return resolved_schema
     # return "Unimplemented"
     
 @router.post("/{tenant_id}/{schema_name}")

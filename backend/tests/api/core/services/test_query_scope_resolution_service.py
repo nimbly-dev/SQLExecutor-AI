@@ -4,10 +4,10 @@ from unittest.mock import AsyncMock, MagicMock
 
 from fastapi import HTTPException
 
-# Import the necessary models and services
 from model.authentication.session_data import SessionData
-from model.query_scope import QueryScope, Entities
-from model.schema import Schema
+from model.query_scope.query_scope import QueryScope
+from model.query_scope.entities import Entities
+from model.schema.schema import Schema
 from model.responses.schema.schema_tables_response import SchemaTablesResponse, TableResponse
 from api.core.services.schema.schema_discovery_service import SchemaDiscoveryService
 from api.core.services.schema.schema_manager_service import SchemaManagerService
