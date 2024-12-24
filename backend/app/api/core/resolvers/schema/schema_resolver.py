@@ -66,19 +66,20 @@ class SchemaResolver:
             resolved_columns = {}
 
             for column_name, column in table.columns.items():
+                # Initialize description to avoid unbound errors
+                description = column.description if column.description else None
 
                 if allowed_columns and f"{table_name}.{column_name}" not in allowed_columns:
                     logger.debug(f"Skipping column {column_name} not in query scope.")
                     continue
 
-
                 if tenant_settings["REMOVE_SENSITIVE_COLUMNS"] and column.is_sensitive_column:
                     logger.debug(f"Excluding sensitive column {column_name} due to tenant settings.")
                     continue
 
-                # Handle description removal
-                description = None if tenant_settings["REMOVE_ALL_DESCRIPTIONS"] \
-                                   else column.description
+                # Set description conditionally based on settings and exclude_description_on_generate_sql
+                if tenant_settings["REMOVE_ALL_DESCRIPTIONS"] or column.exclude_description_on_generate_sql:
+                    description = None
 
                 resolved_columns[column_name] = ResolvedColumn(
                     type=column.type,
@@ -97,8 +98,8 @@ class SchemaResolver:
 
             # Handle description removal
             table_description = None if tenant_settings["REMOVE_ALL_DESCRIPTIONS"] \
-                                     else table.description
-            
+                                        else table.description
+
             resolved_tables[table_name] = ResolvedTable(
                 description=table_description,
                 synonyms=table.synonyms if table.synonyms else None,
@@ -108,10 +109,10 @@ class SchemaResolver:
 
         schema_description = None if tenant_settings["REMOVE_ALL_DESCRIPTIONS"] else self.matched_schema.description
 
-
         resolved_schema = ResolvedSchema(
             tables=resolved_tables,
             description=schema_description
         )
         logger.info("Schema resolution completed successfully.")
         return resolved_schema.dict(exclude_none=True, by_alias=True)
+

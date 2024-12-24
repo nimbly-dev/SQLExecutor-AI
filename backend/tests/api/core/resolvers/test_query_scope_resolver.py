@@ -124,10 +124,11 @@ class TestQueryScopeResolver:
             schemas=[mock_schema],
             query_scope=sample_query_scope,
             tenant_settings={
-                "IGNORE_COLUMN_WILDCARDS": "true"
+                "IGNORE_COLUMN_WILDCARDS": True  
             }
         )
         assert result == mock_schema
+
 
     @mock.patch('api.core.services.query_scope.query_scope_preparation_service.QueryScopePreparationService.prepare_query_scope', new_callable=AsyncMock)
     @mock.patch('api.core.services.query_scope.query_scope_resolution_service.QueryScopeResolutionService.match_schema', new_callable=AsyncMock)
@@ -207,7 +208,7 @@ class TestQueryScopeResolver:
             schemas=[mock_schema],
             query_scope=sample_query_scope,
             tenant_settings={
-                "IGNORE_COLUMN_WILDCARDS": "true"
+                "IGNORE_COLUMN_WILDCARDS": True
             }
         )
 
