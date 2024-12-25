@@ -10,7 +10,8 @@ class AddSchemaRequest(BaseModel):
     tables: Dict[str, Table]
     exclude_description_on_generate_sql: bool  
     filter_rules: Optional[List[str]] = [] 
-
+    synonyms: Optional[List[str]] = []
+ 
     @validator('schema_name')
     def validate_schema_name(cls, v):
         if not isinstance(v, str):

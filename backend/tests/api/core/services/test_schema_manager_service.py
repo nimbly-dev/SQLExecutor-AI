@@ -68,7 +68,7 @@ class TestSchemaManagerService:
             "tables": {},
             "filter_rules": [],
             "exclude_description_on_generate_sql": False,
-            "synonyms": None
+            "synonyms": []
         })
         assert result == {"message": "Schema added successfully", "schema_id": "123"}
 
