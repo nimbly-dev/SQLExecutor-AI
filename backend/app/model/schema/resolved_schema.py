@@ -20,4 +20,3 @@ class ResolvedTable(BaseModel):
 
 class ResolvedSchema(BaseModel):
     tables: Dict[str, ResolvedTable]
-    description: Optional[str] = Field(default=None, exclude_unset=True)
