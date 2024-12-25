@@ -37,7 +37,8 @@ class SchemaManagerService:
             description=schema_request.description,
             tables=schema_request.tables,
             filter_rules=schema_request.filter_rules,
-            exclude_description_on_generate_sql=schema_request.exclude_description_on_generate_sql
+            exclude_description_on_generate_sql=schema_request.exclude_description_on_generate_sql,
+            synonyms=schema_request.synonyms
         )
 
         collection_schema = mongodb.db["schemas"]
