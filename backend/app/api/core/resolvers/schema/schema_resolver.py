@@ -8,7 +8,7 @@ from model.tenant.tenant import Tenant
 from model.authentication.session_data import SessionData
 from model.authentication.session_data_setting import SessionDataSetting
 from model.schema.resolved_schema import ResolvedSchema, ResolvedColumn, ResolvedTable, ResolvedJoin
-from api.core.constants.tenant.settings_categories import SCHEMA_RESOLVER_CATEGORY_KEY
+from api.core.constants.tenant.settings_categories import SCHEMA_RESOLVER_CATEGORY_KEY, SQL_GENERATION_KEY
 
 from utils.tenant_manager.setting_utils import SettingUtils
 
@@ -45,7 +45,7 @@ class SchemaResolver:
         tenant_settings = {
             "REMOVE_SENSITIVE_COLUMNS": SettingUtils.get_setting_value(
                 settings=self.tenant.settings,
-                category_key=SCHEMA_RESOLVER_CATEGORY_KEY,
+                category_key=SQL_GENERATION_KEY,
                 setting_key="REMOVE_SENSITIVE_COLUMNS"
             ),
             "REMOVE_ALL_DESCRIPTIONS": SettingUtils.get_setting_value(
