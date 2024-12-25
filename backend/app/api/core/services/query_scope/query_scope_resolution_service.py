@@ -12,7 +12,7 @@ from utils.query_scope.post_process_query_scope_settings_utils import PostProces
 from utils.query_scope.query_scope_utils import expand_columns
 from utils.tenant_manager.setting_utils import SettingUtils
 from utils.session.session_utils import get_session_setting
-from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
+from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOPE_CATEGORY_KEY, SQL_GENERATION_KEY
 
 logger = logging.getLogger(__name__)
 
@@ -77,17 +77,17 @@ class QueryScopeResolutionService:
 
         remove_missing = SettingUtils.get_setting_value(
             settings=session_data.session_settings,
-            category_key="SQL_GENERATION",
+            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
             setting_key="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE"
         )
         ignore_wildcards = SettingUtils.get_setting_value(
             settings=session_data.session_settings,
-            category_key="SQL_GENERATION",
+            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
             setting_key="IGNORE_COLUMN_WILDCARDS"
         )
         remove_sensitive = SettingUtils.get_setting_value(
             settings=session_data.session_settings,
-            category_key="SQL_GENERATION",
+            category_key=SQL_GENERATION_KEY,
             setting_key="REMOVE_SENSITIVE_COLUMNS"
         )
 
