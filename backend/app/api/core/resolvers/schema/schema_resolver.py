@@ -107,11 +107,8 @@ class SchemaResolver:
                 relationships=resolved_relationships
             )
 
-        schema_description = None if tenant_settings["REMOVE_ALL_DESCRIPTIONS"] else self.matched_schema.description
-
         resolved_schema = ResolvedSchema(
-            tables=resolved_tables,
-            description=schema_description
+            tables=resolved_tables
         )
         logger.info("Schema resolution completed successfully.")
         return resolved_schema.dict(exclude_none=True, by_alias=True)
