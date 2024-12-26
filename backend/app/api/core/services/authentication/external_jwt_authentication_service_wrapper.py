@@ -6,7 +6,7 @@ from typing import Dict
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
 from model.requests.authentication.auth_login_request import AuthLoginRequest
 from model.tenant.tenant import Tenant
-from model.authentication.decoded_jwt_token import DecodedJwtToken
+from model.authentication.external_user_decoded_jwt_token import DecodedJwtToken
 from api.core.constants.tenant.settings_categories import(
     EXTERNAL_JWT_AUTH_CATEGORY_KEY,
     LLM_GENERATION_CATEGORY_KEY,

@@ -3,7 +3,7 @@ import logging
 from typing import List, Dict, Any, Union
 from fastapi import HTTPException
 
-from model.authentication.session_data import SessionData
+from model.authentication.external_user_session_data import ExternalSessionData
 from model.query_scope.query_scope import QueryScope
 from model.schema.schema import Schema
 from utils.tenant_manager.setting_utils import SettingUtils
@@ -22,7 +22,7 @@ class QueryScopeResolver:
     to handle schema fetching, soft preprocessing, matching, and final processing.
     """
 
-    def __init__(self, session_data: SessionData, settings: Dict[str, Any], query_scope: QueryScope):
+    def __init__(self, session_data: ExternalSessionData, settings: Dict[str, Any], query_scope: QueryScope):
         self.session_data = session_data
         self.settings = settings or {}
         self.query_scope = query_scope

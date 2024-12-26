@@ -3,10 +3,12 @@ from typing import Optional, Dict, List
 from bson import ObjectId
 
 from model.tenant.setting import Setting
+from model.authentication.admin_user import AdminUser
 
 class Tenant(BaseModel):
     tenant_id: str = Field(..., max_length=36)
     tenant_name: str = Field(..., description="Name of the tenant")
+    admins: List[AdminUser] = Field(default=[], description="List of admin users tied to the tenant.")
     settings: Optional[Dict[str, Dict[str, Setting]]] = {}
     _id: Optional[str]
     

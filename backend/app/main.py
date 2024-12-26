@@ -10,12 +10,16 @@ from api.routers.schema_manager import router as schema_manager_router
 from api.routers.ruleset_manager import router as ruleset_manager_router
 from api.routers.sql_generation import router as sql_generation_router
 from api.routers.external_authentication_wrapper import router as external_authentication_router
+from api.routers.admin_authentication import router as admin_authentication_router
 from api.core.exceptions.default_exception_handler import database_exception_handler, http_exception_handler, validation_exception_handler
 
 from api.core.services.schema.schema_manager_service import SchemaManagerService
 from api.core.services.ruleset.ruleset_manager_service import RulesetManagerService
 from api.core.services.tenant_manager.tenant_settings_service import TenantSettingsService
-from api.core.services.authentication.session_manager_service import SessionManagerService
+from api.core.services.tenant_manager.admin_user_manager_service import AdminUserService
+from api.core.services.authentication.external_session_manager_service import SessionManagerService
+from api.core.services.authentication.admin_authentication_service import AdminAuthenticationService
+from api.core.services.authentication.admin_session_manager_service import AdminSessionManagerService
 
 from utils.jwt_utils import authenticate_session, validate_api_key
 
@@ -33,6 +37,7 @@ async def startup_db_client():
     await RulesetManagerService.create_indexes()
     # await TenantSettingsService.create_indexes()
     await SessionManagerService.initialize_ttl_index()
+    await AdminSessionManagerService.initialize_ttl_index()
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
@@ -70,3 +75,4 @@ app.include_router(
     tags=["SQL Generation"],
     dependencies=[Depends(authenticate_session), Depends(validate_api_key)]
 )
+app.include_router(admin_authentication_router, prefix="/admin-auth/api", tags=["Admin Authentication"])

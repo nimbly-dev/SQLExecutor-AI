@@ -3,13 +3,13 @@ from typing import Dict, Any
 from fastapi import HTTPException
 
 from api.core.services.ruleset.ruleset_conditions_service import RulesetConditionsService
-from model.authentication.session_data import SessionData
+from model.authentication.external_user_session_data import ExternalSessionData
 from model.ruleset.ruleset_model import Ruleset
 from model.query_scope.query_scope import QueryScope
 from model.schema.schema import Schema
 
 class AccessControlResolver:
-    def __init__(self, session_data: SessionData, ruleset: Ruleset, matched_schema: Schema):
+    def __init__(self, session_data: ExternalSessionData, ruleset: Ruleset, matched_schema: Schema):
         """
         Initialize the AccessControlResolver with session data and the ruleset.
 

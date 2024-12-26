@@ -1,4 +1,4 @@
-from model.authentication.session_data_setting import SessionDataSetting
+from model.authentication.external_user_session_data_setting import ExternalSessionDataSetting
 from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
 
@@ -6,12 +6,12 @@ from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOP
 def get_default_sql_generation_session_settings(tenant_settings):
     return {
         "SQL_GENERATION": {
-            "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": SessionDataSetting(
+            "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": ExternalSessionDataSetting(
                 setting_basic_name="Remove Missing Columns on query scope",
                 setting_value=SettingUtils.get_setting_value(tenant_settings, POST_PROCESS_QUERYSCOPE_CATEGORY_KEY, "TENANT_SETTING_REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE") or "true",
                 setting_description="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE description not provided"
             ),
-            "IGNORE_COLUMN_WILDCARDS": SessionDataSetting(
+            "IGNORE_COLUMN_WILDCARDS": ExternalSessionDataSetting(
                 setting_basic_name="Ignore Column Wildcards",
                 setting_value=SettingUtils.get_setting_value(tenant_settings, POST_PROCESS_QUERYSCOPE_CATEGORY_KEY, "TENANT_SETTING_IGNORE_COLUMN_WILDCARDS") or "true",
                 setting_description="IGNORE_COLUMN_WILDCARDS description not provided"

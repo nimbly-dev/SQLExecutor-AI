@@ -3,9 +3,9 @@ import pymongo
 from unittest import mock
 from uuid import UUID
 from fastapi import HTTPException
-from api.core.services.authentication.session_manager_service import SessionManagerService
-from model.authentication.decoded_jwt_token import DecodedJwtToken
-from model.authentication.session_data import SessionData
+from api.core.services.authentication.external_session_manager_service import SessionManagerService
+from model.authentication.external_user_decoded_jwt_token import DecodedJwtToken
+from model.authentication.external_user_session_data import ExternalSessionData
 from model.tenant.tenant import Tenant
 from model.tenant.setting import Setting
 from utils.database import mongodb
@@ -49,7 +49,7 @@ class TestSessionManagerService:
             result = await SessionManagerService.create_jwt_session(decoded_token, tenant)
 
             # Assert
-            assert isinstance(result, SessionData)
+            assert isinstance(result, ExternalSessionData)
             assert result.tenant_id == decoded_token.tenant_id
             assert result.user_id == decoded_token.user_identifier
             mock_collection.insert_one.assert_called_once_with(result.dict())

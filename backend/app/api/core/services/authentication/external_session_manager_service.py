@@ -10,10 +10,10 @@ from datetime import datetime, timezone
 from uuid import uuid4
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from model.authentication.decoded_jwt_token import DecodedJwtToken
-from model.authentication.session_data import SessionData
+from model.authentication.external_user_decoded_jwt_token import DecodedJwtToken
+from model.authentication.external_user_session_data import ExternalSessionData
 from model.tenant.tenant import Tenant
-from model.authentication.session_data_setting import SessionDataSetting
+from model.authentication.external_user_session_data_setting import ExternalSessionDataSetting
 from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.constants.tenant.settings_categories import(
     POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
@@ -33,7 +33,7 @@ class SessionManagerService:
         )
 
     @staticmethod
-    async def create_jwt_session(decoded_jwt_token: DecodedJwtToken, tenant: Tenant) -> SessionData:
+    async def create_jwt_session(decoded_jwt_token: DecodedJwtToken, tenant: Tenant) -> ExternalSessionData:
         """
         Create a new session in the sessions collection with dynamically populated settings.
         """
@@ -47,7 +47,7 @@ class SessionManagerService:
         session_settings = SessionManagerService._populate_session_settings_from_tenant(tenant)
 
         # Create session data
-        session_data = SessionData(
+        session_data = ExternalSessionData(
             session_id=uuid4(),
             tenant_id=decoded_jwt_token.tenant_id,
             user_id=decoded_jwt_token.user_identifier,
@@ -89,7 +89,7 @@ class SessionManagerService:
         
         
     @staticmethod
-    def _populate_session_settings_from_tenant(tenant: Tenant) -> Dict[str, Dict[str, SessionDataSetting]]:
+    def _populate_session_settings_from_tenant(tenant: Tenant) -> Dict[str, Dict[str, ExternalSessionDataSetting]]:
         """
         Internal method to populate session settings with specific keys only.
         """
@@ -99,7 +99,7 @@ class SessionManagerService:
         # Populate only the required keys
         session_settings = {
             "SQL_GENERATION": {
-                "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": SessionDataSetting(
+                "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": ExternalSessionDataSetting(
                     setting_basic_name="Remove Missing Columns on query scope",
                     setting_value=SettingUtils.get_setting_value(
                         tenant_settings,
@@ -108,7 +108,7 @@ class SessionManagerService:
                     ) or "true",
                     setting_description="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE description not provided"
                 ),
-                "IGNORE_COLUMN_WILDCARDS": SessionDataSetting(
+                "IGNORE_COLUMN_WILDCARDS": ExternalSessionDataSetting(
                     setting_basic_name="Ignore Column Wildcards",
                     setting_value=SettingUtils.get_setting_value(
                         tenant_settings,

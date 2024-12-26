@@ -8,9 +8,10 @@ from uuid import UUID
 from datetime import datetime, timezone
 from model.tenant.setting import Setting
 from model.tenant.tenant import Tenant
-from model.authentication.session_data import SessionData
+from model.authentication.admin_session_data import AdminSessionData
+from model.authentication.external_user_session_data import ExternalSessionData
 from utils.tenant_manager.setting_utils import SettingUtils
-from api.core.constants.tenant.settings_categories import EXTERNAL_JWT_AUTH_CATEGORY_KEY
+from api.core.constants.tenant.settings_categories import EXTERNAL_JWT_AUTH_CATEGORY_KEY, ADMIN_AUTH
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ def decode_jwt(token: str, secret_key: str):
     except jwt.InvalidTokenError:
         return 'Invalid token'
     
-async def authenticate_session(x_session_id: str = Header(...)) -> SessionData:
+async def authenticate_session(x_session_id: str = Header(...)) -> ExternalSessionData:
     """Authenticate session by validating session ID and expiration."""
     try:
         session_uuid = UUID(x_session_id)
@@ -43,9 +44,46 @@ async def authenticate_session(x_session_id: str = Header(...)) -> SessionData:
         raise HTTPException(status_code=401, detail="Session has expired")
 
     try:
-        return SessionData(**session)
+        return ExternalSessionData(**session)
     except ValidationError as e:
         logger.error("Invalid session data: %s", e)
+        raise HTTPException(status_code=500, detail="Invalid session data format")
+
+async def authenticate_admin_session(authorization: str = Header(...)) -> AdminSessionData:
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization header")
+
+    token = authorization.split(" ")[1]
+    try:
+        unverified_payload = jwt.decode(token, options={"verify_signature": False})
+        tenant_id = unverified_payload.get("tenant_id")
+
+        tenant_data = await mongodb.db["tenants"].find_one({"tenant_id": tenant_id})
+        if not tenant_data:
+            raise HTTPException(status_code=404, detail="Tenant not found")
+
+        tenant = Tenant(**tenant_data)
+        ADMIN_AUTH_KEY = SettingUtils.get_setting_value(
+            settings=tenant.settings,
+            category_key=ADMIN_AUTH,
+            setting_key="ADMIN_AUTH_TOKEN"
+        )
+        payload = jwt.decode(token, ADMIN_AUTH_KEY, algorithms=['HS256'])
+        session_uuid = UUID(payload["session_id"])
+
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, KeyError, ValueError) as e:
+        logger.warning("Token validation failed: %s", str(e))
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    session = await mongodb.db["admin_sessions"].find_one({"session_id": session_uuid})
+    if not session:
+        logger.warning("Session not found or expired")
+        raise HTTPException(status_code=401, detail="Session not found or expired")
+
+    try:
+        return AdminSessionData(**session)
+    except ValidationError as e:
+        logger.error("Invalid session data format: %s", str(e))
         raise HTTPException(status_code=500, detail="Invalid session data format")
 
 

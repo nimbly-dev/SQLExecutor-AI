@@ -8,12 +8,11 @@ from api.core.resolvers.query_scope.query_scope_resolver import QueryScopeResolv
 from api.core.resolvers.access_control.user_access_control_resolver import AccessControlResolver
 from api.core.resolvers.schema.schema_resolver import SchemaResolver
 
-from model.schema.resolved_schema import ResolvedSchema
 from model.tenant.tenant import Tenant
 from model.schema.schema import Schema
 from model.ruleset.ruleset_model import Ruleset
 from model.requests.sql_generation.user_input_request import UserInputRequest
-from model.authentication.session_data import SessionData
+from model.authentication.external_user_session_data import ExternalSessionData
 
 from utils.jwt_utils import authenticate_session
 from utils.ruleset.ruleset_utils import extract_ruleset_name
@@ -22,7 +21,7 @@ router = APIRouter()
 
 
 @router.post("/{tenant_id}")
-async def generate_sql(tenant_id: str, user_request: UserInputRequest, session: SessionData = Depends(authenticate_session)):
+async def generate_sql(tenant_id: str, user_request: UserInputRequest, session: ExternalSessionData = Depends(authenticate_session)):
     # Fetch tenant details
     tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
     user_query_scope = await LLMServiceWrapper.get_query_scope_using_default_mode(
@@ -55,7 +54,7 @@ async def generate_sql(tenant_id: str, user_request: UserInputRequest, session: 
     
 @router.post("/{tenant_id}/{schema_name}")
 async def generate_sql_given_schema(tenant_id: str, schema_name: str, user_request: UserInputRequest, 
-                                    session: SessionData = Depends(authenticate_session)):
+                                    session: ExternalSessionData = Depends(authenticate_session)):
     tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
     schema: Schema = await SchemaManagerService.get_schema(tenant_id=tenant_id, schema_name=schema_name)
     user_query_scope = await LLMServiceWrapper.get_query_scope_using_default_mode(
