@@ -9,8 +9,8 @@ from model.schema.table import Table
 from model.query_scope.query_scope import QueryScope
 from model.query_scope.entities import Entities
 from model.tenant.tenant import Tenant
-from model.authentication.session_data import SessionData
-from model.authentication.session_data_setting import SessionDataSetting
+from model.authentication.external_user_session_data import ExternalSessionData
+from model.authentication.external_user_session_data_setting import ExternalSessionDataSetting
 from api.core.resolvers.schema.schema_resolver import SchemaResolver
 from api.core.constants.tenant.settings_categories import SCHEMA_RESOLVER_CATEGORY_KEY
 from utils.tenant_manager.setting_utils import SettingUtils
@@ -75,7 +75,7 @@ class TestSchemaResolver:
     @pytest.mark.asyncio
     async def test_resolve_schema(self):
         #Arrange
-        session_data = SessionData(
+        session_data = ExternalSessionData(
             session_id=str(uuid4()),
             tenant_id="tenant123",
             user_id="user123",
@@ -137,7 +137,7 @@ class TestSchemaResolver:
         )
 
         resolver = SchemaResolver(
-            session_data=SessionData(
+            session_data=ExternalSessionData(
                 session_id=str(uuid4()),
                 tenant_id="tenant123",
                 user_id="user123",

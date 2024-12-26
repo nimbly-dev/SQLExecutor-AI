@@ -8,6 +8,7 @@ from model.ruleset.ruleset_model import Ruleset
 from model.requests.tenant_manager.update_tenant_request import UpdateTenantRequestModel
 from model.responses.tenant_manager.add_tenant_response import AddTenantResponse
 from utils.tenant_manager.setting_utils import SettingUtils
+from utils.tenant_manager.tenant_utils import TenantUtils
 
 class TenantManagerService:
     
@@ -24,6 +25,7 @@ class TenantManagerService:
         try:
             await collection.insert_one(tenant.dict())
             await SettingUtils.initialize_default_tenant_settings(tenant_id=tenant.tenant_id)
+            await TenantUtils.initialize_default_admin_user(tenant_id=tenant.tenant_id)
             tenant_data = await collection.find_one({"tenant_id": tenant.tenant_id})
             
             return {

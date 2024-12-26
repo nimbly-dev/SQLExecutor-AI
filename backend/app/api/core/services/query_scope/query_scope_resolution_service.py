@@ -2,7 +2,7 @@ import logging
 from typing import List, Dict, Any, Union
 from fastapi import HTTPException
 
-from model.authentication.session_data import SessionData
+from model.authentication.external_user_session_data import ExternalSessionData
 from model.query_scope.query_scope import QueryScope
 from model.schema.schema import Schema
 from model.responses.schema.schema_tables_response import SchemaTablesResponse
@@ -72,7 +72,7 @@ class QueryScopeResolutionService:
     def process_query_scope(
         matched_schema: Schema, 
         query_scope: QueryScope, 
-        session_data: SessionData, 
+        session_data: ExternalSessionData, 
         settings: Dict[str, Any]) -> QueryScope:
 
         remove_missing = SettingUtils.get_setting_value(

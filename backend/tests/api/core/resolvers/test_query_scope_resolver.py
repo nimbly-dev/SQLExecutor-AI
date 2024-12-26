@@ -6,7 +6,7 @@ from fastapi import HTTPException
 
 # Import the necessary models and services
 from api.core.resolvers.query_scope.query_scope_resolver import QueryScopeResolver
-from model.authentication.session_data import SessionData
+from model.authentication.external_user_session_data import ExternalSessionData
 from model.query_scope.query_scope import QueryScope, Entities
 from model.schema.schema import Schema
 from model.tenant.setting import Setting
@@ -20,7 +20,7 @@ class TestQueryScopeResolver:
 
     @pytest.fixture
     def sample_session_data(self):
-        return SessionData(
+        return ExternalSessionData(
             session_id="509e74ba-8d1f-4ab9-9eb0-91648debd095",
             tenant_id="TENANT_TST2",
             user_id="test_user",

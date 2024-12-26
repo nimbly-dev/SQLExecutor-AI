@@ -4,7 +4,7 @@ from uuid import UUID
 from datetime import datetime
 
 
-class SessionDataSetting(BaseModel):
+class ExternalSessionDataSetting(BaseModel):
     setting_description: Optional[str] = ""
     setting_basic_name: str
     setting_value: str

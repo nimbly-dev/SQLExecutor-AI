@@ -16,3 +16,4 @@ pytest-mock==3.6.1
 openai
 aiohttp
 pyjwt
+bcrypt

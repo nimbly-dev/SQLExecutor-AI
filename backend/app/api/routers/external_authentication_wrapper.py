@@ -2,9 +2,9 @@ from fastapi import APIRouter
 
 from api.core.services.authentication.external_jwt_authentication_service_wrapper import ExternalJWTAuthorizationServiceWrapper
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
-from api.core.services.authentication.session_manager_service import SessionManagerService
+from api.core.services.authentication.external_session_manager_service import SessionManagerService
 from model.requests.authentication.auth_login_request import AuthLoginRequest
-from model.authentication.decoded_jwt_token import DecodedJwtToken
+from model.authentication.external_user_decoded_jwt_token import DecodedJwtToken
 from model.tenant.tenant import Tenant
 
 router = APIRouter()

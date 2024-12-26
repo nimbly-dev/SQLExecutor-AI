@@ -88,6 +88,15 @@
                 "setting_default_value": ""
             }
         },
+        "ADMIN_AUTH":{
+            "ADMIN_AUTH_TOKEN": {
+                "setting_basic_name": "Tenant SQLExecutor Admin Token",
+                "setting_value": "8e92ee043d1135daa3e942a89a6c9f113eb72d289f9b6b58eb3dfeb77727e752",
+                "is_custom_setting": false,
+                "setting_description": "ADMIN_AUTH_TOKEN description not provided",
+                "setting_default_value": ""
+            }
+        },
         "POST_PROCESS_QUERYSCOPE": {
             "TENANT_SETTING_REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": {
                 "setting_basic_name": "Remove Missing Columns on query scope",

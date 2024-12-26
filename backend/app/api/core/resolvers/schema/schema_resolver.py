@@ -5,8 +5,8 @@ from model.schema.schema import Schema
 from model.query_scope.query_scope import QueryScope
 from model.query_scope.entities import Entities
 from model.tenant.tenant import Tenant
-from model.authentication.session_data import SessionData
-from model.authentication.session_data_setting import SessionDataSetting
+from model.authentication.external_user_session_data import ExternalSessionData
+from model.authentication.external_user_session_data_setting import ExternalSessionDataSetting
 from model.schema.resolved_schema import ResolvedSchema, ResolvedColumn, ResolvedTable, ResolvedJoin
 from api.core.constants.tenant.settings_categories import SCHEMA_RESOLVER_CATEGORY_KEY, SQL_GENERATION_KEY
 
@@ -15,7 +15,7 @@ from utils.tenant_manager.setting_utils import SettingUtils
 logger = logging.getLogger(__name__)
 
 class SchemaResolver:
-    def __init__(self, session_data: SessionData, tenant: Tenant, matched_schema: Schema, query_scope: QueryScope):
+    def __init__(self, session_data: ExternalSessionData, tenant: Tenant, matched_schema: Schema, query_scope: QueryScope):
         """
         Initializes the SchemaResolver with session data, tenant information, schema, and query scope.
 
