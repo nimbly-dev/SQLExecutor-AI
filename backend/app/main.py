@@ -65,14 +65,14 @@ app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(ValidationError, validation_exception_handler)
 
 # Register routers here
-app.include_router(tenant_manager_router, prefix="/tenant-manager/api", tags=["Tenant Manager"])
-app.include_router(schema_manager_router, prefix="/schema-manager/api", tags=["Schema Manager"])
-app.include_router(ruleset_manager_router, prefix="/ruleset-manager/api", tags=["Ruleset Manager"])
-app.include_router(external_authentication_router, prefix="/external-auth/api", tags=["External Authentication"])
+app.include_router(tenant_manager_router, prefix="/v1/tenants", tags=["Tenant Manager"])
+app.include_router(schema_manager_router, prefix="/v1/schema-manager", tags=["Schema Manager"])
+app.include_router(ruleset_manager_router, prefix="/v1/ruleset-manager", tags=["Ruleset Manager"])
+app.include_router(external_authentication_router, prefix="/v1/external-auth", tags=["External Authentication"])
 app.include_router(
     sql_generation_router,
-    prefix="/sql-generation/api",
+    prefix="/v1/sql-generation",
     tags=["SQL Generation"],
     dependencies=[Depends(authenticate_session), Depends(validate_api_key)]
 )
-app.include_router(admin_authentication_router, prefix="/admin-auth/api", tags=["Admin Authentication"])
+app.include_router(admin_authentication_router, prefix="/v1/admin-auth", tags=["Admin Authentication"])
