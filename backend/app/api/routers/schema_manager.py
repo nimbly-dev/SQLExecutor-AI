@@ -9,18 +9,18 @@ from utils.jwt_utils import authenticate_admin_session
 
 router = APIRouter()
 
-@router.post("/schemas/{tenant_id}")
+@router.post("/{tenant_id}/schemas/")
 async def add_schema(tenant_id: str, schema_request: AddSchemaRequest, _: AdminSessionData = Depends(authenticate_admin_session)):
     return await SchemaManagerService.add_schema(tenant_id=tenant_id, schema_request=schema_request)
 
-@router.get("/schemas/{tenant_id}/{schema_name}")
+@router.get("/{tenant_id}/schemas/{schema_name}")
 async def get_schema(tenant_id: str, schema_name: str,  _: AdminSessionData = Depends(authenticate_admin_session)):
     return await SchemaManagerService.get_schema(tenant_id=tenant_id, schema_name=schema_name)
 
-@router.put("/schemas/{tenant_id}/{schema_name}")
+@router.put("/{tenant_id}/schemas/{schema_name}")
 async def update_schema(tenant_id: str, schema_name: str, schema_request: UpdateSchemaRequest,  _: AdminSessionData = Depends(authenticate_admin_session)):
     return await SchemaManagerService.update_schema(tenant_id=tenant_id, schema_name=schema_name, update_schema_request=schema_request)
 
-@router.delete("/schemas/{tenant_id}/{schema_name}")
+@router.delete("/{tenant_id}/schemas/{schema_name}")
 async def delete_schema(tenant_id: str, schema_name: str,  _: AdminSessionData = Depends(authenticate_admin_session)):
     return await SchemaManagerService.delete_schema(tenant_id=tenant_id, schema_name=schema_name)
