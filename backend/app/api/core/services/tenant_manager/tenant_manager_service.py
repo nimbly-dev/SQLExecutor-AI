@@ -26,6 +26,8 @@ class TenantManagerService:
             await collection.insert_one(tenant.dict())
             await SettingUtils.initialize_default_tenant_settings(tenant_id=tenant.tenant_id)
             await TenantUtils.initialize_default_admin_user(tenant_id=tenant.tenant_id)
+            await TenantUtils.initialize_tenant_tokens(tenant_id=tenant.tenant_id)
+            
             tenant_data = await collection.find_one({"tenant_id": tenant.tenant_id})
             
             return {

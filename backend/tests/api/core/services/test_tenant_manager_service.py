@@ -12,10 +12,17 @@ from model.responses.tenant_manager.add_tenant_response import AddTenantResponse
 @pytest.mark.asyncio
 class TestTenantManagerService:
 
+    @mock.patch("utils.tenant_manager.tenant_utils.TenantUtils.initialize_tenant_tokens")
     @mock.patch("utils.tenant_manager.tenant_utils.TenantUtils.initialize_default_admin_user")
     @mock.patch("utils.tenant_manager.setting_utils.SettingUtils.initialize_default_tenant_settings")
     @mock.patch("utils.database.mongodb.db")
-    async def test_add_tenant(self, mock_db, mock_initialize_settings, mock_initialize_admin_user):
+    async def test_add_tenant(
+        self, 
+        mock_db, 
+        mock_initialize_settings, 
+        mock_initialize_admin_user, 
+        mock_initialize_tokens  # <--- Add this argument
+    ):
         # Arrange
         tenant_data = Tenant(tenant_id="tenant123", tenant_name="Tenant 123")
         tenant_dict = tenant_data.dict()
@@ -29,6 +36,7 @@ class TestTenantManagerService:
         # Mock service calls
         mock_initialize_settings.return_value = {"settings": {}}
         mock_initialize_admin_user.return_value = {"message": "Default admins initialized successfully"}
+        mock_initialize_tokens.return_value = {"message": "Tenant tokens initialized successfully"}
 
         # Act
         result = await TenantManagerService.add_tenant(tenant_data)
@@ -37,9 +45,11 @@ class TestTenantManagerService:
         mock_collection.insert_one.assert_called_once_with(tenant_data.dict())
         mock_initialize_settings.assert_called_once_with(tenant_id="tenant123")
         mock_initialize_admin_user.assert_called_once_with(tenant_id="tenant123")
+        mock_initialize_tokens.assert_called_once_with(tenant_id="tenant123")
         mock_collection.find_one.assert_called_with({"tenant_id": "tenant123"})
         assert result["message"] == "Tenant created successfully"
         assert result["tenant"] == AddTenantResponse(**tenant_dict)
+
 
 
     @mock.patch("utils.database.mongodb.db")

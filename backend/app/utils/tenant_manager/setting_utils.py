@@ -61,7 +61,7 @@ class SettingUtils:
         result = await collection.update_one(
             {"tenant_id": tenant_id},
             {"$set": {"settings": tenant.settings}},
-            upsert=False
+            upsert=True
         )
 
         if result.modified_count == 0:
