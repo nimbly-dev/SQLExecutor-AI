@@ -7,7 +7,7 @@ from pymongo.errors import DuplicateKeyError
 from api.core.services.ruleset.ruleset_manager_service import RulesetManagerService
 from model.requests.ruleset_manager.add_ruleset_request import AddRulesetRequest
 from model.responses.ruleset_manager.ruleset_response import RulesetResponse
-from model.ruleset.ruleset_model import Ruleset
+from model.ruleset.ruleset import Ruleset
 from utils.database import mongodb
 from model.tenant.tenant import Tenant
 from pydantic import ValidationError
@@ -139,7 +139,7 @@ class TestRulesetManagerService:
             "tenant_id": tenant_id,
             "ruleset_name": ruleset_name,
             "description": "Sample ruleset description",
-            "default_action": "DENY",
+            "is_ruleset_enabled": True,
             "global_access_policy": valid_json["global_access_policy"],  # Include the actual policy
             "group_access_policy": valid_json.get("group_access_policy"),
             "user_specific_access_policy": valid_json.get("user_specific_access_policy"),

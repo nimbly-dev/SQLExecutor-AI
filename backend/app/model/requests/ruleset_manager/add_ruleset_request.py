@@ -9,7 +9,7 @@ from model.ruleset.user_specific_access_policy import UserSpecificAccessPolicy
 class AddRulesetRequest(BaseModel):
     ruleset_name: str = Field(..., min_length=8, description="Name of the ruleset (minimum 8 characters).")
     description: str = Field(..., max_length=100, description="Description of the ruleset (maximum 100 characters).")
-    default_action: str = Field(..., description="Default action for unmatched rules.")
+    is_ruleset_enabled: bool = Field(..., description="Ruleset Enable/Disable Toggle")
     conditions: Optional[Dict[str, str]] = Field(
         default=None,
         description="Optional global conditions for the ruleset."
@@ -26,13 +26,6 @@ class AddRulesetRequest(BaseModel):
 
     @root_validator(pre=True)
     def validate_ruleset(cls, values):
-        # Validate default_action
-        default_action = values.get("default_action")
-        allowed_values = {"ALLOW", "DENY"}
-        if default_action.upper() not in allowed_values:
-            raise ValueError(f"Invalid default_action: {default_action}. Must be one of {allowed_values}.")
-        values["default_action"] = default_action.upper()
-
         # Validate conditions
         conditions = values.get("conditions")
         if conditions:

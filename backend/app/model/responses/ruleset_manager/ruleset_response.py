@@ -10,7 +10,7 @@ class RulesetResponse(BaseModel):
     tenant_id: str
     ruleset_name: str
     description: str
-    default_action: str
+    is_ruleset_enabled: bool
     conditions: Optional[Dict[str, str]] = None  
     global_access_policy: GlobalAccessPolicy
     group_access_policy: Optional[Dict[str, GroupAccessPolicy]]

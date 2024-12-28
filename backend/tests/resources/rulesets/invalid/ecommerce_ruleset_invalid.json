@@ -2,7 +2,7 @@
     "tenant_id": "TENANT_TST2",
     "ruleset_name": "ecommerce_ruleset2",
     "description": "Ruleset for managing access to the e-commerce schema with JWT-based user context",
-    "default_action": "DENY",
+    "is_ruleset_enabled": true,
     "conditions": {
         "is_admin": "'admin' in ${jwt.custom_fields.roles}",
         "is_user": "${jwt.custom_fields.roles} == ['user']",

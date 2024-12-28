@@ -4,7 +4,7 @@ from pymongo import ASCENDING
 from pymongo.errors import DuplicateKeyError
 
 from typing import Union, List
-from model.ruleset.ruleset_model import Ruleset
+from model.ruleset.ruleset import Ruleset
 from model.tenant.tenant import Tenant
 from model.requests.ruleset_manager.add_ruleset_request import AddRulesetRequest
 from model.responses.ruleset_manager.ruleset_response import RulesetResponse
@@ -29,7 +29,7 @@ class RulesetManagerService:
             ruleset_name=ruleset_request.ruleset_name,
             description=ruleset_request.description,
             conditions=ruleset_request.conditions,
-            default_action=ruleset_request.default_action,
+            is_ruleset_enabled=ruleset_request.is_ruleset_enabled,
             global_access_policy=ruleset_request.global_access_policy,
             group_access_policy=ruleset_request.group_access_policy,
             user_specific_access_policy=ruleset_request.user_specific_access_policy
