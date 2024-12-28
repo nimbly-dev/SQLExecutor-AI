@@ -32,7 +32,6 @@ class TenantSettingsService:
         collection = mongodb.db["tenants"]
         tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
 
-        # Helper to convert Setting objects to dictionaries
         def ensure_dict(obj):
             if isinstance(obj, Setting):
                 return {
@@ -108,33 +107,38 @@ class TenantSettingsService:
         collection = mongodb.db["tenants"]
         tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
 
+        # Validate category key existence
         if category_key not in tenant.settings:
             raise HTTPException(
                 status_code=404,
                 detail=f"Category '{category_key}' not found in tenant settings"
             )
 
-        # Serialize Setting objects to plain dictionaries
-        tenant.settings[category_key] = {key: val.to_dict() for key, val in category_settings.__root__.items()}
-        
+        update_query = {
+            f"settings.{category_key}.{key}": val.to_dict()
+            for key, val in category_settings.__root__.items()
+        }
         result = await collection.update_one(
             {"tenant_id": tenant_id},
-            {"$set": {f"settings.{category_key}": tenant.settings[category_key]}},
+            {"$set": update_query},
             upsert=False
         )
 
-        # Allow success even if nothing changed
         if result.matched_count == 0:
             raise HTTPException(status_code=400, detail="No matching tenant found.")
-        elif result.modified_count == 0:
+
+        updated_tenant = await collection.find_one({"tenant_id": tenant_id}, {"settings": 1})
+        updated_settings = updated_tenant["settings"].get(category_key, {})
+
+        if result.modified_count == 0:
             return {
                 "message": f"Category '{category_key}' settings were already up-to-date.",
-                "updated_settings": tenant.settings[category_key]
+                "updated_settings": updated_settings
             }
-            
+
         return {
             "message": f"Category '{category_key}' settings updated successfully.",
-            "updated_settings": tenant.settings[category_key]
+            "updated_settings": updated_settings
         }
 
 
