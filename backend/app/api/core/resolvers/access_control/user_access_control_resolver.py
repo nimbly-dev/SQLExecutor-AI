@@ -4,7 +4,7 @@ from fastapi import HTTPException
 
 from api.core.services.ruleset.ruleset_conditions_service import RulesetConditionsService
 from model.authentication.external_user_session_data import ExternalSessionData
-from model.ruleset.ruleset_model import Ruleset
+from model.ruleset.ruleset import Ruleset
 from model.query_scope.query_scope import QueryScope
 from model.schema.schema import Schema
 

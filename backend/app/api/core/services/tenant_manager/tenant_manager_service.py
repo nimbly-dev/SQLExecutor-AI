@@ -4,7 +4,7 @@ from typing import List
 
 from model.tenant.tenant import Tenant
 from model.schema.schema import Schema
-from model.ruleset.ruleset_model import Ruleset
+from model.ruleset.ruleset import Ruleset
 from model.requests.tenant_manager.update_tenant_request import UpdateTenantRequestModel
 from model.responses.tenant_manager.add_tenant_response import AddTenantResponse
 from utils.tenant_manager.setting_utils import SettingUtils

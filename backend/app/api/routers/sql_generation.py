@@ -10,7 +10,7 @@ from api.core.resolvers.schema.schema_resolver import SchemaResolver
 
 from model.tenant.tenant import Tenant
 from model.schema.schema import Schema
-from model.ruleset.ruleset_model import Ruleset
+from model.ruleset.ruleset import Ruleset
 from model.requests.sql_generation.user_input_request import UserInputRequest
 from model.authentication.external_user_session_data import ExternalSessionData
 

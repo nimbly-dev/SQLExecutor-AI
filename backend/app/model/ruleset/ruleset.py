@@ -11,20 +11,12 @@ class Ruleset(BaseModel):
     tenant_id: str = Field(..., max_length=36)
     ruleset_name: str
     description: str
-    default_action: str
+    is_ruleset_enabled: bool
     conditions: Optional[Dict[str, str]] = None  
     global_access_policy: GlobalAccessPolicy
     group_access_policy: Optional[Dict[str, GroupAccessPolicy]] = None
     user_specific_access_policy: Optional[List[UserSpecificAccessPolicy]] = None
 
-    @root_validator
-    def validate_ruleset(cls, values):
-        default_action = values.get("default_action")
-        allowed_actions = {"ALLOW", "DENY"}
-        if default_action.upper() not in allowed_actions:
-            raise ValueError(f"default_action must be one of {allowed_actions}, got '{default_action}'.")
-        values["default_action"] = default_action.upper()
-        return values
 
     class Config:
         json_encoders = {
