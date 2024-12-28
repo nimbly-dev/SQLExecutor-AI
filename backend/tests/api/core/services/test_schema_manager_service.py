@@ -46,7 +46,7 @@ class TestSchemaManagerService:
     @mock.patch("utils.database.mongodb.db")
     async def test_add_schema_success(self, mock_db):
         # Arrange
-        tenant_id = "tenant1"
+        tenant_id = "TENANT1"
         schema_request = self.init_mock_schema_request()
         tenant_dict = self.init_mock_tenant(tenant_id)
 
@@ -54,7 +54,9 @@ class TestSchemaManagerService:
         mock_collection_tenant.find_one.return_value = tenant_dict
 
         mock_collection_schema = mock.AsyncMock()
-        mock_db.__getitem__.side_effect = lambda key: mock_collection_tenant if key == "tenants" else mock_collection_schema
+        mock_db.__getitem__.side_effect = lambda key: (
+            mock_collection_tenant if key == "tenants" else mock_collection_schema
+        )
         mock_collection_schema.insert_one.return_value = mock.Mock(inserted_id=123)
 
         # Act
@@ -62,7 +64,7 @@ class TestSchemaManagerService:
 
         # Assert
         mock_collection_schema.insert_one.assert_called_once_with({
-            "tenant_id": tenant_id,
+            "tenant_id": tenant_id, 
             "schema_name": "new_schema",
             "description": "Test schema",
             "tables": {},
@@ -70,7 +72,9 @@ class TestSchemaManagerService:
             "exclude_description_on_generate_sql": False,
             "synonyms": []
         })
-        assert result == {"message": "Schema added successfully", "schema_id": "123"}
+
+        assert result["message"] == "Schema added successfully"
+        assert result["schema_id"] == '123'
 
     @pytest.mark.asyncio
     @mock.patch("utils.database.mongodb.db")

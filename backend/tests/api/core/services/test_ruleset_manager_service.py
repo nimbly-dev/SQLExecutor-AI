@@ -42,16 +42,16 @@ class TestRulesetManagerService:
 
         mock_collection = AsyncMock()
         mock_db.__getitem__.return_value = mock_collection
-        mock_get_tenant.return_value = Tenant(tenant_id="tenant_123", tenant_name="Test Tenant")
+        mock_get_tenant.return_value = Tenant(tenant_id="TENANT_123", tenant_name="Test Tenant")
         valid_request = AddRulesetRequest(**valid_json)
 
         expected_data = valid_request.dict()
-        expected_data["tenant_id"] = "tenant_123" 
+        expected_data["tenant_id"] = "TENANT_123" 
 
         mock_collection.insert_one = AsyncMock(return_value=mock.Mock(inserted_id="mock_id"))
 
         # Act
-        response = await RulesetManagerService.add_ruleset("tenant_123", valid_request)
+        response = await RulesetManagerService.add_ruleset("TENANT_123", valid_request)
 
         # Assert
         mock_collection.insert_one.assert_called_once_with(expected_data)
