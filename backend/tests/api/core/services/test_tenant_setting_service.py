@@ -37,7 +37,7 @@ class TestTenantSettingsService:
         
         # Assert
         assert result["new_settings"] == tenant.settings
-
+        
     @mock.patch("utils.database.mongodb.db")
     @mock.patch("api.core.services.tenant_manager.tenant_manager_service.TenantManagerService.get_tenant")
     async def test_update_cat_settings_to_tenant_success(self, mock_get_tenant, mock_db):
@@ -52,6 +52,7 @@ class TestTenantSettingsService:
         tenant = Tenant(**tenant_dict)
         mock_get_tenant.return_value = tenant
 
+        # Load valid settings
         with open(f'{RESOURCES_PATH}/settings/valid/valid_default_settings.json', 'r') as file:
             valid_settings = json.load(file)
 
@@ -61,13 +62,28 @@ class TestTenantSettingsService:
 
         mock_collection = mock.AsyncMock()
         mock_db.__getitem__.side_effect = lambda key: mock_collection if key == "tenants" else None
-        mock_collection.update_one.return_value = mock.Mock(modified_count=1)
+        mock_collection.update_one.return_value = mock.Mock(matched_count=1, modified_count=1)
+        mock_collection.find_one.return_value = {
+            "settings": {
+                category_key: {
+                    key: value for key, value in valid_settings["settings"][category_key].items()
+                }
+            }
+        }
 
         # Act
-        result = await TenantSettingsService.update_cat_settings_to_tenant(tenant_id, category_key, update_settings_request)
-        
+        result = await TenantSettingsService.update_cat_settings_to_tenant(
+            tenant_id, category_key, update_settings_request
+        )
+
         # Assert
-        assert result is not None
+        expected_result = {
+            "message": f"Category '{category_key}' settings updated successfully.",
+            "updated_settings": {
+                key: value for key, value in valid_settings["settings"][category_key].items()
+            }
+        }
+        assert result == expected_result, f"Expected: {expected_result}, Got: {result}"
 
     @mock.patch("utils.database.mongodb.db")
     @mock.patch("api.core.services.tenant_manager.tenant_manager_service.TenantManagerService.get_tenant")
@@ -100,36 +116,3 @@ class TestTenantSettingsService:
         # Assert
         assert result["setting_detail"] == tenant.settings[category_key][setting_key].dict()
 
-    @mock.patch("utils.database.mongodb.db")
-    @mock.patch("api.core.services.tenant_manager.tenant_manager_service.TenantManagerService.get_tenant")
-    async def test_update_cat_settings_to_tenant_success(self, mock_get_tenant, mock_db):
-        # Arrange
-        tenant_id = "tenant1"
-        category_key = "LLM_GENERATION"
-        tenant_dict = {
-            "tenant_id": tenant_id,
-            "tenant_name": "Test Tenant",
-            "settings": {category_key: {}}
-        }
-        tenant = Tenant(**tenant_dict)
-        mock_get_tenant.return_value = tenant
-
-        with open(f'{RESOURCES_PATH}/settings/valid/valid_default_settings.json', 'r') as file:
-            valid_settings = json.load(file)
-
-        update_settings_request = UpdateSettingRequest(
-            __root__={key: Setting(**value) for key, value in valid_settings["settings"][category_key].items()}
-        )
-
-        mock_collection = mock.AsyncMock()
-        mock_db.__getitem__.side_effect = lambda key: mock_collection if key == "tenants" else None
-        mock_collection.update_one.return_value = mock.Mock(matched_count=1, modified_count=1)
-
-        # Act
-        result = await TenantSettingsService.update_cat_settings_to_tenant(tenant_id, category_key, update_settings_request)
-
-        # Assert
-        assert result == {
-            "message": f"Category '{category_key}' settings updated successfully.",
-            "updated_settings": {key: value.dict() for key, value in update_settings_request.__root__.items()}
-        }
