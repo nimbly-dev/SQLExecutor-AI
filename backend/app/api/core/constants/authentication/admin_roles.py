@@ -1,0 +1,1 @@
+SUPPORTED_ROLES_STR = {"Ruleset Admin", "Schema Admin", "Tenant Admin"}
