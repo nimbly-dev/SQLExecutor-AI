@@ -7,6 +7,7 @@ class AdminUser(BaseModel):
     password: str = Field(..., description="The hashed user password.")
     role: str = Field(..., description="Role of the Admin")
 
+
     def verify_password(self, plain_password: str) -> bool:
         """Verify if the provided plain password matches the stored hashed password."""
         return bcrypt.checkpw(plain_password.encode('utf-8'), self.password.encode('utf-8'))
