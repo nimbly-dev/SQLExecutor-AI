@@ -3,18 +3,16 @@ from config import settings
 class DefaultPromptInstructionsUtil:
 
     SQL_PROMPT_INSTRUCTION = """
-    Translate the user request into an SQL query using the provided schema. Follow relationships, constraints, and types defined in the schema.
-    Output only the SQL and nothing else.
+    Generate an SQL query based on the provided schema.  
+    Respect relationships, constraints, and types.  
+    Avoid '*'. Output SQL only.
     """
-    
     INTENT_INSTRUCTION = """
-    Identify the intent (fetch_data, update_data, delete_data, insert_data, schema_info) and the entities 
-    (tables and columns) based on the User Query. Ensure the following:
-    - Focus only on tables and columns explicitly mentioned in the query.
-    - Use dot notation for columns (e.g., table_name.column_name).
-    - If column details are ambiguous, include ["*"] for the respective table.
-    - Avoid inferring or deriving columns like totals, sums, or aggregates.
-    - If the query implies multiple tables without explicit columns, use ["*"] for each table.
+    Identify the intent (fetch_data, update_data, delete_data, insert_data, schema_info) and entities (tables, columns) based on the query. 
+
+    - Use dot notation (table_name.column_name) for columns.  
+    - Default to ["table.*"] for ambiguous or unspecified columns.  
+    - Avoid inferred columns (e.g., totals, sums).  
     """
 
     INTENT_JSON_SCHEMA = {

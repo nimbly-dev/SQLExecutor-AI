@@ -124,13 +124,20 @@ class AccessControlResolver:
         logging.debug(f"Evaluating Matching Criteria: {matching_criteria}")
         for key, value in matching_criteria.items():
             session_value = self.session_data.custom_fields.get(key, [])
+            
+            # Ensure session_value is treated as a list for comparison
+            if not isinstance(session_value, list):
+                session_value = [session_value]
+            
+            # Compare values
             if isinstance(value, list):
                 if not set(value).intersection(session_value):
                     logging.debug(f"Criteria mismatch for key '{key}': Expected {value}, Found {session_value}")
                     return False
-            elif session_value != value:
-                logging.debug(f"Criteria mismatch for key '{key}': Expected {value}, Found {session_value}")
+            elif session_value[0] != value:  # Handle single non-list values
+                logging.debug(f"Criteria mismatch for key '{key}': Expected {value}, Found {session_value[0]}")
                 return False
+
         return True
 
     def _match_group_policy(self, table_name: str):

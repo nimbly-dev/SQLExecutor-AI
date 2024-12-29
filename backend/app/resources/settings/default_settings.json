@@ -33,7 +33,7 @@
         "EXTERNAL_JWT_AUTH": {
             "EXTERNAL_JWT_LOGIN_ENDPOINT": {
                 "setting_basic_name": "External JWT Login Endpoint",
-                "setting_value": "http://external-login-app:8000/login",
+                "setting_value": "http://external-system-app:8000/login",
                 "is_custom_setting": false,
                 "setting_description": "EXTERNAL_JWT_LOGIN_ENDPOINT description not provided",
                 "setting_default_value": null
@@ -54,7 +54,7 @@
             },
             "EXTERNAL_JWT_LOGOUT_ENDPOINT": {
                 "setting_basic_name": "External JWT Logout Endpoint",
-                "setting_value": "http://external-login-app:8000/logout",
+                "setting_value": "http://external-system-app:8000/logout",
                 "is_custom_setting": false,
                 "setting_description": "EXTERNAL_JWT_LOGOUT_ENDPOINT description not provided",
                 "setting_default_value": null
@@ -75,7 +75,7 @@
             },
             "EXTERNAL_JWT_CUSTOM_FIELDS": {
                 "setting_basic_name": "External JWT Custom Fields",
-                "setting_value": "['roles', 'active', 'preferences', 'permissions', 'otherField']",
+                "setting_value": "['role', 'is_admin', 'is_active']",
                 "is_custom_setting": false,
                 "setting_description": "EXTERNAL_JWT_CUSTOM_FIELDS description not provided",
                 "setting_default_value": null

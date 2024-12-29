@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from model.authentication.external_user_session_data import ExternalSessionData
 from model.query_scope.query_scope import QueryScope
 from model.schema.schema import Schema
+from model.tenant.tenant import Tenant
 from model.responses.schema.schema_tables_response import SchemaTablesResponse
 from api.core.services.schema.schema_discovery_service import SchemaDiscoveryService
 from api.core.services.schema.schema_manager_service import SchemaManagerService
@@ -73,20 +74,21 @@ class QueryScopeResolutionService:
         matched_schema: Schema, 
         query_scope: QueryScope, 
         session_data: ExternalSessionData, 
-        settings: Dict[str, Any]) -> QueryScope:
+        settings: Dict[str, Any],
+        tenant: Tenant) -> QueryScope:
 
         remove_missing = SettingUtils.get_setting_value(
             settings=session_data.session_settings,
-            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
+            category_key=SQL_GENERATION_KEY,
             setting_key="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE"
         )
         ignore_wildcards = SettingUtils.get_setting_value(
             settings=session_data.session_settings,
-            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
+            category_key=SQL_GENERATION_KEY,
             setting_key="IGNORE_COLUMN_WILDCARDS"
         )
         remove_sensitive = SettingUtils.get_setting_value(
-            settings=session_data.session_settings,
+            settings=tenant.settings,
             category_key=SQL_GENERATION_KEY,
             setting_key="REMOVE_SENSITIVE_COLUMNS"
         )

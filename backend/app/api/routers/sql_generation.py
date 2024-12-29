@@ -31,7 +31,8 @@ async def generate_sql(tenant_id: str, user_request: UserInputRequest, session: 
     query_scope_resolver = QueryScopeResolver(
         session_data=session,
         settings=tenant.settings,
-        query_scope=user_query_scope
+        query_scope=user_query_scope,
+        tenant=tenant
     )
     
     matched_schema: Schema =  await query_scope_resolver.match_user_query_to_schema(tenant_id=tenant_id)
@@ -44,11 +45,10 @@ async def generate_sql(tenant_id: str, user_request: UserInputRequest, session: 
     access_resolver = AccessControlResolver(session_data=session, ruleset=matched_ruleset, matched_schema=matched_schema)
     schema_resolver = SchemaResolver(session_data=session,tenant=tenant ,matched_schema=matched_schema, query_scope=resolved_user_query_scope)
     
-    resolved_schema = schema_resolver.resolve_schema()
-    
     access_resolver.has_access_to_scope(resolved_user_query_scope)
     
-    generated_sql = await LLMServiceWrapper.generate_sql_query(user_input=user_request, resolved_schema=resolved_schema)
+    generated_sql = await LLMServiceWrapper.generate_sql_query(user_input=user_request,
+                                                               resolved_schema= schema_resolver.resolve_schema())
     return generated_sql
 
     
@@ -65,7 +65,8 @@ async def generate_sql_given_schema(tenant_id: str, schema_name: str, user_reque
     query_scope_resolver = QueryScopeResolver(
         session_data=session,
         settings=tenant.settings,
-        query_scope=user_query_scope
+        query_scope=user_query_scope,
+        tenant=tenant
     )
     
     resolved_user_query_scope = query_scope_resolver.resolve_query_scope(matched_schema=schema)
@@ -82,4 +83,3 @@ async def generate_sql_given_schema(tenant_id: str, schema_name: str, user_reque
     
     generated_sql = await LLMServiceWrapper.generate_sql_query(user_input=user_request, resolved_schema=resolved_schema)
     return generated_sql
-    # return "Unimplemented"

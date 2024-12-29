@@ -8,7 +8,7 @@
             },
             "IGNORE_COLUMN_WILDCARDS": {
                 "setting_basic_name": "Ignore Column Wildcards",
-                "setting_value": "False",
+                "setting_value": true,
                 "setting_description": "IGNORE_COLUMN_WILDCARDS description not provided"
             }
         }
