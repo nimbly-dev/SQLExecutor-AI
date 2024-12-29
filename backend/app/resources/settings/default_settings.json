@@ -88,6 +88,22 @@
                 "setting_default_value": ""
             }
         },
+        "SQL_RUNNER":{
+            "SQL_FLAVOR":{
+                "setting_basic_name": "SQL Flavor",
+                "setting_value": "postgres",
+                "is_custom_setting": false,
+                "setting_description": "Provide the SQL Flavor of the External Systems Database",
+                "setting_default_value": ""
+            },
+            "EXTERNAL_SYSTEM_DB_CONNECTION_URL":{
+                "setting_basic_name": "SQL Flavor",
+                "setting_value": "postgresql://postgres:postgres@db:5432/external_system_db",
+                "is_custom_setting": false,
+                "setting_description": "Provide External System's Database UR:",
+                "setting_default_value": ""
+            }
+        },
         "ADMIN_AUTH":{
             "ADMIN_AUTH_TOKEN": {
                 "setting_basic_name": "Tenant SQLExecutor Admin Token",

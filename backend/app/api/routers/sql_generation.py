@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from api.core.services.llm_wrapper.llm_service_wrapper import LLMServiceWrapper
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
+from api.core.services.sql_runner.sql_runner_service import SqlRunnerService
 from api.core.services.schema.schema_manager_service import SchemaManagerService
 from api.core.services.ruleset.ruleset_manager_service import RulesetManagerService
 from api.core.resolvers.query_scope.query_scope_resolver import QueryScopeResolver
@@ -13,6 +14,7 @@ from model.schema.schema import Schema
 from model.ruleset.ruleset import Ruleset
 from model.requests.sql_generation.user_input_request import UserInputRequest
 from model.authentication.external_user_session_data import ExternalSessionData
+from model.responses.sql_generation.sql_generation_respose import SqlGenerationResponse
 
 from utils.jwt_utils import authenticate_session
 from utils.ruleset.ruleset_utils import extract_ruleset_name
@@ -49,7 +51,15 @@ async def generate_sql(tenant_id: str, user_request: UserInputRequest, session: 
     
     generated_sql = await LLMServiceWrapper.generate_sql_query(user_input=user_request,
                                                                resolved_schema= schema_resolver.resolve_schema())
-    return generated_sql
+
+    run_sql_result = SqlRunnerService.run_sql(query=generated_sql,tenant=tenant,params={})
+    
+    sqlGenerationResponse: SqlGenerationResponse = SqlGenerationResponse(
+        query_scope=resolved_user_query_scope,
+        user_input=user_request.input,
+        sql_response=run_sql_result
+    )
+    return sqlGenerationResponse
 
     
 @router.post("/{tenant_id}/{schema_name}")
@@ -82,4 +92,11 @@ async def generate_sql_given_schema(tenant_id: str, schema_name: str, user_reque
     resolved_schema = schema_resolver.resolve_schema()
     
     generated_sql = await LLMServiceWrapper.generate_sql_query(user_input=user_request, resolved_schema=resolved_schema)
-    return generated_sql
+    run_sql_result = SqlRunnerService.run_sql(query=generated_sql,tenant=tenant,params={})
+    
+    sqlGenerationResponse: SqlGenerationResponse = SqlGenerationResponse(
+        query_scope=resolved_user_query_scope,
+        user_input=user_request.input,
+        sql_response=run_sql_result
+    )
+    return sqlGenerationResponse
