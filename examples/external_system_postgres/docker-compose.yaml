@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+  external-system-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./app/dev.env
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+    networks:
+      - shared_network
+
+  db:
+    image: postgres:15
+    container_name: external_system_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: external_system_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./.data/external_system_db:/var/lib/postgresql/data:rw"
+      - ./app/resources/sql_scripts:/docker-entrypoint-initdb.d
+    networks:
+      - shared_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: external_system_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin_password
+    volumes:
+      - ./docker/servers.json:/pgadmin4/servers.json
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - shared_network
+
+networks:
+  shared_network:
+    external: true
+
+volumes:
+  db_data:

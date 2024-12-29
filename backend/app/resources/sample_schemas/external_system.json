@@ -1,0 +1,65 @@
+{
+    "tenant_id": "TENANT_TST2",
+    "schema_name": "external_system",
+    "description": "Schema for managing external system data",
+    "exclude_description_on_generate_sql": true,
+    "synonyms": ["customer_management", "order_tracking", "payment_processing"],
+    "tables": {
+        "users": {
+            "columns": {
+                "user_id": {"type": "INTEGER", "description": "Unique identifier for the user", "constraints": ["PRIMARY KEY", "NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": true, "is_sensitive_column": false},
+                "username": {"type": "TEXT", "description": "Username of the user", "constraints": ["UNIQUE", "NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false},
+                "password": {"type": "TEXT", "description": "User's password (sensitive)", "constraints": ["NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": true, "is_sensitive_column": true},
+                "email": {"type": "TEXT", "description": "Email address of the user", "constraints": ["UNIQUE", "NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false},
+                "created_at": {"type": "DATE", "description": "Account creation timestamp", "constraints": [], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false}
+            },
+            "description": "Stores user information",
+            "synonyms": ["members", "accounts"],
+            "relationships": {},
+            "exclude_description_on_generate_sql": false
+        },
+        "roles_list": {
+            "columns": {
+                "role": {"type": "TEXT", "description": "Role assigned to the user", "constraints": ["NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false},
+                "user_id": {"type": "INTEGER", "description": "References the user assigned the role", "constraints": ["FOREIGN KEY"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false}
+            },
+            "description": "Stores user roles",
+            "synonyms": ["permissions", "groups"],
+            "relationships": {
+                "users": {"description": "Links to users table", "table": "users", "on": "roles_list.user_id = users.user_id", "type": "INNER", "exclude_description_on_generate_sql": false}
+            },
+            "exclude_description_on_generate_sql": false
+        },
+        "customer_info": {
+            "columns": {
+                "customer_id": {"type": "INTEGER", "description": "Unique identifier for customer", "constraints": ["PRIMARY KEY", "NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": true, "is_sensitive_column": false},
+                "customer_name": {"type": "TEXT", "description": "Customer's full name", "constraints": ["NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false},
+                "customer_email": {"type": "TEXT", "description": "Customer's email address", "constraints": ["UNIQUE", "NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false},
+                "phone_number": {"type": "TEXT", "description": "Customer's phone number", "constraints": [], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false},
+                "address": {"type": "TEXT", "description": "Customer's address", "constraints": [], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false}
+            },
+            "description": "Stores customer details",
+            "synonyms": ["clients", "buyers"],
+            "relationships": {
+                "users": {"description": "Links customer to user", "table": "users", "on": "customer_info.user_id = users.user_id", "type": "INNER", "exclude_description_on_generate_sql": false}
+            },
+            "exclude_description_on_generate_sql": false
+        },
+        "payments": {
+            "columns": {
+                "payment_id": {"type": "INTEGER", "description": "Unique payment ID", "constraints": ["PRIMARY KEY", "NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": true, "is_sensitive_column": false},
+                "user_id": {"type": "INTEGER", "description": "User who made the payment", "constraints": ["FOREIGN KEY", "NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false},
+                "amount": {"type": "DECIMAL", "description": "Payment amount", "constraints": ["NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false},
+                "payment_date": {"type": "DATE", "description": "Date of payment", "constraints": ["NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false},
+                "status": {"type": "TEXT", "description": "Payment status", "constraints": ["NOT NULL"], "synonyms": [], "exclude_description_on_generate_sql": false, "is_sensitive_column": false}
+            },
+            "description": "Stores payment transactions",
+            "synonyms": ["billing", "transactions"],
+            "relationships": {
+                "users": {"description": "Links payment to user", "table": "users", "on": "payments.user_id = users.user_id", "type": "INNER", "exclude_description_on_generate_sql": false}
+            },
+            "exclude_description_on_generate_sql": false
+        }
+    },
+    "filter_rules": ["$external_system_ruleset"]
+}

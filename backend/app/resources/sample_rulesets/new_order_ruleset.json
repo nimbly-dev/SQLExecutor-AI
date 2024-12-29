@@ -2,7 +2,7 @@
     "tenant_id": "TENANT_TST2",
     "ruleset_name": "order_ruleset",
     "description": "Simplified ruleset for users, specialized users, and admins with enhanced definitions.",
-    "default_action": "DENY",
+    "is_ruleset_enabled": true,
     "conditions": {
         "is_admin": "'admin' in ${jwt.custom_fields.roles}",
         "is_special_user": "'elevated_access' == ${jwt.custom_fields.otherField}",

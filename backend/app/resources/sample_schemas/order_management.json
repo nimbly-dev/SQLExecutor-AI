@@ -1,44 +1,55 @@
 {
+    "tenant_id": "TENANT_TST2",
     "schema_name": "order_management",
-    "description": "Schema for managing order, customer, and payment data.",
-    "filter_rules": ["${order_ruleset}"],
+    "description": "Schema for managing order",
+    "exclude_description_on_generate_sql": true,
+    "synonyms": ["sales_management", "purchase_tracking", "billing_system"],
     "tables": {
         "orders": {
-            "description": "Stores order details",
-            "synonyms": ["purchases", "transactions"],
             "columns": {
                 "order_id": {
                     "type": "INTEGER",
+                    "description": null,
                     "constraints": ["PRIMARY KEY", "NOT NULL"],
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": true
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
                 },
                 "customer_id": {
                     "type": "INTEGER",
                     "description": "References the customer placing the order",
                     "constraints": ["NOT NULL", "FOREIGN KEY"],
-                    "references": {
-                        "table": "customers",
-                        "column": "customer_id"
-                    },
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": false
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
                 },
                 "order_date": {
                     "type": "DATE",
                     "description": "Date when the order was placed",
                     "constraints": ["NOT NULL"],
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": false
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
                 },
                 "total_amount": {
                     "type": "DECIMAL",
                     "description": "Total amount of the order",
                     "constraints": ["NOT NULL"],
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": false
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
+                },
+                "password": {
+                    "type": "TEXT",
+                    "description": "Sensitive column, globally restricted",
+                    "constraints": ["NOT NULL"],
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": true
                 }
             },
+            "description": "Stores order details",
+            "synonyms": ["purchases", "transactions"],
             "relationships": {
                 "customers": {
                     "description": "Each order is placed by a customer",
@@ -47,84 +58,110 @@
                     "type": "INNER",
                     "exclude_description_on_generate_sql": false
                 }
-            }
+            },
+            "exclude_description_on_generate_sql": false
         },
         "customers": {
-            "description": "Stores customer information",
-            "synonyms": ["clients", "buyers"],
             "columns": {
                 "customer_id": {
                     "type": "INTEGER",
+                    "description": null,
                     "constraints": ["PRIMARY KEY", "NOT NULL"],
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": true
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
                 },
                 "name": {
                     "type": "TEXT",
                     "description": "Full name of the customer",
                     "constraints": ["NOT NULL"],
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": false
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
                 },
                 "email": {
                     "type": "TEXT",
+                    "description": null,
                     "constraints": ["UNIQUE", "NOT NULL"],
-                    "is_sensitive_column": true,
-                    "exclude_description_on_generate_sql": true
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
                 },
                 "phone_number": {
                     "type": "TEXT",
                     "description": "Phone number of the customer",
                     "constraints": ["NOT NULL"],
-                    "is_sensitive_column": true,
-                    "exclude_description_on_generate_sql": true
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
+                },
+                "password": {
+                    "type": "TEXT",
+                    "description": "Sensitive column, globally restricted",
+                    "constraints": ["NOT NULL"],
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": true
+                },
+                "credit_card_number": {
+                    "type": "TEXT",
+                    "description": "Sensitive column, globally restricted",
+                    "constraints": ["NOT NULL"],
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": true
                 }
             },
-            "relationships": {}
+            "description": "Stores customer information",
+            "synonyms": ["clients", "buyers"],
+            "relationships": {},
+            "exclude_description_on_generate_sql": false
         },
         "payments": {
-            "description": "Stores payment details for orders",
-            "synonyms": ["transactions", "billing"],
             "columns": {
                 "payment_id": {
                     "type": "INTEGER",
+                    "description": null,
                     "constraints": ["PRIMARY KEY", "NOT NULL"],
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": true
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
                 },
                 "order_id": {
                     "type": "INTEGER",
                     "description": "References the order being paid for",
                     "constraints": ["NOT NULL", "FOREIGN KEY"],
-                    "references": {
-                        "table": "orders",
-                        "column": "order_id"
-                    },
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": false
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
                 },
                 "payment_date": {
                     "type": "DATE",
                     "description": "Date of the payment",
                     "constraints": ["NOT NULL"],
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": false
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
                 },
                 "amount_paid": {
                     "type": "DECIMAL",
                     "description": "Amount paid by the customer",
                     "constraints": ["NOT NULL"],
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": false
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
                 },
                 "payment_method": {
                     "type": "TEXT",
                     "description": "Method of payment",
                     "constraints": ["NOT NULL"],
-                    "is_sensitive_column": false,
-                    "exclude_description_on_generate_sql": false
+                    "synonyms": [],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
                 }
             },
+            "description": "Stores payment details for orders",
+            "synonyms": ["transactions", "billing"],
             "relationships": {
                 "orders": {
                     "description": "Payment is associated with an order",
@@ -133,7 +170,11 @@
                     "type": "INNER",
                     "exclude_description_on_generate_sql": false
                 }
-            }
+            },
+            "exclude_description_on_generate_sql": false
         }
-    }
+    },
+    "filter_rules": [
+        "${order_ruleset}"
+    ]
 }

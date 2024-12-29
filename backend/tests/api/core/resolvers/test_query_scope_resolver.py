@@ -4,14 +4,12 @@ from unittest.mock import AsyncMock, MagicMock
 
 from fastapi import HTTPException
 
-# Import the necessary models and services
 from api.core.resolvers.query_scope.query_scope_resolver import QueryScopeResolver
 from model.authentication.external_user_session_data import ExternalSessionData
 from model.query_scope.query_scope import QueryScope, Entities
 from model.schema.schema import Schema
 from model.tenant.setting import Setting
-from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
-
+from model.tenant.tenant import Tenant
 
 class TestQueryScopeResolver:
     """
@@ -102,13 +100,15 @@ class TestQueryScopeResolver:
         tenant_id = sample_session_data.tenant_id
 
         mock_schema = MagicMock(spec=Schema, schema_name="public")
+        mock_tenant = MagicMock(spec=Tenant, tenant_name="TST123")
         mock_prepare_query_scope.return_value = [mock_schema]
         mock_match_schema.return_value = mock_schema
 
         resolver = QueryScopeResolver(
             session_data=sample_session_data,
             settings=sample_settings,
-            query_scope=sample_query_scope
+            query_scope=sample_query_scope,
+            tenant=mock_tenant
         )
 
         # Act
@@ -145,11 +145,12 @@ class TestQueryScopeResolver:
         tenant_id = sample_session_data.tenant_id
 
         mock_prepare_query_scope.side_effect = HTTPException(status_code=500, detail="Preparation failed.")
-
+        mock_tenant = MagicMock(spec=Tenant, tenant_name="TST123")
         resolver = QueryScopeResolver(
             session_data=sample_session_data,
             settings=sample_settings,
-            query_scope=sample_query_scope
+            query_scope=sample_query_scope,
+            tenant=mock_tenant
         )
 
         # Act
@@ -182,13 +183,15 @@ class TestQueryScopeResolver:
         tenant_id = sample_session_data.tenant_id
 
         mock_schema = MagicMock(spec=Schema, schema_name="public")
+        mock_tenant = MagicMock(spec=Tenant, tenant_name="TST123")
         mock_prepare_query_scope.return_value = [mock_schema]
         mock_match_schema.side_effect = HTTPException(status_code=400, detail="Matching failed.")
 
         resolver = QueryScopeResolver(
             session_data=sample_session_data,
             settings=sample_settings,
-            query_scope=sample_query_scope
+            query_scope=sample_query_scope,
+            tenant=mock_tenant
         )
 
         # Act
@@ -222,10 +225,12 @@ class TestQueryScopeResolver:
     ):
         # Arrange
         matched_schema = MagicMock(spec=Schema, schema_name="public")
+        mock_tenant = MagicMock(spec=Tenant, tenant_name="TENANT_TST2")
         resolver = QueryScopeResolver(
             session_data=sample_session_data,
             settings=sample_settings,
-            query_scope=sample_query_scope
+            query_scope=sample_query_scope,
+            tenant=mock_tenant
         )
 
         # Act
@@ -236,7 +241,8 @@ class TestQueryScopeResolver:
             matched_schema=matched_schema,
             query_scope=sample_query_scope,
             session_data=sample_session_data,
-            settings=sample_settings
+            settings=sample_settings,
+            tenant=mock_tenant
         )
         assert result is not None  
 
@@ -257,10 +263,12 @@ class TestQueryScopeResolver:
     ):
         # Arrange
         matched_schema = MagicMock(spec=Schema, schema_name="public")
+        mock_tenant = MagicMock(spec=Tenant, tenant_name="TENANT_TST2")
         resolver = QueryScopeResolver(
             session_data=sample_session_data,
             settings=sample_settings,
-            query_scope=sample_query_scope
+            query_scope=sample_query_scope,
+            tenant=mock_tenant
         )
 
         # Act
@@ -277,5 +285,6 @@ class TestQueryScopeResolver:
             matched_schema=matched_schema,
             query_scope=sample_query_scope,
             session_data=sample_session_data,
-            settings=sample_settings
+            settings=sample_settings,
+            tenant=mock_tenant
         )
