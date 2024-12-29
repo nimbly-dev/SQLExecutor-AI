@@ -17,3 +17,6 @@ openai
 aiohttp
 pyjwt
 bcrypt
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0     # PostgreSQL
+pymysql>=1.0.2            # MySQL
