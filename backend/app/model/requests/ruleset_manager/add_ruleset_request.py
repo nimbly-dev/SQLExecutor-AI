@@ -5,6 +5,7 @@ import re
 from model.ruleset.group_access_policy import GroupAccessPolicy
 from model.ruleset.global_access_policy import GlobalAccessPolicy
 from model.ruleset.user_specific_access_policy import UserSpecificAccessPolicy
+from model.ruleset.injector import Injector
 
 class AddRulesetRequest(BaseModel):
     ruleset_name: str = Field(..., min_length=8, description="Name of the ruleset (minimum 8 characters).")
@@ -22,7 +23,8 @@ class AddRulesetRequest(BaseModel):
     )
     user_specific_access_policy: Optional[List[UserSpecificAccessPolicy]] = Field(
         default=None, description="User-specific access policies."
-    )
+    ),
+    injectors: Optional[Dict[str, Injector]] = None 
 
     @root_validator(pre=True)
     def validate_ruleset(cls, values):

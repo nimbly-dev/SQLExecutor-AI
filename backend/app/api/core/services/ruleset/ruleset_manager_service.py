@@ -32,7 +32,8 @@ class RulesetManagerService:
             is_ruleset_enabled=ruleset_request.is_ruleset_enabled,
             global_access_policy=ruleset_request.global_access_policy,
             group_access_policy=ruleset_request.group_access_policy,
-            user_specific_access_policy=ruleset_request.user_specific_access_policy
+            user_specific_access_policy=ruleset_request.user_specific_access_policy,
+            injectors=ruleset_request.injectors
         )
 
         collection_schema = mongodb.db["rulesets"]

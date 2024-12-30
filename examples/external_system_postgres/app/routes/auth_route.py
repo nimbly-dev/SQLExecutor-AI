@@ -46,7 +46,8 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
         "sub": request.username,
         "role": role.role,
         "is_admin": is_admin,
-        "is_active": user.is_active
+        "is_active": user.is_active,
+        "user_id": user.user_id
     })
     active_sessions.add(request.username)
     return {"access_token": access_token, "token_type": "bearer"}

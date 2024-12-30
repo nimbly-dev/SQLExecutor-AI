@@ -5,6 +5,7 @@ from bson import ObjectId
 from model.ruleset.global_access_policy import GlobalAccessPolicy
 from model.ruleset.group_access_policy import GroupAccessPolicy
 from model.ruleset.user_specific_access_policy import UserSpecificAccessPolicy
+from model.ruleset.injector import Injector
 
 class Ruleset(BaseModel):
     _id: Optional[str]
@@ -16,7 +17,7 @@ class Ruleset(BaseModel):
     global_access_policy: GlobalAccessPolicy
     group_access_policy: Optional[Dict[str, GroupAccessPolicy]] = None
     user_specific_access_policy: Optional[List[UserSpecificAccessPolicy]] = None
-
+    injectors: Optional[Dict[str, Injector]] = None 
 
     class Config:
         json_encoders = {
