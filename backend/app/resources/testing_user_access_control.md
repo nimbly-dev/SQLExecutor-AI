@@ -56,3 +56,65 @@ This document outlines updated test scenarios for validating access control acro
 2. **Inactive User** has no access as the `active` field in the session data is `false`.
 3. Inputs are specified with explicit column references for better debugging and validation.
 4. Elevated and Admin users have access to all columns in tables they are allowed, respecting global restrictions.
+
+
+---
+New One:
+
+
+SessionData:
+
+{
+    "custom_fields": {
+        "role": "customer",
+        "is_admin": false,
+        "is_active": true,
+        "sub": "customer_user_4",
+        "user_id": 4
+    }
+}
+
+Login:
+{   
+    "auth_tenant_id": "TENANT_TST2",
+    "auth_field" : "customer_user_4",
+    "auth_passkey_field" : "customer_user_4123"
+}
+
+Input:
+{
+    "input": "Show me the details of customer_info"
+}
+
+Output:
+{
+    "query_scope": {
+        "intent": "fetch_data",
+        "entities": {
+            "tables": [
+                "customer_info"
+            ],
+            "columns": [
+                "customer_info.customer_id",
+                "customer_info.customer_name",
+                "customer_info.user_id",
+                "customer_info.customer_email",
+                "customer_info.phone_number",
+                "customer_info.address"
+            ]
+        }
+    },
+    "user_input": "Show me the details of customer_info",
+    "sql_query": "SELECT customer_id, customer_name, user_id, customer_email, phone_number, address FROM customer_info WHERE user_id = '4';",
+    "sql_response": [
+        {
+            "customer_id": 12,
+            "customer_name": "Customer 12",
+            "user_id": 4,
+            "customer_email": "customer12@example.com",
+            "phone_number": "123-456-7812",
+            "address": "12 Demo Street, Demo City, DC 10012"
+        }
+    ],
+    "injected_str": "user_id = '4'"
+}

@@ -75,7 +75,7 @@
             },
             "EXTERNAL_JWT_CUSTOM_FIELDS": {
                 "setting_basic_name": "External JWT Custom Fields",
-                "setting_value": "['role', 'is_admin', 'is_active']",
+                "setting_value": "['role', 'is_admin', 'is_active', 'sub', 'user_id']",
                 "is_custom_setting": false,
                 "setting_description": "EXTERNAL_JWT_CUSTOM_FIELDS description not provided",
                 "setting_default_value": null
@@ -102,6 +102,22 @@
                 "is_custom_setting": false,
                 "setting_description": "Provide External System's Database UR:",
                 "setting_default_value": ""
+            }
+        },
+        "SQL_INJECTORS":{
+            "SQL_INJECTORS_ENABLED":{
+                "setting_basic_name": "Injectors Toggle",
+                "setting_value": false,
+                "is_custom_setting": false,
+                "setting_description": "Enable/Disable Injectors on SQL Generation",
+                "setting_default_value": false
+            },
+            "DYNAMIC_INJECTION":{
+                "setting_basic_name": "Dynamic Injection",
+                "setting_value": true,
+                "is_custom_setting": false,
+                "setting_description": "Injector will try to combine existing Model Generated 'WHERE' clause with Injector condition",
+                "setting_default_value": true
             }
         },
         "ADMIN_AUTH":{
