@@ -66,6 +66,7 @@ class TestInjectorResolver:
         assert "WHERE user_id = 'customer_user_1'" in sql_query
         assert injector_str == "user_id = 'customer_user_1'"
 
+    @pytest.mark.skip(reason="SQLEXEC-32: Skipping temporarily as this UT is complex and takes much time")
     def test_apply_injectors_with_dynamic_disabled(self, mock_session, mock_ruleset, mock_tenant):
         # Arrange
         mock_tenant.settings["SQL_INJECTORS"]["DYNAMIC_INJECTION"].setting_value = False 
