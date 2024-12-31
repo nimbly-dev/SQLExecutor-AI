@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./react-app/src:/app/src
+      - ./react-app/public:/app/public
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=300
+      - WDS_SOCKET_PORT=0
+      - WATCHPACK_POLLING=true
+    networks:
+      - shared_network
+
+networks:
+  shared_network:
+    external: true
