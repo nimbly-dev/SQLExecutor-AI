@@ -5,10 +5,10 @@ WORKDIR /app
 # Copy package.json and lock file
 COPY react-app/package.json react-app/package-lock.json ./
 
-# Install dependencies
+# Install dependencies inside the container
 RUN npm install
 
-# Copy the rest of the code
+# Copy the rest of the code (excluding node_modules due to .dockerignore)
 COPY react-app/ .
 
 EXPOSE 3000

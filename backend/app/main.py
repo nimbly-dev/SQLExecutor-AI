@@ -4,6 +4,7 @@ from pydantic import ValidationError
 from pymongo.errors import PyMongoError 
 from utils.database import mongodb
 from config import settings 
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.routers.tenant_manager import router as tenant_manager_router
 from api.routers.schema_manager import router as schema_manager_router
@@ -76,3 +77,12 @@ app.include_router(
     dependencies=[Depends(authenticate_session), Depends(validate_api_key)]
 )
 app.include_router(admin_authentication_router, prefix="/v1/admin-auth", tags=["Admin Authentication"])
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Use ["http://localhost:3000"] in production for security
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
