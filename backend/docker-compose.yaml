@@ -1,13 +1,13 @@
 version: "3.9"
 
 services:
-  backend:
+  sql-executor-api:
     build:
-      context: ./backend
+      context: .
     ports:
       - "5000:5000"
     volumes:
-      - ./backend/app:/app  
+      - ./app:/app  
     environment:
       APP_ENV: development
       PYTHONPATH: /app  
@@ -16,11 +16,11 @@ services:
 
   backend_tests:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile.test
     volumes:
-      - ./backend/app:/app
-      - ./backend/tests:/app/tests
+      - ./app:/app
+      - ./tests:/app/tests
     environment:
       PYTHONPATH: /app
     command: pytest /app/tests
@@ -30,4 +30,4 @@ services:
 networks:
   shared_network:
     driver: bridge
-    name: shared_network  # This ensures the network is explicitly named
+    name: shared_network 

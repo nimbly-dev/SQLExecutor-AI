@@ -19,7 +19,7 @@ class AdminAuthenticationService:
     
     # 24 Hrs Lifetime 1440
     # 4 days 5760
-    SESSION_EXPIRY_MINUTES = 5760
+    SESSION_EXPIRY_MINUTES = 5
 
     @staticmethod
     async def login_admin(auth_request: AuthLoginRequest) -> Dict:
