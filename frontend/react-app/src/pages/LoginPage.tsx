@@ -1,34 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoginForm from '../components/login_authentication/LoginForm';
-import { loginApi } from '../services/authService'; 
+import { LoginAdmin } from '../services/authService';
+import Cookies from 'js-cookie';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); 
+  const { login } = useAuth(); // Auth Context
 
+  // States
   const [tenantID, setTenantID] = useState('');
   const [userID, setUserID] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
+  // Automatically log in if token exists
+  useEffect(() => {
+    const token = Cookies.get('token');
+    if (token) {
+      login(); // Update Auth Context
+      navigate('/getting-started'); // Redirect to protected route
+    }
+  }, [login, navigate]); // Only runs once on component mount
+
+  // Login Handler
   const handleLogin = async () => {
     try {
-      const response = await loginApi(tenantID, userID, password);
+      await LoginAdmin(tenantID, userID, password); // Login via API
 
-      if (response && response.JWT_TOKEN) {
-        const token = response.JWT_TOKEN;
-
-        localStorage.setItem('token', token);
-
-        login();
-
-        navigate('/getting-started');
-      } else {
-        setError('Invalid credentials. Please try again.');
-      }
+      // Update Auth Context
+      login();
+      navigate('/getting-started'); // Redirect to protected route
     } catch (err) {
       console.error('Login error:', err);
       setError('Failed to login. Please check your credentials and try again.');
