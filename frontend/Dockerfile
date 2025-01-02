@@ -3,7 +3,7 @@ FROM node:20
 WORKDIR /app
 
 # Copy package.json and lock file
-COPY react-app/package.json react-app/package-lock.json ./
+COPY react-app/package.json ./
 
 # Install dependencies inside the container
 RUN npm install

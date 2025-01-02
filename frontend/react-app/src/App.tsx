@@ -6,17 +6,19 @@ import MyAccount from './components/account/MyAccount';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import LandingPage from './pages/LandingPage';
-import { AuthProvider } from './contexts/AuthContext'; 
+import { AuthProvider } from './contexts/AuthContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState(false);
   const toggleTheme = () => setDarkMode(!darkMode);
 
   return (
-    <AuthProvider> {/* Wrap the entire app in AuthProvider */}
-      <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-        <CssBaseline />
-        <Router>
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <CssBaseline />
+      <Router>
+        <AuthProvider>
           <Box
             sx={{
               height: '100vh',
@@ -26,20 +28,19 @@ const App: React.FC = () => {
               flexDirection: 'column',
             }}
           >
-            {/* My Account Component */}
+            <ToastContainer position="top-right" autoClose={3000} />
             <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
               <MyAccount darkMode={darkMode} toggleTheme={toggleTheme} />
             </Box>
 
-            {/* Routes */}
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/getting-started" element={<LandingPage />} />
             </Routes>
           </Box>
-        </Router>
-      </ThemeProvider>
-    </AuthProvider>
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   );
 };
 

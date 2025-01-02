@@ -19,9 +19,8 @@ const MyAccount: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-  const { isLoggedIn, logout } = useAuth(); 
+  const { isLoggedIn, logout } = useAuth();
 
-  // Handlers
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,23 +29,20 @@ const MyAccount: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logout(); 
-    navigate('/login'); 
   };
 
   const handleLoginRedirect = () => {
-    navigate('/login'); 
+    navigate('/login');
   };
 
   return (
     <>
-      {/* Circular Avatar Button */}
       <IconButton onClick={handleMenuOpen} sx={{ marginRight: 1 }}>
         <Avatar alt="Profile" src="/placeholder-profile.png" />
       </IconButton>
 
-      {/* Dropdown Menu */}
       <Menu
         anchorEl={anchorEl}
         open={open}
@@ -54,24 +50,20 @@ const MyAccount: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        {/* Theme Toggle */}
         <MenuItem disableRipple>
           <FormControlLabel
             control={<Switch checked={darkMode} onChange={toggleTheme} />}
-            label={
-              <Typography variant="body2">Dark Mode</Typography> 
-            }
+            label={<Typography variant="body2">Dark Mode</Typography>}
           />
         </MenuItem>
         <Divider />
-
         {isLoggedIn ? (
           <MenuItem onClick={handleLogout}>
-            <Typography variant="body2">Log Out</Typography> {}
+            <Typography variant="body2">Log Out</Typography>
           </MenuItem>
         ) : (
           <MenuItem onClick={handleLoginRedirect}>
-            <Typography variant="body2">Login</Typography> {}
+            <Typography variant="body2">Login</Typography>
           </MenuItem>
         )}
       </Menu>
