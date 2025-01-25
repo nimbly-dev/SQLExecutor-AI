@@ -1,0 +1,49 @@
+@import './variables';
+
+@mixin card-base {
+  border-radius: $border-radius-lg;
+  transition: $transition-box-shadow;
+
+  .MuiCardHeader-root {
+    padding: $padding-container;
+  }
+
+  .MuiCardContent-root {
+    padding: $padding-standard;
+    &:last-child {
+      padding-bottom: $padding-standard;
+    }
+  }
+}
+
+@mixin scrollbar($mode: 'light') {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background-color: if($mode == 'dark',
+      rgba(255, 255, 255, 0.05),
+      rgba(0, 0, 0, 0.05));
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: if($mode == 'dark',
+      rgba(255, 255, 255, 0.2),
+      rgba(0, 0, 0, 0.2));
+
+    &:hover {
+      background-color: if($mode == 'dark',
+        rgba(255, 255, 255, 0.3),
+        rgba(0, 0, 0, 0.3));
+    }
+  }
+}
+
+@mixin button-base {
+  border-radius: $border-radius-sm;
+  transition: $transition-default;
+}

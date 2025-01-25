@@ -65,7 +65,7 @@ class TenantUtils:
                     "setting_default_value": ""
                 }
             },
-            "EXTERNAL_JWT_AUTH": {
+            "API_KEYS": {
                 "TENANT_APPLICATION_TOKEN": {
                     "setting_basic_name": "Tenant SQLExecutor Application Token",
                     "setting_value": application_token,

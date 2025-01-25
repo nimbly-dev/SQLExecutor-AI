@@ -3,20 +3,20 @@ import Cookies from 'js-cookie';
 import { BASE_URL } from '../utils/apiConfig';
 import { jwtDecode } from 'jwt-decode';
 import { AdminSessionData } from '../types/authentication/adminSessionData';
-import { AdminLoginRequest } from '../types/authentication/adminLoginRequest'; 
-import { toast } from 'react-toastify'; 
+import { AdminLoginRequest } from '../types/authentication/adminLoginRequest';
+import { toast } from 'react-toastify';
 const API_URL = `${BASE_URL}/v1/admin-auth`;
 
 
 const setCookie = (key: string, value: string) => {
-  Cookies.set(key, value, { 
-    secure: true, 
-    sameSite: 'Strict', 
-    expires: 1 
+  Cookies.set(key, value, {
+    secure: true,
+    sameSite: 'Strict',
+    expires: 1
   });
 };
 
-export const LoginAdmin = async (
+export const loginAdmin = async (
   tenantID: string,
   userID: string,
   password: string
@@ -30,7 +30,7 @@ export const LoginAdmin = async (
   const response = await axios.post(`${API_URL}/login`, requestData);
 
   if (response.data && response.data.JWT_TOKEN) {
-    const token = response.data.JWT_TOKEN.split(' ')[1]; 
+    const token = response.data.JWT_TOKEN.split(' ')[1];
     const payload: AdminSessionData = jwtDecode<AdminSessionData>(token);
 
     setCookie('token', token);
@@ -45,7 +45,7 @@ export const LoginAdmin = async (
 };
 
 
-export const LogoutAdmin = async (): Promise<void> => {
+export const logoutAdmin = async (): Promise<void> => {
   try {
     const token = Cookies.get('token');
     if (!token) throw new Error('User not authenticated.');
@@ -69,8 +69,8 @@ export const LogoutAdmin = async (): Promise<void> => {
 
     if (error.response && error.response.status === 401) {
       toast.error('Session expired. Redirecting to login...');
-      Cookies.remove('token'); 
-      window.location.href = '/login'; 
+      Cookies.remove('token');
+      window.location.href = '/login';
     } else {
       toast.error('Failed to logout. Please try again.');
     }

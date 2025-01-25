@@ -2,7 +2,7 @@ import logging
 
 from model.ruleset.ruleset import Ruleset
 from model.tenant.tenant import Tenant
-from model.authentication.external_user_session_data import ExternalSessionData
+from model.external_system_integration.external_user_session_data import ExternalSessionData
 from api.core.services.ruleset.ruleset_conditions_service import RulesetConditionsService
 from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.constants.tenant.settings_categories import SQL_INJECTORS
@@ -42,7 +42,7 @@ class InjectorResolver:
 
     def apply_injectors(self, sql_query: str, tenant: Tenant):
         """Apply injectors to modify the SQL query and return the updated query and filters."""
-        injector_filters = []
+        injector_filters = set()  # Use a set to deduplicate filters
 
         is_dynamic_injection_enabled = SettingUtils.get_setting_value(
             settings=tenant.settings,
@@ -68,34 +68,33 @@ class InjectorResolver:
             if self._matches_condition(injector.condition.condition):
                 logger.debug("Injector '%s' condition matched.", injector_name)
                 for table, rule in injector.tables.items():
-                    if table in sql_query:
-                        filter_clause = RulesetConditionsService.resolve_condition(
-                            condition=rule.filters,
-                            session_data=self.session_data.dict(),
-                            conditions_dict=getattr(self.ruleset, "conditions", {})
-                        )
-                        logger.debug("Initial filter clause: %s", filter_clause)
+                    filter_clause = RulesetConditionsService.resolve_condition(
+                        condition=rule.filters,
+                        session_data=self.session_data.dict(),
+                        conditions_dict=getattr(self.ruleset, "conditions", {})
+                    )
+                    logger.debug("Initial filter clause: %s", filter_clause)
 
-                        for key, value in self.session_data.custom_fields.items():
-                            placeholder = f"${{jwt.{key}}}"
-                            resolved_value = self._format_value(value)
-                            filter_clause = filter_clause.replace(placeholder, resolved_value)
-                            logger.debug("Replaced placeholder '%s' with '%s'", placeholder, resolved_value)
+                    for key, value in self.session_data.custom_fields.items():
+                        placeholder = f"${{jwt.{key}}}"
+                        resolved_value = self._format_value(value)
+                        filter_clause = filter_clause.replace(placeholder, resolved_value)
+                        logger.debug("Replaced placeholder '%s' with '%s'", placeholder, resolved_value)
 
-                        injector_filters.append(filter_clause)
+                    injector_filters.add(filter_clause)  # Add filter to the set to deduplicate
             else:
                 logger.debug("Injector '%s' condition did not match.", injector_name)
 
         if injector_filters:
             injector_str = " AND ".join(injector_filters)
-            logger.debug("Combined injector filters: %s", injector_str)
+            logger.debug("Combined unique injector filters: %s", injector_str)
 
             if "WHERE" in sql_query.upper():
                 sql_query = sql_query.rstrip(';') + f" AND {injector_str};"
-                logger.debug("Appended injector filters with AND to existing WHERE clause.")
+                logger.debug("Appended unique injector filters with AND to existing WHERE clause.")
             else:
                 sql_query = sql_query.rstrip(';') + f" WHERE {injector_str};"
-                logger.debug("Added injector filters as a new WHERE clause.")
+                logger.debug("Added unique injector filters as a new WHERE clause.")
 
             return sql_query, injector_str
 

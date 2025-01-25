@@ -6,6 +6,7 @@ from typing import Dict
 
 from model.tenant.tenant import Tenant
 from model.tenant.setting import Setting
+from config import settings
 
 _DEFAULT_SETTINGS_PATH = '/app/resources/settings/default_settings.json'
 
@@ -55,6 +56,31 @@ class SettingUtils:
             }
             for category, settings in default_settings.items()
         }
+
+        # if settings.APP_ENV == "development":
+        #     initialized_settings["DEV_SQL_CONTEXT"] = {
+        #         "DEV_EXAMPLE_SQL_CONTEXT_ENCRYPTION_KEY": Setting(
+        #             setting_description="Development SQL Context Encryption Key",
+        #             setting_basic_name="DEV_EXAMPLE_SQL_CONTEXT_ENCRYPTION_KEY",
+        #             setting_default_value="",
+        #             setting_value=settings.DEV_EXAMPLE_SQL_CONTEXT_ENCRYPTION_KEY,
+        #             is_custom_setting=True
+        #         ).dict(),
+        #         "DEV_EXAMPLE_SQL_CONTEXT_ENCRYPTION_IV": Setting(
+        #             setting_description="Development SQL Context Encryption IV",
+        #             setting_basic_name="DEV_EXAMPLE_SQL_CONTEXT_ENCRYPTION_IV",
+        #             setting_default_value="",
+        #             setting_value=settings.DEV_EXAMPLE_SQL_CONTEXT_ENCRYPTION_IV,
+        #             is_custom_setting=True
+        #         ).dict(),
+        #         "DEV_EXAMPLE_SQL_CONTEXT_ENCRYPTED_SECRET": Setting(
+        #             setting_description="Development SQL Context Encrypted Secret",
+        #             setting_basic_name="DEV_EXAMPLE_SQL_CONTEXT_ENCRYPTED_SECRET",
+        #             setting_default_value="",
+        #             setting_value=settings.DEV_EXAMPLE_SQL_CONTEXT_ENCRYPTED_SECRET,
+        #             is_custom_setting=True
+        #         ).dict()
+        #     }
 
         # Update tenant's settings
         tenant.settings = initialized_settings

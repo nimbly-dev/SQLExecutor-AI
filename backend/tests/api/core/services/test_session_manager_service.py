@@ -3,9 +3,9 @@ import pymongo
 from unittest import mock
 from uuid import UUID
 from fastapi import HTTPException
-from api.core.services.authentication.external_session_manager_service import SessionManagerService
+from api.core.services.external_system.external_session_manager_service import SessionManagerService
 from model.authentication.external_user_decoded_jwt_token import DecodedJwtToken
-from model.authentication.external_user_session_data import ExternalSessionData
+from model.external_system_integration.external_user_session_data import ExternalSessionData
 from model.tenant.tenant import Tenant
 from model.tenant.setting import Setting
 from utils.database import mongodb

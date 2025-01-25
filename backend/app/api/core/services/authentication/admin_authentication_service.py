@@ -3,7 +3,7 @@ import jwt
 from uuid import UUID
 from datetime import datetime, timezone, timedelta
 from utils.database import mongodb
-from utils.jwt_utils import decode_jwt
+from utils.auth_utils import decode_jwt
 from fastapi import HTTPException
 from pymongo.errors import PyMongoError
 from datetime import datetime, timezone

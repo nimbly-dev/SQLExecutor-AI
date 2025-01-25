@@ -1,15 +1,21 @@
 import logging
+import difflib
+import re
 from typing import List
 from fastapi import HTTPException
-
 
 from model.query_scope.query_scope import QueryScope
 from model.responses.schema.schema_tables_response import SchemaTablesResponse
 from api.core.services.schema.schema_manager_service import SchemaManagerService
+from model.responses.sql_generation.sql_generation_error import QueryScopeResolutionErrorResponse, QueryScopeErrorType, ErrorType
 from utils.query_scope.validate_query_scope_utils import ValidateQueryScopeUtils
 
 logger = logging.getLogger(__name__)
 
+def get_table_suggestions(table_name: str, schemas: List[SchemaTablesResponse]) -> List[str]:
+    # Gather valid table names
+    valid_tables = {tbl.table_name for sch in schemas for tbl in sch.tables}
+    return difflib.get_close_matches(table_name, valid_tables)
 
 class QueryScopePreparationService:
     """
@@ -77,13 +83,27 @@ class QueryScopePreparationService:
         schemas = await SchemaManagerService.get_schema_tables(tenant_id=tenant_id)
         QueryScopePreparationService._soft_preprocess_tables(schemas, query_scope)
 
-        tables_exist = ValidateQueryScopeUtils.validate_tables_exist_in_schemas(
+        tables_exist, unmatched_tables = ValidateQueryScopeUtils.validate_tables_exist_in_schemas(
             schemas, query_scope
         )
         if not tables_exist:
             raise HTTPException(
                 status_code=400,
-                detail="One or more tables in the user request do not exist in the schemas."
+                detail=QueryScopeResolutionErrorResponse(
+                    error_type=ErrorType.QUERY_SCOPE_ERROR,
+                    scope_error_type=QueryScopeErrorType.TABLE_NOT_FOUND,
+                    user_query_scope=query_scope,
+                    issues=[
+                        {
+                            "type": "table_not_found",
+                            "input": table,
+                            "suggestions": get_table_suggestions(table, schemas)
+                        }
+                        for table in unmatched_tables
+                    ],
+                    suggestions=["Verify the table names or consult schema documentation."],
+                    message="One or more tables in the user request do not exist in the schemas."
+                ).dict()
             )
 
         return schemas

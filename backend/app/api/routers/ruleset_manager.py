@@ -4,7 +4,7 @@ from api.core.services.ruleset.ruleset_manager_service import RulesetManagerServ
 from model.requests.ruleset_manager.add_ruleset_request import AddRulesetRequest
 from model.authentication.admin_session_data import AdminSessionData
 
-from utils.jwt_utils import authenticate_admin_session
+from utils.auth_utils import authenticate_admin_session
 
 router = APIRouter()
 

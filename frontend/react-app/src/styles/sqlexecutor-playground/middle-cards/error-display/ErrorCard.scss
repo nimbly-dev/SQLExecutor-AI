@@ -1,0 +1,217 @@
+.error-card {
+  &__container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    height: 100%; // Ensure the container takes the full height of its parent
+    max-height: 300px; // Reduced from 600px
+    overflow: hidden;  // Ensure no scroll at container level
+    padding: 0; // Remove padding to maximize space
+    border: 1px solid #f5c6cb; /* Match the red theme */
+    background-color: #fff5f5; /* Light red background */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+
+    @media (max-width: 600px) {
+      max-height: 250px; // Reduced from 400px
+    }
+
+    &--dark {
+      background-color: rgba(247, 222, 230, 0.1); /* Updated light variant */
+    }
+
+    &--light {
+      background-color: rgba(247, 222, 230, 0.05); /* Updated light variant */
+    }
+  }
+
+  &__header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: inherit;
+    border-bottom: 1px solid #f5c6cb; /* Subtle divider */
+    cursor: pointer; /* Indicate clickable header for collapse */
+    transition: all 0.2s ease; /* Smooth transition for interactions */
+
+    &.collapsed {
+      border-bottom: none;
+    }
+
+    &--dark {
+      background-color: rgba(211, 47, 47, 0.1);
+    }
+
+    &--light {
+      background-color: rgba(211, 47, 47, 0.05);
+    }
+  }
+
+  &__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    flex: 1;
+    overflow-y: auto;     // Enable vertical scrolling
+    max-height: 252px; // Match the typescript definition
+    padding: 8px;
+    margin: 0;
+    box-sizing: border-box; /* Ensure padding is included in height calculations */
+    padding-bottom: 30px; /* Increased bottom padding to prevent cutoff */
+
+    /* Ensure last child has proper spacing */
+    & > *:last-child {
+      margin-bottom: 10px;
+    }
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #f5c6cb; /* Match the red theme */
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: #b52e2e; /* Darker red on hover */
+    }
+  }
+
+  &__scrollbar {
+    /* Scrollbar styles */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: rgba(0, 0, 0, 0.2);
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* Dark mode scrollbar */
+    &--dark {
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.3);
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+
+    &--dark {
+      scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    }
+  }
+
+  &__bullet-point {
+    display: flex;
+    align-items: flex-start;
+
+    &::before {
+      content: "•";
+      margin-right: 8px;
+      font-size: 1.2em;
+      line-height: 1.4;
+    }
+  }
+
+  // Optional footer if you want it also sticky
+  &__footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    cursor: pointer; /* Indicate clickable footer for collapse */
+    transition: all 0.3s ease; /* Smooth transition for interactions */
+    display: none; /* Hide the footer */
+
+    &.collapsed {
+      /* Styles when the footer is collapsed */
+      font-size: 1rem;
+      padding: 8px;
+    }
+  }
+
+  .error-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 3px;
+    font-size: 0.9rem;
+    color: #842029;
+    background-color: #f8d7da;
+    border-radius: 4px;
+    border: 1px solid #f5c6cb;
+  }
+
+  .error-badge.warning {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #f57c00;
+    border-color: #f57c00;
+  }
+
+  .suggestion-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #fff;
+    background-color: #5bc0de; /* Blue for suggestions */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .suggestion-badge:hover {
+    background-color: #31b0d5; /* Darker blue on hover */
+  }
+
+  .error-card-section {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0; /* Light divider for clarity */
+  }
+
+  .dropdown-toggle {
+    cursor: pointer;
+    transition: transform 0.3s ease; /* Smooth rotation */
+  }
+
+  .dropdown-toggle.collapsed {
+    transform: rotate(180deg); /* Rotate icon when collapsed */
+  }
+
+  /* Minimalistic Overall Card Design */
+  .error-card {
+    border-radius: 8px;
+    background-color: #f8d7da; /* Light red background */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+
+  @media (max-width: 600px) {
+    .error-card__container {
+      max-height: 250px; // Reduced from 400px
+    }
+
+    .error-card__header {
+      font-size: 1rem;
+    }
+  }
+}

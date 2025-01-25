@@ -1,14 +1,24 @@
+// App.tsx
 import React, { useState } from 'react';
-import { ThemeProvider, CssBaseline, Box } from '@mui/material';
-import { lightTheme } from './themes/lightTheme';
-import { darkTheme } from './themes/darkTheme';
-import MyAccount from './components/account/MyAccount';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import LandingPage from './pages/LandingPage';
-import { AuthProvider } from './contexts/AuthContext';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { lightTheme } from './themes/lightTheme';
+import { darkTheme } from './themes/darkTheme';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import MainLayout from './components/layout/MainLayout';
+import LoginPage from './pages/LoginPage';
+import SQLExecutorPlayground from './pages/SQLExecutorPlayground';
+import LandingPage from './pages/LandingPage';
+import ToastProvider from './components/common/ToastProvider';
+import './styles/themes/index.scss';  // Using relative path instead of alias
+
+// Protected Route Component
+const ProtectedRoute: React.FC = () => {
+  const { isLoggedIn } = useAuth();
+  return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
+};
 
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -17,27 +27,24 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
+      <ToastProvider />
+      <ToastContainer position="top-right" autoClose={3000} />
       <Router>
         <AuthProvider>
-          <Box
-            sx={{
-              height: '100vh',
-              width: '100vw',
-              bgcolor: 'background.default',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <ToastContainer position="top-right" autoClose={3000} />
-            <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
-              <MyAccount darkMode={darkMode} toggleTheme={toggleTheme} />
-            </Box>
+          <Routes>
+            {/* Public Route */}
+            <Route path="/login" element={<LoginPage />} />
 
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/getting-started" element={<LandingPage />} />
-            </Routes>
-          </Box>
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<MainLayout darkMode={darkMode} toggleTheme={toggleTheme} />}>
+                <Route path="/getting-started" element={<LandingPage />} />
+                <Route path="/sqlexecutor-playground" element={<SQLExecutorPlayground />} />
+              </Route>
+              {/* Wildcard inside Protected Routes */}
+              <Route path="*" element={<Navigate to="/getting-started" replace />} />
+            </Route>
+          </Routes>
         </AuthProvider>
       </Router>
     </ThemeProvider>

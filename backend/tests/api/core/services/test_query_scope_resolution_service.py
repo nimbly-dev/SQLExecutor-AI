@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from fastapi import HTTPException
 
-from model.authentication.external_user_session_data import ExternalSessionData
+from model.external_system_integration.external_user_session_data import ExternalSessionData
 from model.query_scope.query_scope import QueryScope
 from model.query_scope.entities import Entities
 from model.schema.schema import Schema

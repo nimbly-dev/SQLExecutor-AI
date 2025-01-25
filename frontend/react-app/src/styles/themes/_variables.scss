@@ -1,0 +1,22 @@
+// Common variables
+$border-radius-sm: 5px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+
+// Transitions
+$transition-default: all 0.2s ease;
+$transition-box-shadow: box-shadow 0.3s ease-in-out;
+
+// Spacing
+$padding-standard: 20px;
+$padding-container: 16px;
+
+// Shadows
+$shadow-sm: 0px 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0px 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+// Dark mode shadows
+$shadow-dark-sm: 0px 2px 4px rgba(0, 0, 0, 0.2);
+$shadow-dark-md: 0px 4px 6px rgba(0, 0, 0, 0.2);
+$shadow-dark-lg: 0 4px 12px rgba(0, 0, 0, 0.3);

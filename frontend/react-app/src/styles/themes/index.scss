@@ -1,0 +1,30 @@
+@import './variables';
+@import './mixins';
+
+:root {
+  // Border radius
+  --border-radius-sm: #{$border-radius-sm};
+  --border-radius-md: #{$border-radius-md};
+  --border-radius-lg: #{$border-radius-lg};
+
+  // Transitions
+  --transition-default: #{$transition-default};
+  --transition-box-shadow: #{$transition-box-shadow};
+
+  // Shadows
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-dark-sm: #{$shadow-dark-sm};
+  --shadow-dark-md: #{$shadow-dark-md};
+  --shadow-dark-lg: #{$shadow-dark-lg};
+}
+
+// Apply scrollbar styles globally
+body {
+  @include scrollbar('light');
+}
+
+.dark-mode {
+  @include scrollbar('dark');
+}

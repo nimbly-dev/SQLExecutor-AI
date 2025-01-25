@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from model.schema.schema import Schema
 from model.query_scope.query_scope import QueryScope
 from model.responses.schema.schema_tables_response import SchemaTablesResponse
@@ -6,7 +6,7 @@ from model.responses.schema.schema_tables_response import SchemaTablesResponse
 class ValidateQueryScopeUtils:
     
     @staticmethod
-    def validate_tables_exist_in_schemas(schemas: List[SchemaTablesResponse], query_scope: QueryScope) -> bool:
+    def validate_tables_exist_in_schemas(schemas: List[SchemaTablesResponse], query_scope: QueryScope) -> Tuple[bool, List[str]]: 
         """
         Validates if all tables in the query_scope exist in the provided schema data.
 
@@ -22,4 +22,5 @@ class ValidateQueryScopeUtils:
         # Create a set of all valid table names
         valid_tables = {table.table_name for schema in schemas for table in schema.tables}
 
-        return tables_to_validate.issubset(valid_tables)
+        unmatched = list(tables_to_validate - valid_tables)
+        return (len(unmatched) == 0, unmatched)
