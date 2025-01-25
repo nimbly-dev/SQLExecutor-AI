@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import '../../styles/my_account/my_account.scss';
 
 const MyAccount: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({
   darkMode,
@@ -39,7 +40,10 @@ const MyAccount: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({
 
   return (
     <>
-      <IconButton onClick={handleMenuOpen} sx={{ marginRight: 1 }}>
+      <IconButton 
+        onClick={handleMenuOpen} 
+        className="account-button"
+      >
         <Avatar alt="Theo" src="/placeholder-profile.png" />
       </IconButton>
 
@@ -49,20 +53,22 @@ const MyAccount: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({
         onClose={handleMenuClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        className="menu"
       >
-        <MenuItem disableRipple>
+        <MenuItem disableRipple className="menu-item">
           <FormControlLabel
+            className="theme-switch"
             control={<Switch checked={darkMode} onChange={toggleTheme} />}
             label={<Typography variant="body2">Dark Mode</Typography>}
           />
         </MenuItem>
         <Divider />
         {isLoggedIn ? (
-          <MenuItem onClick={handleLogout}>
+          <MenuItem onClick={handleLogout} className="menu-item">
             <Typography variant="body2">Log Out</Typography>
           </MenuItem>
         ) : (
-          <MenuItem onClick={handleLoginRedirect}>
+          <MenuItem onClick={handleLoginRedirect} className="menu-item">
             <Typography variant="body2">Login</Typography>
           </MenuItem>
         )}

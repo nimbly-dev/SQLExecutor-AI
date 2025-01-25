@@ -1,0 +1,50 @@
+.account-button {
+  padding: 4px;
+  
+  .MuiAvatar-root {
+    width: 45px;
+    height: 45px;
+    font-size: 1rem;
+  }
+}
+
+.menu {
+  .MuiPaper-root {
+    min-width: 200px;
+    margin-top: 8px;
+  }
+}
+
+.menu-item {
+  min-height: 40px;
+  padding: 4px 16px;
+
+  .MuiTypography-root {
+    font-size: 0.875rem;
+  }
+
+  .MuiFormControlLabel-root {
+    margin: 0;
+    width: 100%;
+    justify-content: space-between;
+
+    .MuiTypography-root {
+      flex: 1;
+      text-align: center;
+      margin-right: 8px;
+    }
+  }
+}
+
+.theme-switch {
+  .MuiSwitch-root {
+    width: 42px;
+    height: 24px;
+    padding: 0;
+
+    .MuiSwitch-switchBase {
+      padding: 0;
+      margin: 2px;
+    }
+  }
+}
