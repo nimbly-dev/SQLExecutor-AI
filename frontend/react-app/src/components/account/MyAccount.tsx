@@ -40,7 +40,7 @@ const MyAccount: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({
   return (
     <>
       <IconButton onClick={handleMenuOpen} sx={{ marginRight: 1 }}>
-        <Avatar alt="Profile" src="/placeholder-profile.png" />
+        <Avatar alt="Theo" src="/placeholder-profile.png" />
       </IconButton>
 
       <Menu

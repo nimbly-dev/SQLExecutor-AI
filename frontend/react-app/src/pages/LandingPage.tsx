@@ -24,7 +24,7 @@ const LandingPage: React.FC = () => {
         Test SQL Queries, Manage Schemas, Explore APIs, and Configure Access Rules—all in one place.
       </Typography>
       <Box sx={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-        <Button variant="contained" color="primary" onClick={() => navigate('/chat')}>Get Started</Button>
+        <Button variant="contained" color="primary" onClick={() => navigate('/sqlexecutor-playground')}>Get Started</Button>
         <Button variant="outlined" onClick={() => navigate('/login')}>Login</Button>
       </Box>
     </Box>

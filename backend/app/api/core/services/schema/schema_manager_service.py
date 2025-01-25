@@ -87,6 +87,26 @@ class SchemaManagerService:
             )
 
         return schemas
+    
+    @staticmethod
+    async def get_schemas_names_and_descriptions(tenant_id: str) -> List[Dict[str, Any]]:
+        collection = mongodb.db["schemas"]
+        schemas_cursor = collection.find(
+            {"tenant_id": tenant_id},
+            {"schema_name": 1, "description": 1, "_id": 0}  
+        )
+
+        schemas = []
+        async for schema_data in schemas_cursor:
+            schemas.append(schema_data)
+
+        if not schemas:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No schemas found for tenant '{tenant_id}'."
+            )
+
+        return schemas
 
     @staticmethod
     async def get_schema_tables(tenant_id: str) -> List[SchemaTablesResponse]:

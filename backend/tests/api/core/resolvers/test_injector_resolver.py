@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 from app.api.core.resolvers.access_control.injector_resolver import InjectorResolver
-from app.model.authentication.external_user_session_data import ExternalSessionData
+from app.model.external_system_integration.external_user_session_data import ExternalSessionData
 from app.model.tenant.setting import Setting
 import uuid
 

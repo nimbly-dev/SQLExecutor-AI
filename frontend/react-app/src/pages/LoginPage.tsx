@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoginForm from '../components/login_authentication/LoginForm';
-import { LoginAdmin } from '../services/authService';
+import { loginAdmin } from '../services/authService';
 import Cookies from 'js-cookie';
 
 const LoginPage: React.FC = () => {
@@ -28,7 +28,7 @@ const LoginPage: React.FC = () => {
   // Login Handler
   const handleLogin = async () => {
     try {
-      await LoginAdmin(tenantID, userID, password); // Login via API
+      await loginAdmin(tenantID, userID, password); // Login via API
 
       // Update Auth Context
       login();

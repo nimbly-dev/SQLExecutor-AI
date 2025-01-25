@@ -1,4 +1,7 @@
-from pydantic import BaseSettings
+from pydantic import BaseSettings, Field
+from dotenv import load_dotenv
+
+load_dotenv()  # Explicitly reload environment variables
 
 class Settings(BaseSettings):
     APP_NAME: str = "SQLExecutor"
@@ -11,6 +14,8 @@ class Settings(BaseSettings):
     CLUSTER_DB_URL: str
     MONGO_DB_NAME: str    
     OPENAI_API_KEY: str
+    
+    FRONTEND_DEVELOPMENT_CONNECTION: str
 
     @property
     def mongodb_uri(self) -> str:
@@ -18,6 +23,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
-
+        # extra = "allow"  # Ignore extra keys in .env
 
 settings = Settings()
+

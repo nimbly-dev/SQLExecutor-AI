@@ -1,32 +1,27 @@
-# The quickest fix is to ensure that when you're testing SQLite, you don't pass
-# the 'pool_size' or 'max_overflow' args. One way is to conditionally create the
-# engine within your SqlRunnerService based on whether the DB URL is SQLite.
-
-# Example service code fix (no changes needed in the tests):
-
+from fastapi import HTTPException
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
+from model.query_scope.query_scope import QueryScope
+from model.responses.sql_generation.sql_generation_error import SqlRunErrorResponse
 from model.tenant.tenant import Tenant
+
 from utils.tenant_manager.setting_utils import SettingUtils
-from api.core.constants.tenant.settings_categories import SQL_RUNNER
+from api.core.constants.tenant.settings_categories import EXTERNAL_SYSTEM_DB_SETTING
+from utils.external_system_utils.external_system_db_utils import build_db_url
 
 class SqlRunnerService:
     
     @staticmethod
-    def run_sql(query: str, tenant: Tenant, params: dict = None):
+    def run_sql(orginal_user_input: str,query_scope: QueryScope,query: str, tenant: Tenant, params: dict = None):
         sql_flavor = SettingUtils.get_setting_value(
             settings=tenant.settings,
-            category_key=SQL_RUNNER,
-            setting_key="SQL_FLAVOR"
+            category_key=EXTERNAL_SYSTEM_DB_SETTING,
+            setting_key="EXTERNAL_TENANT_DB_DIALECT"
         )
 
-        db_connection_url = SettingUtils.get_setting_value(
-            settings=tenant.settings,
-            category_key=SQL_RUNNER,
-            setting_key="EXTERNAL_SYSTEM_DB_CONNECTION_URL"
-        )
+        db_connection_url = build_db_url(tenant)
 
-        if sql_flavor not in ["postgres", "mysql", "sqlite"]:
+        if sql_flavor not in ["postgresql", "mysql", "sqlite"]:
             raise ValueError(f"Unsupported SQL flavor: {sql_flavor}")
 
         # Conditionally exclude pool settings for SQLite:
@@ -40,6 +35,18 @@ class SqlRunnerService:
                 result = connection.execute(text(query), params or {})
                 return [dict(row._mapping) for row in result]
         except SQLAlchemyError as e:
-            return f"Query execution failed: {str(e)}"
+            error_response = SqlRunErrorResponse(
+                message="An error occurred while executing the query.",
+                user_query_scope=query_scope,
+                user_input=orginal_user_input,
+                sql_query=query,
+                error_message=str(e)
+            )
+            raise HTTPException(
+                status_code=400,
+                detail=error_response
+            )
+        except Exception as e:
+            return f"An unexpected error occurred: {str(e)}"
         finally:
             engine.dispose()

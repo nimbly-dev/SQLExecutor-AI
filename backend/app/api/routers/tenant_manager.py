@@ -4,7 +4,7 @@ from api.core.services.tenant_manager.tenant_settings_service import TenantSetti
 from api.core.services.tenant_manager.admin_user_manager_service import AdminUserService
 from model.authentication.admin_session_data import AdminSessionData
 
-from utils.jwt_utils import authenticate_admin_session
+from utils.auth_utils import authenticate_admin_session
 from model.tenant.tenant import Tenant
 from model.authentication.admin_user import AdminUser
 from model.requests.tenant_manager.update_tenant_request import UpdateTenantRequestModel

@@ -11,7 +11,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const redirecting = useRef<boolean>(false);
+  const redirecting = useRef<boolean>(false); // Prevent multiple redirects
 
   const validateToken = (): boolean => {
     const token = Cookies.get('token');
@@ -32,20 +32,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     Cookies.remove('user_id');
     Cookies.remove('role');
     setIsLoggedIn(false);
-    if (intervalRef.current) clearInterval(intervalRef.current); // Clear interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  const handleSessionExpiry = () => {
+    if (!redirecting.current) {
+      redirecting.current = true; // Prevent multiple triggers
+      clearAuthState();
+      toast.error('Session expired. Redirecting to login...');
+      navigate('/login'); // Redirect immediately
+    }
   };
 
   const syncAuthState = () => {
     const token = Cookies.get('token');
     const hasValidToken = validateToken();
-
     setIsLoggedIn(!!token && hasValidToken);
 
-    if (token && !hasValidToken && !redirecting.current) {
-      redirecting.current = true;
-      clearAuthState();
-      toast.error('Session expired. Redirecting to login...');
-      navigate('/login');
+    if (token && !hasValidToken) {
+      handleSessionExpiry(); 
     }
   };
 
@@ -54,15 +62,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     intervalRef.current = setInterval(() => {
       const hasValidToken = validateToken();
-      if (!hasValidToken && !redirecting.current) {
-        clearAuthState();
-        toast.error('Session expired. Redirecting to login...');
-        navigate('/login');
+      if (!hasValidToken) {
+        handleSessionExpiry(); 
       }
-    }, 60000);
+    }, 60000); 
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current); // Cleanup interval
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [navigate]);
 
@@ -74,7 +80,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     clearAuthState();
     toast.success('Logged out successfully!');
-    navigate('/login');
+    navigate('/login'); 
   };
 
   return (

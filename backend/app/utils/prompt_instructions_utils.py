@@ -10,9 +10,9 @@ class DefaultPromptInstructionsUtil:
     INTENT_INSTRUCTION = """
     Identify the intent (fetch_data, update_data, delete_data, insert_data, schema_info) and entities (tables, columns) based on the query. 
 
-    - Use dot notation (table_name.column_name) for columns.  
-    - Default to ["table.*"] for ambiguous or unspecified columns.  
-    - Avoid inferred columns (e.g., totals, sums).  
+        - Use 'table.column' for columns. Default to 'table.*' for ambiguous or "all columns" queries.
+        - Avoid inferred or aggregated columns unless explicitly requested.
+        - Prefer explicit column names unless "all columns" is clearly mentioned.
     """
 
     INTENT_JSON_SCHEMA = {

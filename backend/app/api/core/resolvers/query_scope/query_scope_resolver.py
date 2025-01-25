@@ -1,9 +1,8 @@
-
 import logging
 from typing import List, Dict, Any, Union
 from fastapi import HTTPException
 
-from model.authentication.external_user_session_data import ExternalSessionData
+from model.external_system_integration.external_user_session_data import ExternalSessionData
 from model.query_scope.query_scope import QueryScope
 from model.schema.schema import Schema
 from model.tenant.tenant import Tenant
@@ -41,13 +40,7 @@ class QueryScopeResolver:
             query_scope=self.query_scope
         )
 
-        tenant_settings = {
-            "IGNORE_COLUMN_WILDCARDS": SettingUtils.get_setting_value(
-                settings=self.settings,
-                category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
-                setting_key="IGNORE_COLUMN_WILDCARDS"
-            )
-        }
+        tenant_settings = {}
         # Match best schema
         return await QueryScopeResolutionService.match_schema(
             tenant_id=tenant_id,

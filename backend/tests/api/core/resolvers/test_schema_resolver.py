@@ -9,8 +9,8 @@ from model.schema.table import Table
 from model.query_scope.query_scope import QueryScope
 from model.query_scope.entities import Entities
 from model.tenant.tenant import Tenant
-from model.authentication.external_user_session_data import ExternalSessionData
-from model.authentication.external_user_session_data_setting import ExternalSessionDataSetting
+from model.external_system_integration.external_user_session_data import ExternalSessionData
+from model.external_system_integration.external_user_session_data_setting import ExternalSessionDataSetting
 from api.core.resolvers.schema.schema_resolver import SchemaResolver
 from api.core.constants.tenant.settings_categories import SCHEMA_RESOLVER_CATEGORY_KEY
 from utils.tenant_manager.setting_utils import SettingUtils
