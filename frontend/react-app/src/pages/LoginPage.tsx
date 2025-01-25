@@ -6,7 +6,7 @@ import LoginForm from '../components/login_authentication/LoginForm';
 import { loginAdmin } from '../services/authService';
 import Cookies from 'js-cookie';
 
-const LoginPage: React.FC = () => {
+function LoginPage () {
   const navigate = useNavigate();
   const { login } = useAuth(); // Auth Context
 
