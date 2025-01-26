@@ -1,9 +1,11 @@
+/* my_account.scss */
+
 .account-button {
-  padding: 4px;
-  
+  padding: 4px; // Minimal padding to prevent expanding Toolbar
+
   .MuiAvatar-root {
-    width: 45px;
-    height: 45px;
+    width: 40px; // Reduced from 45px to 40px to match MUI's default Avatar size
+    height: 40px;
     font-size: 1rem;
   }
 }
@@ -17,7 +19,7 @@
 
 .menu-item {
   min-height: 40px;
-  padding: 4px 16px;
+  padding: 4px 16px; // Ensure padding doesn't add excessive height
 
   .MuiTypography-root {
     font-size: 0.875rem;
@@ -38,7 +40,7 @@
 
 .theme-switch {
   .MuiSwitch-root {
-    width: 42px;
+    width: 40px; // Adjusted from 42px to 40px to align with default sizing
     height: 24px;
     padding: 0;
 

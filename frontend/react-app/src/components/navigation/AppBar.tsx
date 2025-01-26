@@ -1,3 +1,5 @@
+// AppBar.tsx
+
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -22,7 +24,7 @@ const AppBarComponent: React.FC<AppBarProps> = ({ open, handleDrawerOpen, darkMo
             duration: theme.transitions.duration.leavingScreen,
           }),
         ...(open && {
-          marginLeft: 240,
+          marginLeft: 240, // Ensure this matches Drawer width
           width: `calc(100% - 240px)`,
           transition: (theme) =>
             theme.transitions.create(['width', 'margin'], {
@@ -32,7 +34,13 @@ const AppBarComponent: React.FC<AppBarProps> = ({ open, handleDrawerOpen, darkMo
         }),
       }}
     >
-      <Toolbar>
+      <Toolbar
+        sx={{
+          minHeight: 64,
+          display: 'flex',
+          alignItems: 'center', 
+        }}
+      >
         <IconButton
           color="inherit"
           aria-label="open drawer"
@@ -40,7 +48,7 @@ const AppBarComponent: React.FC<AppBarProps> = ({ open, handleDrawerOpen, darkMo
           edge="start"
           sx={{
             marginRight: 2,
-            ...(open && { display: 'none' }), // Hide if drawer is already open
+            ...(open && { display: 'none' }), // Hide if drawer is open
           }}
         >
           <MenuIcon />
