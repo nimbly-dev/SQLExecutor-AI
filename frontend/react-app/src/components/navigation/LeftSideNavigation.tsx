@@ -26,8 +26,8 @@ interface LeftSideNavigationProps {
 }
 
 const LeftSideNavigation: React.FC<LeftSideNavigationProps> = ({ open, handleDrawerClose }) => {
-  const navigate = useNavigate(); // Hook for navigation
-
+  const navigate = useNavigate(); 
+  
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
     { text: 'Playground', icon: <QueryStatsIcon />, path: '/sqlexecutor-playground' },

@@ -1,3 +1,5 @@
+// MyAccount.tsx
+
 import React, { useState } from 'react';
 import {
   Menu,
@@ -11,12 +13,14 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import '../../styles/my_account/my_account.scss';
+import '../../styles/my_account/my_account.scss'; // Existing SCSS import
 
-const MyAccount: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({
-  darkMode,
-  toggleTheme,
-}) => {
+interface MyAccountProps {
+  darkMode: boolean;
+  toggleTheme: () => void;
+}
+
+const MyAccount: React.FC<MyAccountProps> = ({ darkMode, toggleTheme }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -31,19 +35,18 @@ const MyAccount: React.FC<{ darkMode: boolean; toggleTheme: () => void }> = ({
   };
 
   const handleLogout = async () => {
-    logout(); 
+    await logout(); // Ensure logout completes
+    handleMenuClose();
   };
 
   const handleLoginRedirect = () => {
     navigate('/login');
+    handleMenuClose();
   };
 
   return (
     <>
-      <IconButton 
-        onClick={handleMenuOpen} 
-        className="account-button"
-      >
+      <IconButton onClick={handleMenuOpen} className="account-button">
         <Avatar alt="Theo" src="/placeholder-profile.png" />
       </IconButton>
 
