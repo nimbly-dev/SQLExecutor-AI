@@ -6,19 +6,23 @@ import { ExternalSessionData } from '../types/authentication/externalUserSession
 
 const API_URL = `${BASE_URL}/v1/chat-interface`;
 
-export const getUsersContext = async (page: number, orderDirection: string, pageLimit: number): Promise<GetUserContextsResponse> => {
+export const getUsersContext = async (page: number, orderDirection: string, pageLimit: number, schema: string): Promise<GetUserContextsResponse> => {
     try {
-        const tenantId = Cookies.get('tenant_id');
         const token = Cookies.get('token');
-        const response = await axios.get(`${API_URL}/${tenantId}/users-context`, {
+        const tenantId = sessionStorage.getItem('tenant_id') || Cookies.get('tenant_id');
+        if (!tenantId) {
+            throw new Error('Tenant ID not found');
+        }
+        const url = `${BASE_URL}/v1/chat-interface/${tenantId}/${schema}/users-context`;
+        const response = await axios.get(url, {
             params: {
                 page,
                 page_limit: pageLimit,
-                order_direction: orderDirection
+                order_direction: orderDirection,
             },
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         });
         return response.data;
     } catch (error) {
@@ -33,13 +37,14 @@ export const getUsersContext = async (page: number, orderDirection: string, page
     }
 }
 
-export const createContextSession = async (contextUserIdentifier: string, apiKey: string): Promise<ExternalSessionData> => {
+export const createContextSession = async (contextUserIdentifier: string, apiKey: string, schemaName: string): Promise<ExternalSessionData> => {
   try {
     const tenantId = Cookies.get('tenant_id');
     const response = await axios.post(
-      `${BASE_URL}/v1/api-context/${tenantId}/create-context-session`,
+      `${BASE_URL}/v1/sql-context/${tenantId}/create-context-session`,
       {
-        context_user_identifier_value: contextUserIdentifier
+        context_user_identifier_value: contextUserIdentifier,
+        schema_name: schemaName
       },
       {
         headers: {

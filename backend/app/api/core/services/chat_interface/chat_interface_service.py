@@ -1,3 +1,4 @@
+from typing import List, Optional
 import pymongo
 from pymongo import UpdateOne
 import logging
@@ -6,6 +7,9 @@ from uuid import UUID
 from fastapi import HTTPException
 
 from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOPE_CATEGORY_KEY
+from api.core.services.sql_runner.sql_runner_service import SqlRunnerService
+from model.chat_interface.context_user_row import ContextUserRow
+from model.schema.schema import Schema
 from utils.database import mongodb
 from model.tenant.tenant import Tenant;
 from model.chat_interface.chat_interface_settings import ChatInterfaceSettings;
@@ -158,3 +162,124 @@ class ChatInterfaceService:
                         logger.debug(f"No update needed for {category}.{setting_name}. Current value matches patch request.")
                 else:
                     logger.warning(f"Session setting {category}.{setting_name} does not exist in session {session_uuid}.")
+                    
+    @staticmethod
+    async def get_paginated_context_users_from_context_table(
+        tenant: Tenant, 
+        page: int, 
+        limit: int, 
+        order_direction: str = "ASC",
+        sort_field: str = "email",
+        schema: Optional[Schema] = None
+    ) -> List[ContextUserRow]:
+        """
+        Retrieve paginated user contexts based on schema-defined SQL queries.
+        Supports both SQL and API context types for extracting user_identifier.
+        """
+        schema_integration = schema.schema_chat_interface_integration
+        if not schema_integration.enabled:
+            raise HTTPException(status_code=400, detail="Schema-based SQL chat interface integration is disabled.")
+
+        get_contexts_query = schema_integration.get_contexts_query
+        get_contexts_count_query = schema_integration.get_contexts_count_query
+
+        if not get_contexts_query or not get_contexts_count_query:
+            raise HTTPException(
+                status_code=400,
+                detail="Schema does not define required SQL queries for user context retrieval."
+            )
+
+        if order_direction.upper() not in ["ASC", "DESC"]:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid order direction: {order_direction}. Allowed values are ASC or DESC."
+            )
+
+        offset = (page - 1) * limit
+        query = (
+            get_contexts_query
+            .replace("${sort_field}", sort_field)
+            .replace("${limit}", str(limit))
+            .replace("${offset}", str(offset + 1))
+            .replace("${order_direction}", order_direction.upper())
+        )
+
+        users_result = SqlRunnerService.run_sql(
+            query=query,
+            tenant=tenant,
+            schema_name=schema.schema_name
+        )
+
+        # Determine user_identifier from context setting based on context_type
+        if schema.context_type == "sql":
+            context_obj = schema.context_setting.sql_context
+        elif schema.context_type == "api":
+            context_obj = schema.context_setting.api_context
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported context type in schema settings.")
+
+        if not context_obj or not context_obj.user_identifier:
+            raise HTTPException(status_code=400, detail="Missing user_identifier in context setting.")
+
+        if not context_obj or not context_obj.user_identifier:
+            raise HTTPException(
+                status_code=400,
+                detail="Missing user_identifier in context setting."
+            )
+
+        context_identifier_field = context_obj.user_identifier
+
+        field_names = list(users_result[0].keys()) if users_result else []
+        context_users = []
+
+        for row in users_result:
+            context_identifier = row.get(context_identifier_field)
+            if context_identifier is None:
+                logger.warn(f"Missing context_identifier '{context_identifier_field}' in row: {row}")
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Missing context_identifier '{context_identifier_field}' in row: {row}"
+                )
+
+            # Map all other fields as custom_fields
+            custom_fields_data = {
+                field: row.get(field, "")
+                for field in field_names if field != context_identifier_field
+            }
+            context_users.append(
+                ContextUserRow(
+                    context_identifier=str(context_identifier),
+                    custom_fields=custom_fields_data
+                )
+            )
+
+        return context_users
+    
+    @staticmethod
+    async def get_context_table_count(
+        tenant: Tenant,
+        count_query: str,
+        schema_name: Optional[str] = None
+    ) -> int:
+        """
+        Execute the count query to get the total number of records in the context table.
+        """
+        count_result = SqlRunnerService.run_sql(
+            query=count_query,
+            tenant=tenant,
+            schema_name=schema_name
+        )
+
+        
+        if not isinstance(count_result, list) or not count_result:
+            logger.error(f"Invalid response format from count query: {count_result}")
+            raise HTTPException(
+                status_code=500,
+                detail="Invalid response format from count query."
+            )
+
+        # Extract the first key dynamically (works for COUNT(*) or count)
+        count_key = list(count_result[0].keys())[0]  
+        total_count = int(count_result[0][count_key])
+
+        return total_count

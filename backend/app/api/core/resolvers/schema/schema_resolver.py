@@ -73,7 +73,7 @@ class SchemaResolver:
                     logger.debug(f"Skipping column {column_name} not in query scope.")
                     continue
 
-                if tenant_settings["REMOVE_SENSITIVE_COLUMNS"] and column.is_sensitive_column:
+                if tenant_settings["REMOVE_SENSITIVE_COLUMNS"] or column.is_sensitive_column:
                     logger.debug(f"Excluding sensitive column {column_name} due to tenant settings.")
                     continue
 
@@ -89,7 +89,7 @@ class SchemaResolver:
 
             resolved_relationships = {
                 rel_name: ResolvedJoin(
-                    description=None if tenant_settings["REMOVE_ALL_DESCRIPTIONS"] else rel.description,
+                    description=None if tenant_settings["REMOVE_ALL_DESCRIPTIONS"] or column.exclude_description_on_generate_sql else rel.description,
                     table=rel.table,
                     on=rel.on,
                     type=rel.type

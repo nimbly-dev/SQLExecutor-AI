@@ -1,16 +1,18 @@
+# query_scope_resolution_service.py
+
+import difflib
 import logging
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any, Union, Optional
 from fastapi import HTTPException
 
 from model.external_system_integration.external_user_session_data import ExternalSessionData
 from model.query_scope.query_scope import QueryScope
-from model.responses.sql_generation.sql_generation_error import QueryScopeResolutionErrorResponse, SchemaDiscoveryErrorResponse, SchemaDiscoveryErrorType, QueryScopeErrorType
+from model.responses.schema.schema_tables_response import SchemaTablesResponse
+from model.responses.sql_generation.sql_generation_error import SchemaDiscoveryErrorResponse, SchemaDiscoveryErrorType
 from model.schema.schema import Schema
 from model.tenant.tenant import Tenant
-from model.responses.schema.schema_tables_response import SchemaTablesResponse
 from api.core.services.schema.schema_discovery_service import SchemaDiscoveryService
 from api.core.services.schema.schema_manager_service import SchemaManagerService
-from utils.query_scope.post_process_query_scope_settings_utils import PostProcessQueryScopeSettingsUtils
 from utils.tenant_manager.setting_utils import SettingUtils
 from api.core.constants.tenant.settings_categories import POST_PROCESS_QUERYSCOPE_CATEGORY_KEY, SQL_GENERATION_KEY
 
@@ -18,17 +20,23 @@ logger = logging.getLogger(__name__)
 
 class QueryScopeResolutionService:
     """
-    Service responsible for matching the best schema for the QueryScope
-    and performing final processing such as removing missing/sensitive columns
-    and expanding wildcards.
+    Service responsible for:
+      - Matching the best schema for the QueryScope
+      - Utility methods for final processing:
+        e.g., removing missing/sensitive columns, expanding wildcards, etc.
     """
 
     @staticmethod
-    async def match_schema(tenant_id: str, schemas: List[SchemaTablesResponse], query_scope: QueryScope, tenant_settings: Dict[str, Any]) -> Union[Dict[str, List[str]], Any]:
+    async def match_schema(
+        tenant_id: str,
+        schemas: List[SchemaTablesResponse],
+        query_scope: QueryScope,
+        tenant_settings: Dict[str, Any]
+    ) -> Union[Dict[str, List[str]], Any]:
         """
         Match a user's QueryScope to the best available schema(s) based on
-        discovered or known schema info.
-        Wildcards (table.*) are preserved here and not expanded.
+        discovered or known schema info. Returns a single matched Schema object
+        or raises an exception if multiple or none are matched.
         """
         matched_result = SchemaDiscoveryService.get_best_matching_schemas(
             query_scope=query_scope,
@@ -69,92 +77,90 @@ class QueryScopeResolutionService:
         )
 
     @staticmethod
-    def process_query_scope(
-        matched_schema: Schema, 
-        query_scope: QueryScope, 
-        session_data: ExternalSessionData, 
-        settings: Dict[str, Any],
-        tenant: Tenant
-    ) -> QueryScope:
+    def remove_missing_columns_from_query_scope(schema: Schema, query_scope: QueryScope):
         """
-        Final stage: Expand wildcards and remove sensitive or missing columns.
+        Example logic that checks which columns don't exist and removes them.
+        Returns the (modified query_scope, missing_columns_list).
         """
-        remove_missing_session = SettingUtils.get_setting_value(
-            settings=session_data.session_settings,
-            category_key=SQL_GENERATION_KEY,
-            setting_key="REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE"
-        )
-        remove_sensitive = SettingUtils.get_setting_value(
-            settings=tenant.settings,
-            category_key=POST_PROCESS_QUERYSCOPE_CATEGORY_KEY,
-            setting_key="REMOVE_SENSITIVE_COLUMNS"
-        )
-        sensitive_columns = []
+        existing_columns = []
+        missing_columns = []
 
-        # Always expand table.* now
-        expanded_cols = []
         for col in query_scope.entities.columns:
-            if col.endswith(".*"):
-                t_name = col[:-2]
-                if t_name not in matched_schema.tables:
-                    raise HTTPException(
-                        status_code=400,
-                        detail=f"The table '{t_name}' does not exist."
-                    )
-                for column_name, col_data in matched_schema.tables[t_name].columns.items():
-                    # Exclude sensitive columns after expansion if needed
-                    if remove_sensitive and col_data.is_sensitive_column:
-                        sensitive_columns.append(f"{t_name}.{column_name}")
-                        continue
-                    expanded_cols.append(f"{t_name}.{column_name}")
+            t_name, c_name = col.split(".", 1)
+            if t_name in schema.tables and c_name in schema.tables[t_name].columns:
+                existing_columns.append(col)
             else:
-                # Validate table/column if possible
-                if "." not in col:
-                    raise HTTPException(
-                        status_code=400,
-                        detail=f"Column '{col}' must be qualified as 'table.column'."
-                    )
-                t_name, column_name = col.split(".", 1)
-                if t_name not in matched_schema.tables:
-                    raise HTTPException(
-                        status_code=400,
-                        detail=f"The table '{t_name}' does not exist."
-                    )
-                if column_name not in matched_schema.tables[t_name].columns:
-                    raise HTTPException(
-                        status_code=400,
-                        detail=f"The column '{column_name}' does not exist in table '{t_name}'."
-                    )
-                # Check sensitivity
-                if remove_sensitive and matched_schema.tables[t_name].columns[column_name].is_sensitive_column:
-                    sensitive_columns.append(f"{t_name}.{column_name}")
-                    continue
-                expanded_cols.append(col)
+                missing_columns.append(col)
 
-        query_scope.entities.columns = expanded_cols
+        query_scope.entities.columns = existing_columns
+        return query_scope, missing_columns
 
-        if remove_missing_session:
-            query_scope, missing = PostProcessQueryScopeSettingsUtils.remove_missing_columns_from_query_scope(
-                matched_schema, query_scope
-            )
+    @staticmethod
+    def find_best_match_table(table_name: str, schema: Schema) -> Optional[str]:
+        """
+        Find the best matching table name in the schema using synonyms and fuzzy matching.
+        Returns the corrected table name or None if no match is found.
+        """
 
-        if not query_scope.entities.columns:
-            raise HTTPException(
-                status_code=400,
-                detail=QueryScopeResolutionErrorResponse(
-                    scope_error_type=QueryScopeErrorType.COLUMN_NOT_FOUND,
-                    user_query_scope=query_scope,
-                    issues=[
-                        {
-                            "type": "missing_columns",
-                            "reason": "No columns remain after expansion or filtering."
-                        }
-                    ],
-                    suggestions=["Specify valid columns or check table/column names."],
-                    sensitive_columns_removed=sensitive_columns,
-                    message="Query scope resolution failed due to unresolved inputs."
-                ).dict()
-            )
+        # Direct table match
+        if table_name in schema.tables:
+            return table_name
 
-        return query_scope
+        # Build a mapping of synonyms -> actual table name
+        table_synonym_map = {}
+        table_candidates = list(schema.tables.keys())
+        for tbl_name, tbl_data in schema.tables.items():
+            for synonym in tbl_data.synonyms:
+                table_synonym_map[synonym] = tbl_name
 
+        # Synonym match
+        if table_name in table_synonym_map:
+            return table_synonym_map[table_name]
+
+        # Fuzzy match
+        best_match = difflib.get_close_matches(table_name, table_candidates, n=1, cutoff=0.7)
+        return best_match[0] if best_match else None
+
+    @staticmethod
+    def find_best_match_column_using_synonyms(table_name: str, column_name: str, schema: Schema) -> Optional[str]:
+        """
+        Find the closest matching column name for a given table using synonyms and fuzzy matching.
+        Returns 'table.column' or None if no match is found.
+        """
+
+        if table_name not in schema.tables:
+            return None
+
+        table = schema.tables[table_name]
+        column_candidates = list(table.columns.keys())
+
+        # Check synonyms for exact match
+        for col_name, col_data in table.columns.items():
+            if column_name in col_data.synonyms:
+                return f"{table_name}.{col_name}"
+
+        # Fuzzy match
+        best_match = difflib.get_close_matches(column_name, column_candidates, n=1, cutoff=0.7)
+        return f"{table_name}.{best_match[0]}" if best_match else None
+
+
+    @staticmethod
+    def expand_wildcard_columns(
+        table_name: str,
+        schema: Schema,
+        remove_sensitive: bool = False
+    ) -> List[str]:
+        """
+        Return a list of columns for the given table, expanding '*' and optionally excluding
+        sensitive columns if 'remove_sensitive' is True.
+        """
+        if table_name not in schema.tables:
+            return []
+
+        expanded_cols = []
+        for col_name, col_data in schema.tables[table_name].columns.items():
+            if remove_sensitive and col_data.is_sensitive_column:
+                continue
+            expanded_cols.append(f"{table_name}.{col_name}")
+
+        return expanded_cols

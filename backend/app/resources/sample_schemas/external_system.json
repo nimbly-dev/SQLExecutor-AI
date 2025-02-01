@@ -81,7 +81,11 @@
             "description": "Stores user information",
             "synonyms": [
                 "members",
-                "accounts"
+                "accounts",
+                "user_accounts",
+                "account_profiles",
+                "identity_records",
+                "member_data"
             ],
             "relationships": {},
             "exclude_description_on_generate_sql": false
@@ -129,7 +133,11 @@
             "description": "Stores user roles",
             "synonyms": [
                 "permissions",
-                "groups"
+                "groups",
+                "user_roles",
+                "access_permissions",
+                "security_roles",
+                "privilege_assignments"
             ],
             "relationships": {
                 "users": {
@@ -218,7 +226,11 @@
             "description": "Stores customer details",
             "synonyms": [
                 "clients",
-                "buyers"
+                "buyers",
+                "client_details",
+                "customer_records",
+                "client_profiles",
+                "buyer_information"
             ],
             "relationships": {
                 "users": {
@@ -296,7 +308,11 @@
             "description": "Stores payment information",
             "synonyms": [
                 "transactions",
-                "invoices"
+                "invoices",
+                "payment_transactions",
+                "financial_records",
+                "payment_logs",
+                "transaction_history"
             ],
             "relationships": {
                 "users": {
@@ -374,7 +390,11 @@
             "description": "Stores order information",
             "synonyms": [
                 "purchases",
-                "requests"
+                "requests",
+                "order_records",
+                "sales_data",
+                "purchase_orders",
+                "transaction_orders"
             ],
             "relationships": {
                 "users": {
@@ -431,7 +451,11 @@
             "description": "Stores admin information",
             "synonyms": [
                 "administrators",
-                "super_users"
+                "super_users",
+                "administrative_accounts",
+                "admin_profiles",
+                "administrator_data",
+                "management_accounts"
             ],
             "relationships": {
                 "users": {
@@ -451,6 +475,7 @@
     "synonyms": [
         "customer_management",
         "order_tracking",
-        "payment_processing"
+        "payment_processing",
+        "third_party_data_integration"
     ]
 }

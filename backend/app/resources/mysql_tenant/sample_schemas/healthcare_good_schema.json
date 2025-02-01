@@ -1,0 +1,594 @@
+{
+    "tenant_id": "MYSQL_TENANT",
+    "schema_name": "healthcare_good_schema",
+    "description": "Example good schema healthcare where columns are not ambigous",
+    "exclude_description_on_generate_sql": false,
+    "tables": {
+        "users": {
+            "columns": {
+                "user_id": {
+                    "type": "INTEGER",
+                    "description": "Unique identifier for the user",
+                    "constraints": [
+                        "PRIMARY KEY",
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "id",
+                        "users_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "name": {
+                    "type": "TEXT",
+                    "description": "Name of the user",
+                    "constraints": [
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "full_name"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "email": {
+                    "type": "TEXT",
+                    "description": "Email address of the user",
+                    "constraints": [
+                        "UNIQUE",
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "contact_email"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": true
+                },
+                "contact_number": {
+                    "type": "TEXT",
+                    "description": "Contact number of the user",
+                    "constraints": [
+                        "UNIQUE"
+                    ],
+                    "synonyms": [
+                        "phone_number"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": true
+                },
+                "role": {
+                    "type": "TEXT",
+                    "description": "Role of the user in the system",
+                    "constraints": [
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "user_role"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "is_active": {
+                    "type": "BOOLEAN",
+                    "description": "Indicates if the user is active",
+                    "constraints": [],
+                    "synonyms": [
+                        "active_status"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "is_admin": {
+                    "type": "BOOLEAN",
+                    "description": "Indicates if the user has admin privileges",
+                    "constraints": [],
+                    "synonyms": [
+                        "admin_privilege"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "created_at": {
+                    "type": "DATE",
+                    "description": "Timestamp when the user was created",
+                    "constraints": [],
+                    "synonyms": [
+                        "creation_time"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                }
+            },
+            "description": "Stores user information",
+            "synonyms": [
+                "user_data",
+                "user_accounts",
+                "user_profiles"
+            ],
+            "relationships": {},
+            "exclude_description_on_generate_sql": false
+        },
+        "departments": {
+            "columns": {
+                "department_id": {
+                    "type": "INTEGER",
+                    "description": "Unique identifier for the department",
+                    "constraints": [
+                        "PRIMARY KEY",
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "id",
+                        "departments_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "department_name": {
+                    "type": "TEXT",
+                    "description": "Name of the department",
+                    "constraints": [
+                        "NOT NULL",
+                        "UNIQUE"
+                    ],
+                    "synonyms": [
+                        "name"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "created_at": {
+                    "type": "DATE",
+                    "description": "Timestamp when the department was created",
+                    "constraints": [],
+                    "synonyms": [
+                        "creation_time"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                }
+            },
+            "description": "Stores department details",
+            "synonyms": [
+                "medical_departments",
+                "hospital_units"
+            ],
+            "relationships": {},
+            "exclude_description_on_generate_sql": false
+        },
+        "doctors": {
+            "columns": {
+                "doctor_id": {
+                    "type": "INTEGER",
+                    "description": "Unique identifier for the doctor",
+                    "constraints": [
+                        "PRIMARY KEY",
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "id",
+                        "doctors_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "user_id": {
+                    "type": "INTEGER",
+                    "description": "References the user entry for the doctor",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "doctor_user_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "department_id": {
+                    "type": "INTEGER",
+                    "description": "References the department the doctor belongs to",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "dept_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "hire_date": {
+                    "type": "DATE",
+                    "description": "Date when the doctor was hired",
+                    "constraints": [
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "employment_date"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                }
+            },
+            "description": "Stores doctor information",
+            "synonyms": [
+                "medical_staff",
+                "physicians"
+            ],
+            "relationships": {
+                "departments": {
+                    "description": "Links doctors to their department",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "departments",
+                    "on": "doctors.department_id = departments.department_id",
+                    "type": "INNER"
+                },
+                "users": {
+                    "description": "Links doctors to user profiles",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "users",
+                    "on": "doctors.user_id = users.user_id",
+                    "type": "INNER"
+                }
+            },
+            "exclude_description_on_generate_sql": false
+        },
+        "nurses": {
+            "columns": {
+                "nurse_id": {
+                    "type": "INTEGER",
+                    "description": "Unique identifier for the nurse",
+                    "constraints": [
+                        "PRIMARY KEY",
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "id",
+                        "nurses_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "user_id": {
+                    "type": "INTEGER",
+                    "description": "References the user entry for the nurse",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "nurse_user_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "department_id": {
+                    "type": "INTEGER",
+                    "description": "References the department the nurse belongs to",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "dept_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "hire_date": {
+                    "type": "DATE",
+                    "description": "Date when the nurse was hired",
+                    "constraints": [
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "employment_date"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                }
+            },
+            "description": "Stores nurse information",
+            "synonyms": [
+                "nursing_staff"
+            ],
+            "relationships": {
+                "departments": {
+                    "description": "Links nurses to their department",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "departments",
+                    "on": "nurses.department_id = departments.department_id",
+                    "type": "INNER"
+                },
+                "users": {
+                    "description": "Links nurses to user profiles",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "users",
+                    "on": "nurses.user_id = users.user_id",
+                    "type": "INNER"
+                }
+            },
+            "exclude_description_on_generate_sql": true
+        },
+        "patients": {
+            "columns": {
+                "patient_id": {
+                    "type": "INTEGER",
+                    "description": "Unique identifier for the patient",
+                    "constraints": [
+                        "PRIMARY KEY",
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "id",
+                        "patients_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "user_id": {
+                    "type": "INTEGER",
+                    "description": "References the user entry for the patient",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "patient_user_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "dob": {
+                    "type": "DATE",
+                    "description": "Date of birth of the patient",
+                    "constraints": [
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "date_of_birth"
+                    ],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": true
+                },
+                "gender": {
+                    "type": "TEXT",
+                    "description": "Gender of the patient",
+                    "constraints": [
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "sex"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "registered_date": {
+                    "type": "DATE",
+                    "description": "Date the patient was registered",
+                    "constraints": [],
+                    "synonyms": [
+                        "registration_date"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                }
+            },
+            "description": "Stores patient information",
+            "synonyms": [
+                "hospital_patients"
+            ],
+            "relationships": {
+                "users": {
+                    "description": "Links patients to user profiles",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "users",
+                    "on": "patients.user_id = users.user_id",
+                    "type": "INNER"
+                }
+            },
+            "exclude_description_on_generate_sql": false
+        },
+        "appointments": {
+            "columns": {
+                "appointment_id": {
+                    "type": "INTEGER",
+                    "description": "Unique identifier for the appointment",
+                    "constraints": [
+                        "PRIMARY KEY",
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "id",
+                        "appointments_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "patient_id": {
+                    "type": "INTEGER",
+                    "description": "References the patient attending the appointment",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "appointment_patient_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "doctor_id": {
+                    "type": "INTEGER",
+                    "description": "References the doctor for the appointment",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "appointment_doctor_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "nurse_id": {
+                    "type": "INTEGER",
+                    "description": "References the nurse attending the appointment",
+                    "constraints": [
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "appointment_nurse_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "appointment_date": {
+                    "type": "DATE",
+                    "description": "Date and time of the appointment",
+                    "constraints": [
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "appointment_time",
+                        "date"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "reason": {
+                    "type": "TEXT",
+                    "description": "Reason for the appointment",
+                    "constraints": [
+                        "NOT NULL"
+                    ],
+                    "synonyms": [
+                        "appointment_reason"
+                    ],
+                    "exclude_description_on_generate_sql": false,
+                    "is_sensitive_column": false
+                }
+            },
+            "description": "Stores appointment information",
+            "synonyms": [
+                "hospital_appointments"
+            ],
+            "relationships": {
+                "patients": {
+                    "description": "Links appointments to patients",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "patients",
+                    "on": "appointments.patient_id = patients.patient_id",
+                    "type": "INNER"
+                },
+                "doctors": {
+                    "description": "Links appointments to doctors",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "doctors",
+                    "on": "appointments.doctor_id = doctors.doctor_id",
+                    "type": "INNER"
+                },
+                "nurses": {
+                    "description": "Links appointments to nurses",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "nurses",
+                    "on": "appointments.nurse_id = nurses.nurse_id",
+                    "type": "LEFT"
+                }
+            },
+            "exclude_description_on_generate_sql": true
+        },
+        "nurse_patient": {
+            "columns": {
+                "nurse_patient_id": {
+                    "type": "INTEGER",
+                    "description": "References the nurse",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "assigned_nurse_id",
+                        "id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "patient_id": {
+                    "type": "INTEGER",
+                    "description": "References the patient",
+                    "constraints": [
+                        "NOT NULL",
+                        "FOREIGN KEY"
+                    ],
+                    "synonyms": [
+                        "assigned_patient_id"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                },
+                "assigned_date": {
+                    "type": "DATE",
+                    "description": "Date the nurse was assigned to the patient",
+                    "constraints": [],
+                    "synonyms": [
+                        "assignment_date"
+                    ],
+                    "exclude_description_on_generate_sql": true,
+                    "is_sensitive_column": false
+                }
+            },
+            "description": "Stores nurse-patient relationships",
+            "synonyms": [
+                "patient_assignments"
+            ],
+            "relationships": {
+                "nurses": {
+                    "description": "Links nurse assignments to nurses",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "nurses",
+                    "on": "nurse_patient.nurse_patient_id = nurses.nurse_id",
+                    "type": "INNER"
+                },
+                "patients": {
+                    "description": "Links nurse assignments to patients",
+                    "exclude_description_on_generate_sql": true,
+                    "table": "patients",
+                    "on": "nurse_patient.patient_id = patients.patient_id",
+                    "type": "INNER"
+                }
+            },
+            "exclude_description_on_generate_sql": false
+        }
+    },
+    "filter_rules": [
+        "${healthcare_ruleset}"
+    ],
+    "synonyms": [
+        "healthcare_schema",
+        "hospital_management",
+        "medical_data"
+    ],
+    "context_type": "sql",
+    "context_setting": {
+        "sql_context": {
+            "table": "users",
+            "user_identifier": "email",
+            "custom_fields": [
+                "role",
+                "contact_number",
+                "is_active",
+                "is_admin"
+            ],
+            "custom_get_context_query": "SELECT user_id, email, role, contact_number, CASE is_active WHEN 1 THEN 'TRUE' ELSE 'FALSE' END AS is_active, CASE is_admin WHEN 1 THEN 'TRUE' ELSE 'FALSE' END AS is_admin FROM users WHERE email = :user_identifier_value;"
+        },
+        "api_context": null
+    },
+    "schema_chat_interface_integration": {
+        "enabled": true,
+        "get_contexts_query": "SELECT email, user_id, role, contact_number, is_active FROM users ORDER BY ${sort_field} LIMIT ${limit} OFFSET ${offset};",
+        "get_contexts_count_query": "SELECT COUNT(*) FROM users"
+    }
+}

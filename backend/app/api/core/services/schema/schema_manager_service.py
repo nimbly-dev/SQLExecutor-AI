@@ -38,7 +38,10 @@ class SchemaManagerService:
             tables=schema_request.tables,
             filter_rules=schema_request.filter_rules,
             exclude_description_on_generate_sql=schema_request.exclude_description_on_generate_sql,
-            synonyms=schema_request.synonyms
+            synonyms=schema_request.synonyms,
+            context_type=schema_request.context_type,
+            context_setting=schema_request.context_setting,
+            schema_chat_interface_integration=schema_request.schema_chat_interface_integration
         )
 
         collection_schema = mongodb.db["schemas"]
@@ -93,12 +96,26 @@ class SchemaManagerService:
         collection = mongodb.db["schemas"]
         schemas_cursor = collection.find(
             {"tenant_id": tenant_id},
-            {"schema_name": 1, "description": 1, "_id": 0}  
+            {"schema_name": 1, "description": 1, "context_type": 1, "context_setting": 1, "_id": 0}  
         )
 
         schemas = []
         async for schema_data in schemas_cursor:
-            schemas.append(schema_data)
+            context_type = schema_data.get("context_type")
+            context_setting = schema_data.get("context_setting", {})
+
+            user_identifier = None
+            if context_type == "api" and "api_context" in context_setting:
+                user_identifier = context_setting["api_context"].get("user_identifier")
+            elif context_type == "sql" and "sql_context" in context_setting:
+                user_identifier = context_setting["sql_context"].get("user_identifier")
+
+            schemas.append({
+                "schema_name": schema_data["schema_name"],
+                "description": schema_data["description"],
+                "context_type": context_type,
+                "user_identifier": user_identifier
+            })
 
         if not schemas:
             raise HTTPException(

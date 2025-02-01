@@ -9,19 +9,19 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useImpersonation } from '../../../hooks/sqlexecutor-playground/left-cards/useImpersonation';
-import { getUsersContext } from '../../../services/chatInterface'; // Add this import
 import SearchSection from './modal/SearchSection';
 import UsersTable from './modal/UsersTable';
 import ModalFooter from './modal/ModalFooter';
+import useImpersonationPagination from '../../../hooks/sqlexecutor-playground/left-cards/useImpersonationPagination';
+import { SchemaSummary } from '../../../types/sqlexecutor-playground/schemaModalContent';
 
 interface ImpersonationModalProps {
   open: boolean;
   onClose: () => void;
+  selectedSchema: SchemaSummary | null; // updated type using SchemaSummary with user_identifier
 }
 
-const ImpersonationModal: React.FC<ImpersonationModalProps> = ({ open, onClose }) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+const ImpersonationModal: React.FC<ImpersonationModalProps> = ({ open, onClose, selectedSchema }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedField, setSelectedField] = useState('');
   const theme = useTheme();
@@ -37,15 +37,15 @@ const ImpersonationModal: React.FC<ImpersonationModalProps> = ({ open, onClose }
     fetchIdentifierField,
     setIsTransitioning,
     setIsLoading,
-    setUsers
+    setUsers,
   } = useImpersonation(onClose);
 
   useEffect(() => {
-    if (open) {
+    if (open && selectedSchema) {
       fetchIdentifierField();
-      fetchUsers(page, rowsPerPage);
+      fetchUsers(0, 10, selectedSchema.schema_name);
     }
-  }, [open, fetchUsers, page, rowsPerPage]);
+  }, [open, selectedSchema, fetchUsers]);
 
   useEffect(() => {
     if (isLoading) {
@@ -58,30 +58,12 @@ const ImpersonationModal: React.FC<ImpersonationModalProps> = ({ open, onClose }
     }
   }, [isLoading, setIsTransitioning]);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newRowsPerPage = parseInt(event.target.value, 10);
-    setIsLoading(true);
-    
-    setPage(0);
-    setRowsPerPage(newRowsPerPage);
-    
-    setTimeout(async () => {
-      try {
-        const response = await getUsersContext(1, 'ASC', newRowsPerPage);
-        if (response && response.data) {  // Add null check
-          setUsers(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    }, 500);
-  };
+  const {
+    page,
+    rowsPerPage,
+    handleChangePage,
+    handleChangeRowsPerPage,
+  } = useImpersonationPagination(selectedSchema, fetchUsers, setIsLoading);
 
   const getCustomFieldKeys = () => {
     if (users.length === 0) return [];
@@ -89,22 +71,24 @@ const ImpersonationModal: React.FC<ImpersonationModalProps> = ({ open, onClose }
   };
 
   const customFieldKeys = getCustomFieldKeys();
+  const allFields = identifierField ? [identifierField, ...customFieldKeys] : customFieldKeys;
 
   const handleSearch = () => {
     console.log('Searching for:', searchQuery, 'in field:', selectedField);
   };
 
-  const allFields = identifierField ? [identifierField, ...customFieldKeys] : customFieldKeys;
+
+  const handleUserSelectWrapper = (user: any) => {
+    if (selectedSchema) {
+      handleUserSelect(user, selectedSchema.schema_name);
+    }
+  };
 
   return (
     <Modal 
       open={open} 
       onClose={onClose}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
       <Fade in={open}>
         <Box sx={{ 
@@ -115,40 +99,48 @@ const ImpersonationModal: React.FC<ImpersonationModalProps> = ({ open, onClose }
           boxShadow: 24,
           position: 'relative',
         }}>
-          <Card>
-            <CardContent sx={{ p: 2 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                Impersonate User
+          {selectedSchema ? (
+            <Card>
+              <CardContent sx={{ p: 2 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Impersonate User
+                </Typography>
+                
+                <SearchSection
+                  searchQuery={searchQuery}
+                  selectedField={selectedField}
+                  allFields={allFields}
+                  onSearchChange={setSearchQuery}
+                  onFieldChange={setSelectedField}
+                  onSearch={handleSearch}
+                />
+
+                <UsersTable
+                  users={users}
+                  identifierField={identifierField}
+                  customFieldKeys={customFieldKeys}
+                  isLoading={isLoading}
+                  isTransitioning={isTransitioning}
+                  onSelect={handleUserSelectWrapper} 
+                />
+
+                <ModalFooter
+                  totalCount={totalCount}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  onClose={onClose}
+                />
+              </CardContent>
+            </Card>
+          ) : (
+            <Box sx={{ p: 3, backgroundColor: theme.palette.background.paper, borderRadius: 1 }}>
+              <Typography variant="body1" color="error">
+                A schema must be selected before impersonation is available.
               </Typography>
-              
-              <SearchSection
-                searchQuery={searchQuery}
-                selectedField={selectedField}
-                allFields={allFields}
-                onSearchChange={setSearchQuery}
-                onFieldChange={setSelectedField}
-                onSearch={handleSearch}
-              />
-
-              <UsersTable
-                users={users}
-                identifierField={identifierField}
-                customFieldKeys={customFieldKeys}
-                isLoading={isLoading}
-                isTransitioning={isTransitioning}
-                onSelect={handleUserSelect}
-              />
-
-              <ModalFooter
-                totalCount={totalCount}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                onClose={onClose}
-              />
-            </CardContent>
-          </Card>
+            </Box>
+          )}
         </Box>
       </Fade>
     </Modal>

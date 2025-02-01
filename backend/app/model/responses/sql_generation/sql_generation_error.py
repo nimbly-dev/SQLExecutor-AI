@@ -27,6 +27,8 @@ class QueryScopeErrorType(str, Enum):
     """
     Enum for different types of query scope resolution errors.
     """
+    NO_COLUMN_REMAIN = "no_column_remain"
+    COLUMN_NOT_QUALIFIED = "column_not_qualified"
     TABLE_NOT_FOUND = "table_not_found"
     COLUMN_NOT_FOUND = "column_not_found"
     UNRESOLVED_WILDCARD = "unresolved_wildcard"
@@ -125,16 +127,16 @@ class SqlRunErrorResponse(BaseModel):
     SqlRunErrorResponse represents the response model for errors encountered during SQL execution.
 
     Attributes:
-        error_type (ErrorType): The type of error encountered.
+        error_type (ErrorType): The type of error that occurred.
         message (str): A high-level summary of the error.
-        user_query_scope (QueryScope): The scope of the user's query.
-        user_input (str): The original user input that caused the error.
-        sql_query (str): The SQL query that was attempted.
-        error_message (str): The error message returned by the SQL engine.
+        user_query_scope (Optional[QueryScope]): The scope of the user's query.
+        user_input (Optional[str]): The original user input that caused the error.
+        sql_query (Optional[str]): The SQL query that was attempted.
+        error_message (Optional[str]): The error message from the SQL execution.
     """
     error_type: ErrorType = ErrorType.RUNTIME_ERROR
     message: str
-    user_query_scope: QueryScope
-    user_input: str
-    sql_query: str
-    error_message: str
+    user_query_scope: Optional[QueryScope] = None
+    user_input: Optional[str] = None
+    sql_query: Optional[str] = None
+    error_message: Optional[str] = None

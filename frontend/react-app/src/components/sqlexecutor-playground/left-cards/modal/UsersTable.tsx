@@ -71,19 +71,13 @@ const UsersTable: React.FC<UsersTableProps> = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell colSpan={customFieldKeys.length + 2} align="center">
-                Loading...
-              </TableCell>
-            </TableRow>
-          ) : (
+          {users.length > 0 ? (
             users.map((user, index) => (
               <TableRow 
                 hover 
                 key={`user-row-${user.custom_fields[identifierField]}-${index}`}
               >
-                <TableCell>{user.user_identifier}</TableCell>
+                <TableCell>{(user as any).context_identifier}</TableCell>
                 {customFieldKeys.map((fieldKey) => (
                   <TableCell key={`user-${user.custom_fields[identifierField]}-field-${fieldKey}`}>
                     {user.custom_fields[fieldKey]}
@@ -101,6 +95,12 @@ const UsersTable: React.FC<UsersTableProps> = ({
                 </TableCell>
               </TableRow>
             ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={customFieldKeys.length + 2} align="center">
+                {isLoading ? "Loading..." : "No data"}
+              </TableCell>
+            </TableRow>
           )}
         </TableBody>
       </Table>

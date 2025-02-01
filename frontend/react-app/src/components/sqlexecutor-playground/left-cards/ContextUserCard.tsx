@@ -6,22 +6,23 @@ import {
   Button,
   Box,
   Stack,
+  Tooltip,
 } from '@mui/material';
 import { ExternalSessionData } from '../../../types/authentication/externalUserSessionData';
+import { useSQLExecutorContext } from '../../../pages/SQLExecutorPlayground';
 
-interface ContextUserCardProps {
-  sessionData: ExternalSessionData | null;
-  onImpersonateClick: () => void;
-  onStopImpersonation: () => void;
-}
+const ContextUserCard: React.FC = () => {
+  const { sessionData, setIsModalOpen, stopImpersonation, selectedSchema } = useSQLExecutorContext();
 
-const ContextUserCard: React.FC<ContextUserCardProps> = ({
-  sessionData,
-  onImpersonateClick,
-  onStopImpersonation,
-}) => {
+  const handleImpersonateClick = () => {
+    if (!sessionData && !selectedSchema) {
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
   const handleStopImpersonation = () => {
-    onStopImpersonation();
+    stopImpersonation();
     sessionStorage.removeItem('contextUserSessionId');
   };
 
@@ -44,15 +45,20 @@ const ContextUserCard: React.FC<ContextUserCardProps> = ({
           >
             Context User Impersonation
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={onImpersonateClick}
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            Impersonate User
-          </Button>
+          <Tooltip title={!selectedSchema ? 'Please select a schema first' : ''} disableHoverListener={!!selectedSchema}>
+            <span style={{ display: 'block' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleImpersonateClick}
+                fullWidth
+                disabled={!selectedSchema}
+                sx={{ mt: 2 }}
+              >
+                Impersonate User
+              </Button>
+            </span>
+          </Tooltip>
         </CardContent>
       </Card>
     );
@@ -101,8 +107,9 @@ const ContextUserCard: React.FC<ContextUserCardProps> = ({
           <Button
             variant="outlined"
             color="primary"
-            onClick={onImpersonateClick}
+            onClick={handleImpersonateClick}
             fullWidth
+            // Removed disabled check so the button remains enabled even if selectedSchema is null
           >
             Change User
           </Button>

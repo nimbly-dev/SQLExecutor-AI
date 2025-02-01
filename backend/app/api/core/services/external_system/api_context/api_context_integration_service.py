@@ -8,6 +8,7 @@ from fastapi import HTTPException
 from datetime import datetime, timezone
 from typing import Dict, List
 from model.requests.external_system_integration.fetch_external_context_request import CreateExternalSessionRequest
+from model.schema.context import APIContext
 from model.tenant.tenant import Tenant
 from model.authentication.external_user_decoded_jwt_token import DecodedJwtToken
 from api.core.constants.tenant.settings_categories import(
@@ -19,36 +20,38 @@ from utils.tenant_manager.setting_utils import SettingUtils
 class APIContextIntegrationService:
 
     @staticmethod
-    async def call_external_get_user_endpoint(tenant: Tenant, request: CreateExternalSessionRequest):
-        """Call the external get-user endpoint with HMAC authentication."""
+    async def call_external_get_user_endpoint(
+        tenant: Tenant, 
+        api_context: APIContext, 
+        request: CreateExternalSessionRequest
+    ):
+        """
+        Call the external get-user endpoint with HMAC authentication.
+        """
         settings = tenant.settings or {}
 
-        get_user_endpoint = SettingUtils.get_setting_value(
+        # Extract necessary fields from APIContext and Tenant settings
+        get_user_endpoint = api_context.get_user_endpoint
+        identifier_field = api_context.user_identifier
+        client_secret_key = api_context.auth_method == "hmac" and SettingUtils.get_setting_value(
             settings, 
-            "API_CONTEXT_INTEGRATION", 
-            "EXTERNAL_API_CONTEXT_GET_USER_ENDPOINT"
-        )
-        identifier_field = SettingUtils.get_setting_value(
-            settings, 
-            "API_CONTEXT_INTEGRATION", 
-            "EXTERNAL_API_CONTEXT_IDENTIFIER_FIELD"
-        )
-        client_secret_key = SettingUtils.get_setting_value(
-            settings, 
-            API_KEYS, 
+            "API_KEYS", 
             "EXTERNAL_SYSTEM_CLIENT_TOKEN"
         )
 
+        # Validate the presence of required settings
         if not get_user_endpoint:
-            raise ValueError("Get-user endpoint is not defined for the tenant.")
+            raise ValueError("Get-user endpoint is not defined in API context settings.")
         if not identifier_field:
-            raise ValueError("Identifier field is not defined for the tenant.")
+            raise ValueError("Identifier field is not defined in API context settings.")
         if not client_secret_key:
             raise ValueError("Client secret key is not defined for the tenant.")
 
         user_identifier = request.context_user_identifier_value
         timestamp = str(int(time.time()))
         message = f"{user_identifier}:{timestamp}"
+
+        # Generate HMAC signature
         signature = hmac.new(
             client_secret_key.encode(),
             message.encode(),
@@ -73,11 +76,10 @@ class APIContextIntegrationService:
                     logging.debug(f"External get-user response status for tenant {tenant.tenant_id}: {response.status}")
 
                     if response.status != 200:
-                        error_body = await response.text()
                         try:
                             error_body = await response.json()
                         except Exception:
-                            pass
+                            error_body = await response.text()
 
                         logging.warning(
                             f"Get-user failed for tenant {tenant.tenant_id} with status {response.status}: {error_body}"

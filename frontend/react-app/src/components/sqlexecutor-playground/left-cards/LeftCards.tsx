@@ -8,22 +8,17 @@ import { useSQLExecutorContext } from '../../../pages/SQLExecutorPlayground';
 const LeftPanel: React.FC = () => {
   const theme = useTheme();
   const { 
-    sessionData, 
     stopImpersonation, 
     isModalOpen, 
     setIsModalOpen, 
-    loadContextSession 
+    loadContextSession,
+    selectedSchema 
   } = useSQLExecutorContext();
 
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleStopImpersonation = () => {
-    stopImpersonation();
-    loadContextSession(); // Reload the session after stopping impersonation
-  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    loadContextSession(); // Reload the session after closing the modal
+    loadContextSession(); 
   };
 
   return (
@@ -45,16 +40,13 @@ const LeftPanel: React.FC = () => {
           }
         }}
       >
-        <ContextUserCard
-          sessionData={sessionData}
-          onImpersonateClick={handleOpenModal}
-          onStopImpersonation={handleStopImpersonation}
-        />
+        <ContextUserCard />
       </Box>
 
       <ImpersonationModal 
-        open={isModalOpen} 
+        open={isModalOpen}
         onClose={handleCloseModal} 
+        selectedSchema={selectedSchema}  
       />
     </>
   );

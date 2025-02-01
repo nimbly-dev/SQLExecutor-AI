@@ -3,7 +3,7 @@ version: "3.8"
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql-db
+    container_name: mysql_db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -15,6 +15,12 @@ services:
     volumes:
       - ./db:/docker-entrypoint-initdb.d
       - mysql_data:/var/lib/mysql
+    networks:
+      - shared_network
 
 volumes:
   mysql_data:
+
+networks:
+  shared_network:
+    external: true
