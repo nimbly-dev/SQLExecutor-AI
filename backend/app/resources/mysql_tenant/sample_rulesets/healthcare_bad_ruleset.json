@@ -1,0 +1,310 @@
+{
+    "tenant_id": "MYSQL_TENANT",
+    "ruleset_name": "healthcare_ruleset",
+    "description": "Ruleset for managing access to healthcare schema based on user roles and assignments.",
+    "is_ruleset_enabled": true,
+    "conditions": {
+        "is_admin": "'admin' in ${jwt.custom_fields.role}",
+        "is_doctor": "'doctor' in ${jwt.custom_fields.role}",
+        "is_nurse": "'nurse' in ${jwt.custom_fields.role}",
+        "is_patient": "'patient' in ${jwt.custom_fields.role}",
+        "is_active": "${jwt.custom_fields.is_active} == 'TRUE'"
+    },
+    "global_access_policy": {
+        "tables": {
+            "users": {
+                "columns": {
+                    "allow": [
+                        "id",
+                        "name",
+                        "email",
+                        "contact_number",
+                        "role",
+                        "is_active",
+                        "is_admin",
+                        "created_at"
+                    ],
+                    "deny": []
+                },
+                "condition": "${conditions.is_active}"
+            },
+            "departments": {
+                "columns": {
+                    "allow": [
+                        "id",
+                        "name",
+                        "created_at"
+                    ],
+                    "deny": []
+                },
+                "condition": "${conditions.is_active}"
+            },
+            "doctors": {
+                "columns": {
+                    "allow": [
+                        "id",
+                        "user_id",
+                        "department_id",
+                        "hire_date"
+                    ],
+                    "deny": []
+                },
+                "condition": "${conditions.is_active}"
+            },
+            "nurses": {
+                "columns": {
+                    "allow": [
+                        "id",
+                        "user_id",
+                        "department_id",
+                        "hire_date"
+                    ],
+                    "deny": []
+                },
+                "condition": "${conditions.is_active}"
+            },
+            "patients": {
+                "columns": {
+                    "allow": [
+                        "id",
+                        "user_id",
+                        "dob",
+                        "gender",
+                        "registered_date"
+                    ],
+                    "deny": []
+                },
+                "condition": "${conditions.is_active}"
+            },
+            "appointments": {
+                "columns": {
+                    "allow": [
+                        "id",
+                        "patient_id",
+                        "doctor_id",
+                        "nurse_id",
+                        "appointment_date",
+                        "reason"
+                    ],
+                    "deny": []
+                },
+                "condition": "${conditions.is_active}"
+            },
+            "nurse_patient": {
+                "columns": {
+                    "allow": [
+                        "nurse_id",
+                        "patient_id",
+                        "assigned_date"
+                    ],
+                    "deny": []
+                },
+                "condition": "${conditions.is_active}"
+            }
+        }
+    },
+    "group_access_policy": {
+        "admin_group": {
+            "description": "Full access for admin users.",
+            "criteria": {
+                "matching_criteria": {
+                    "role": [
+                        "admin"
+                    ],
+                    "is_active": true
+                },
+                "condition": "${conditions.is_active} AND ${conditions.is_admin}"
+            },
+            "tables": {
+                "users": {
+                    "columns": {
+                        "allow": "*",
+                        "deny": []
+                    }
+                },
+                "departments": {
+                    "columns": {
+                        "allow": "*",
+                        "deny": []
+                    }
+                },
+                "doctors": {
+                    "columns": {
+                        "allow": "*",
+                        "deny": []
+                    }
+                },
+                "nurses": {
+                    "columns": {
+                        "allow": "*",
+                        "deny": []
+                    }
+                },
+                "patients": {
+                    "columns": {
+                        "allow": "*",
+                        "deny": []
+                    }
+                },
+                "appointments": {
+                    "columns": {
+                        "allow": "*",
+                        "deny": []
+                    }
+                },
+                "nurse_patient": {
+                    "columns": {
+                        "allow": "*",
+                        "deny": []
+                    }
+                }
+            }
+        },
+        "doctor_group": {
+            "description": "Access for doctor users.",
+            "criteria": {
+                "matching_criteria": {
+                    "role": [
+                        "doctor"
+                    ],
+                    "is_active": true
+                },
+                "condition": "${conditions.is_active} AND ${conditions.is_doctor}"
+            },
+            "tables": {
+                "appointments": {
+                    "columns": {
+                        "allow": [
+                            "id",
+                            "patient_id",
+                            "doctor_id",
+                            "appointment_date",
+                            "reason"
+                        ],
+                        "deny": []
+                    },
+                    "condition": "doctor_id = ${jwt.custom_fields.id}"
+                },
+                "patients": {
+                    "columns": {
+                        "allow": [
+                            "id",
+                            "user_id",
+                            "dob",
+                            "gender",
+                            "registered_date"
+                        ],
+                        "deny": []
+                    },
+                    "condition": "id IN (SELECT patient_id FROM appointments WHERE doctor_id = ${jwt.custom_fields.id})"
+                }
+            }
+        },
+        "nurse_group": {
+            "description": "Access for nurse users.",
+            "criteria": {
+                "matching_criteria": {
+                    "role": [
+                        "nurse"
+                    ],
+                    "is_active": true
+                },
+                "condition": "${conditions.is_active} AND ${conditions.is_nurse}"
+            },
+            "tables": {
+                "appointments": {
+                    "columns": {
+                        "allow": [
+                            "id",
+                            "patient_id",
+                            "nurse_id",
+                            "appointment_date"
+                        ],
+                        "deny": []
+                    },
+                    "condition": "nurse_id = ${jwt.custom_fields.id}"
+                },
+                "nurse_patient": {
+                    "columns": {
+                        "allow": [
+                            "nurse_id",
+                            "patient_id",
+                            "assigned_date"
+                        ],
+                        "deny": []
+                    },
+                    "condition": "nurse_id = ${jwt.custom_fields.id}"
+                },
+                "patients": {
+                    "columns": {
+                        "allow": [
+                            "id",
+                            "user_id",
+                            "dob",
+                            "gender",
+                            "registered_date"
+                        ],
+                        "deny": []
+                    },
+                    "condition": "id IN (SELECT patient_id FROM nurse_patient WHERE nurse_id = ${jwt.custom_fields.id})"
+                }
+            }
+        },
+        "patient_group": {
+            "description": "Access for patient users.",
+            "criteria": {
+                "matching_criteria": {
+                    "role": [
+                        "patient"
+                    ],
+                    "is_active": true
+                },
+                "condition": "${conditions.is_active} AND ${conditions.is_patient}"
+            },
+            "tables": {
+                "appointments": {
+                    "columns": {
+                        "allow": [
+                            "id",
+                            "appointment_date",
+                            "reason"
+                        ],
+                        "deny": []
+                    },
+                    "condition": "patient_id = ${jwt.custom_fields.id}"
+                },
+                "patients": {
+                    "columns": {
+                        "allow": [
+                            "id",
+                            "user_id",
+                            "dob",
+                            "gender",
+                            "registered_date"
+                        ],
+                        "deny": []
+                    },
+                    "condition": "user_id = ${jwt.custom_fields.id}"
+                }
+            }
+        }
+    },
+    "user_specific_access_policy": [],
+    "injectors": {
+        "patient_user_scope": {
+            "name": "Patient-Specific Filter",
+            "enabled": true,
+            "condition": {
+                "condition": "${conditions.is_active} AND ${conditions.is_patient}"
+            },
+            "tables": {
+                "appointments": {
+                    "filters": "patient_id = ${jwt.custom_fields.id}"
+                },
+                "patients": {
+                    "filters": "user_id = ${jwt.custom_fields.id}"
+                }
+            }
+        }
+    }
+}

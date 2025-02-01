@@ -20,6 +20,8 @@ interface ChatInterfaceProps {
   schemas: SchemaSummary[];
   isLoading?: boolean;
   onError: (error: APIError) => void;
+  selectedSchema: SchemaSummary | null;
+  onSchemaSelect: (schema: SchemaSummary | null) => void;
 }
 
 /**
@@ -33,11 +35,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   schemas,
   isLoading = false,
   onError,
+  selectedSchema,
+  onSchemaSelect,
 }) => {
   const theme = useTheme();
   const [prompt, setPrompt] = useState('');
   const [sqlOnly, setSqlOnly] = useState(false);
-  const [selectedSchema, setSelectedSchema] = useState<SchemaSummary | null>(null);
 
   // Handle SQL Generation
   const handleGenerateSQL = async () => {
@@ -58,7 +61,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         <SchemaSelector
           schemas={schemas}
           selectedSchema={selectedSchema}
-          onSchemaSelect={(schema) => setSelectedSchema(schema)}
+          onSchemaSelect={onSchemaSelect}
         />
       </Box>
 

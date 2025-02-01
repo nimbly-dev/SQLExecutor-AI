@@ -1,0 +1,309 @@
+{
+    "ruleset_name": "external_system_ruleset",
+    "description": "Ruleset for external system defining access for different roles.",
+    "is_ruleset_enabled": true,
+    "conditions": {
+      "is_admin": "'admin' in ${jwt.custom_fields.role}",
+      "is_customer": "'customer' in ${jwt.custom_fields.role}",
+      "is_customer_support": "'customer_support' in ${jwt.custom_fields.role}",
+      "is_accountant": "'accountant' in ${jwt.custom_fields.role}",
+      "is_customer_representative": "'customer_representative' in ${jwt.custom_fields.role}",
+      "is_active": "${jwt.custom_fields.is_active} == True"
+    },
+    "global_access_policy": {
+      "tables": {
+        "users": {
+          "columns": {
+            "allow": [
+              "user_id",
+              "username",
+              "email",
+              "created_at",
+              "is_active"
+            ],
+            "deny": [
+              "password"
+            ]
+          },
+          "condition": "True"
+        },
+        "customer_info": {
+          "columns": {
+            "allow": [
+              "customer_id",
+              "customer_name",
+              "user_id",
+              "customer_email",
+              "phone_number",
+              "address"
+            ],
+            "deny": []
+          },
+          "condition": "True"
+        },
+        "payments": {
+          "columns": {
+            "allow": [
+              "payment_id",
+              "user_id",
+              "amount",
+              "payment_date",
+              "status"
+            ],
+            "deny": []
+          },
+          "condition": "True"
+        },
+        "orders": {
+          "columns": {
+            "allow": [
+              "order_id",
+              "user_id",
+              "order_date",
+              "total_amount",
+              "status"
+            ],
+            "deny": []
+          },
+          "condition": "True"
+        },
+        "roles_list": {
+          "columns": {
+            "allow": [
+              "role_id",
+              "role",
+              "user_id"
+            ],
+            "deny": []
+          },
+          "condition": "True"
+        },
+        "admin": {
+          "columns": {
+            "allow": [
+              "admin_id",
+              "user_id",
+              "email"
+            ],
+            "deny": []
+          },
+          "condition": "True"
+        }
+      }
+    },
+    "group_access_policy": {
+      "customer_group": {
+        "description": "Access for customer users.",
+        "criteria": {
+          "matching_criteria": {
+            "role": [
+              "customer"
+            ],
+            "is_active": true
+          },
+          "condition": "${conditions.is_active} AND ${conditions.is_customer}"
+        },
+        "tables": {
+          "customer_info": {
+            "columns": {
+              "allow": [
+                "*"
+              ],
+              "deny": []
+            }
+          },
+          "users": {
+            "columns": {
+              "allow": [
+                "username",
+                "email"
+              ],
+              "deny": [
+                "password"
+              ]
+            }
+          }
+        }
+      },
+      "customer_support_group": {
+        "description": "Access for customer support.",
+        "criteria": {
+          "matching_criteria": {
+            "role": [
+              "customer_support"
+            ],
+            "is_active": true
+          },
+          "condition": "${conditions.is_active} AND ${conditions.is_customer_support}"
+        },
+        "tables": {
+          "orders": {
+            "columns": {
+              "allow": [
+                "order_id",
+                "user_id",
+                "order_date",
+                "total_amount",
+                "status"
+              ],
+              "deny": []
+            }
+          }
+        }
+      },
+      "accountant_group": {
+        "description": "Access for accountants.",
+        "criteria": {
+          "matching_criteria": {
+            "role": [
+              "accountant"
+            ],
+            "is_active": true
+          },
+          "condition": "${conditions.is_active} AND ${conditions.is_accountant}"
+        },
+        "tables": {
+          "payments": {
+            "columns": {
+              "allow": [
+                "payment_id",
+                "user_id",
+                "amount",
+                "payment_date",
+                "status"
+              ],
+              "deny": []
+            }
+          }
+        }
+      },
+      "customer_representative_group": {
+        "description": "Access for customer representatives.",
+        "criteria": {
+          "matching_criteria": {
+            "role": [
+              "customer_representative"
+            ],
+            "is_active": true
+          },
+          "condition": "${conditions.is_active} AND ${conditions.is_customer_representative}"
+        },
+        "tables": {
+          "customer_info": {
+            "columns": {
+              "allow": [
+                "*"
+              ],
+              "deny": []
+            }
+          },
+          "payments": {
+            "columns": {
+              "allow": [
+                "payment_id",
+                "user_id",
+                "amount",
+                "payment_date",
+                "status"
+              ],
+              "deny": []
+            }
+          },
+          "orders": {
+            "columns": {
+              "allow": [
+                "order_id",
+                "user_id",
+                "order_date",
+                "total_amount",
+                "status"
+              ],
+              "deny": []
+            }
+          }
+        }
+      },
+      "admin_group": {
+        "description": "Full access for admin users.",
+        "criteria": {
+          "matching_criteria": {
+            "role": [
+              "admin"
+            ],
+            "is_active": true
+          },
+          "condition": "${conditions.is_active} AND ${conditions.is_admin}"
+        },
+        "tables": {
+          "users": {
+            "columns": {
+              "allow": [
+                "*"
+              ],
+              "deny": [
+                "password"
+              ]
+            }
+          },
+          "customer_info": {
+            "columns": {
+              "allow": [
+                "*"
+              ],
+              "deny": []
+            }
+          },
+          "payments": {
+            "columns": {
+              "allow": [
+                "*"
+              ],
+              "deny": []
+            }
+          },
+          "orders": {
+            "columns": {
+              "allow": [
+                "*"
+              ],
+              "deny": []
+            }
+          },
+          "roles_list": {
+            "columns": {
+              "allow": [
+                "*"
+              ],
+              "deny": []
+            }
+          },
+          "admin": {
+            "columns": {
+              "allow": [
+                "*"
+              ],
+              "deny": []
+            }
+          }
+        }
+      }
+    },
+    "user_specific_access_policy": [],
+    "injectors": {
+      "customer_scope": {
+        "name": "Customer Filter",
+        "enabled": true,
+        "condition": {
+          "condition": "${jwt.custom_fields.role} == 'customer'"
+        },
+        "tables": {
+          "users": {
+            "filters": "user_id = '${jwt.custom_fields.user_id}'"
+          },
+          "customer_info": {
+            "filters": "user_id = '${jwt.custom_fields.user_id}'"
+          }
+        }
+      }
+    }
+  }

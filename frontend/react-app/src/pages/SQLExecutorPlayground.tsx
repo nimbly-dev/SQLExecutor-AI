@@ -5,12 +5,12 @@ import { fetchContextSession } from '../services/chatInterface';
 import { getSetting } from '../services/tenantSetting';
 import { fetchChatInterfaceSettings } from '../services/chatInterfaceSettingsService';
 import { toast } from 'react-toastify';
-import { SQLSettingsSection, SQLSetting, SQLSettingDisplay } from '../types/chat-interface/chatInterfaceSettings';
 import LeftPanel from '../components/sqlexecutor-playground/left-cards/LeftCards';
 import MiddleCards from '../components/sqlexecutor-playground/middle-cards/MiddleCards';
 import RightCards from '../components/sqlexecutor-playground/right-cards/RightCards';
 import { TransformedSettings } from '../types/chat-interface/chatInterfaceSettings';
 import { transformSettingsResponse } from '../hooks/sqlexecutor-playground/right-cards/useSettingsManagement';
+import { SchemaSummary } from '../types/sqlexecutor-playground/schemaModalContent';
 
 interface ContextUserContextType {
   sessionData: ExternalSessionData | null;
@@ -19,6 +19,8 @@ interface ContextUserContextType {
   isModalOpen: boolean;
   setIsModalOpen: (isOpen: boolean) => void;
   sqlSettings: TransformedSettings | null;
+  selectedSchema: SchemaSummary | null;           
+  setSelectedSchema: (schema: SchemaSummary | null) => void; 
 }
 
 const SQLExecutorContext = createContext<ContextUserContextType | undefined>(undefined);
@@ -35,6 +37,7 @@ function SQLExecutorPlayground() {
   const [sessionData, setSessionData] = useState<ExternalSessionData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sqlSettings, setSqlSettings] = useState<TransformedSettings | null>(null);
+  const [selectedSchema, setSelectedSchema] = useState<SchemaSummary | null>(null); // new state
   const theme = useTheme();
 
   const loadContextSession = async () => {
@@ -103,7 +106,9 @@ function SQLExecutorPlayground() {
     stopImpersonation,
     isModalOpen,
     setIsModalOpen,
-    sqlSettings
+    sqlSettings,
+    selectedSchema,       // pass in context
+    setSelectedSchema     // pass in context
   };
 
   return (
@@ -124,7 +129,12 @@ function SQLExecutorPlayground() {
         <LeftPanel />
 
         {/* Middle cards: Chat interface and SQL results */}
-        <MiddleCards sessionData={sessionData} setSessionData={setSessionData} />
+        <MiddleCards 
+          sessionData={sessionData}
+          setSessionData={setSessionData}
+          selectedSchema={selectedSchema}
+          setSelectedSchema={setSelectedSchema}
+        />
 
         {/* Right cards: SQL settings*/}
         <RightCards />

@@ -3,6 +3,10 @@ import { ExternalContextUserRow } from '../../../types/chat-interface/contextUse
 import { getUsersContext, createContextSession } from '../../../services/chatInterface';
 import { getSetting } from '../../../services/tenantSetting';
 
+/**
+ * Custom hook for user impersonation.
+ * @param onSessionCreated Callback invoked when a new session is successfully created.
+ */
 export const useImpersonation = (onSessionCreated: () => void) => {
   const [users, setUsers] = useState<ExternalContextUserRow[]>([]);
   const [identifierField, setIdentifierField] = useState<string>('');
@@ -10,10 +14,16 @@ export const useImpersonation = (onSessionCreated: () => void) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [totalCount, setTotalCount] = useState<number>(0);
 
-  const fetchUsers = useCallback(async (currentPage: number, limit: number) => {
+  /**
+   * Fetch users given the current page, limit, and schema.
+   * @param currentPage Current page number.
+   * @param limit Number of items per page.
+   * @param schema Schema name to filter users.
+   */
+  const fetchUsers = useCallback(async (currentPage: number, limit: number, schema: string) => {
     setIsLoading(true);
     try {
-      const response = await getUsersContext(currentPage + 1, 'ASC', limit);
+      const response = await getUsersContext(currentPage + 1, 'ASC', limit, schema);
       setUsers(response.data);
       setTotalCount(response.total_count);
     } catch (error) {
@@ -23,12 +33,25 @@ export const useImpersonation = (onSessionCreated: () => void) => {
     }
   }, []);
 
-  const handleUserSelect = async (user: ExternalContextUserRow) => {
+  /**
+   * Handle user selection and create a context session.
+   * @param user The selected user.
+   * @param schema Schema name required for context session.
+   */
+  const handleUserSelect = async (user: ExternalContextUserRow, schema: string) => {
+    console.log('handleUserSelect called with:', user, schema);
+
+    const extractedIdentifier = user.context_identifier;
+    if (!extractedIdentifier) {
+      console.error('Selected user does not have a valid identifier.');
+      return;
+    }
+
     try {
       const apiKeyResponse = await getSetting('API_KEYS', 'TENANT_APPLICATION_TOKEN');
       const apiKey = apiKeyResponse.setting_detail.setting_value;
-
-      const sessionData = await createContextSession(user.user_identifier, apiKey);
+      const sessionData = await createContextSession(extractedIdentifier, apiKey, schema);
+      console.log('Session data received:', sessionData);
       
       if (sessionData && sessionData.session_id) {
         sessionStorage.setItem('contextUserSessionId', sessionData.session_id);

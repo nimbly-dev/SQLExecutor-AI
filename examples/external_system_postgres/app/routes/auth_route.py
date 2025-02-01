@@ -44,9 +44,8 @@ def validate_hmac_signature(shared_secret: str, user_identifier: str, provided_s
     if not hmac.compare_digest(expected_signature, provided_signature):
         raise ValueError("Invalid HMAC signature")
 
-    # Check for replay attacks (e.g., timestamp is too old)
     current_time = int(time.time())
-    if abs(current_time - int(timestamp)) > 300:  # Allow 5-minute drift
+    if abs(current_time - int(timestamp)) > 300: 
         raise ValueError("Request timestamp expired")
 
 def validate_hmac_signature_for_get_users(shared_secret: str, page: int, limit: int, order_direction: str, timestamp: str, provided_signature: str):

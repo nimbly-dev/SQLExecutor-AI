@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field, root_validator
 from typing import Optional, Dict, List
 from bson import ObjectId
+from model.schema.context import ContextSetting
+from model.schema.schema_chat_interface_integration_setting import SchemaChatInterfaceIntegrationSetting
 from model.schema.table import Table, Column 
 
 class Schema(BaseModel):
@@ -12,13 +14,10 @@ class Schema(BaseModel):
     tables: Dict[str, Table]
     filter_rules: Optional[List[str]] = []
     synonyms: Optional[List[str]] = []
+    context_type: str
+    context_setting: ContextSetting
+    schema_chat_interface_integration: Optional[SchemaChatInterfaceIntegrationSetting] = None
 
-    @root_validator(pre=True)
-    def check_description_length(cls, values):
-        description = values.get('description')
-        if description and len(description) > 64:
-            raise ValueError("description must not exceed 64 characters")
-        return values
 
     class Config:
         # Encode table and column to dictionary

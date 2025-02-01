@@ -144,16 +144,35 @@ class AccessControlResolver:
     def _validate_matching_criteria(self, matching_criteria: Dict[str, Any]) -> bool:
         """
         Check if session data matches provided criteria before evaluating conditions.
+
+        Handles type normalization for booleans, strings, and other potential mismatches.
         """
         session_dict = self.session_data.dict().get("custom_fields", {})
+
         for key, expected_value in matching_criteria.items():
             value_in_session = session_dict.get(key)
+
+            # Normalize boolean values (e.g., "TRUE" -> True, "FALSE" -> False)
+            if isinstance(expected_value, bool):
+                if isinstance(value_in_session, str):
+                    value_in_session = value_in_session.upper() == "TRUE"
+
+            # Normalize list comparisons
             if isinstance(expected_value, list):
                 if value_in_session not in expected_value:
+                    logging.debug(
+                        f"Criteria mismatch: {key}='{value_in_session}' not in expected values {expected_value}"
+                    )
                     return False
+
+            # Direct comparison
             else:
-                if value_in_session != expected_value:
+                if str(expected_value).lower() != str(value_in_session).lower():
+                    logging.debug(
+                        f"Criteria mismatch: {key}='{value_in_session}' does not match expected value '{expected_value}'"
+                    )
                     return False
+
         return True
 
     def _match_group_policy(self, table_name: str):

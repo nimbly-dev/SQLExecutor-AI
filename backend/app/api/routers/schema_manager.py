@@ -9,15 +9,6 @@ from utils.auth_utils import authenticate_admin_session
 
 router = APIRouter()
 
-@router.post("/{tenant_id}/schemas/")
-async def add_schema(tenant_id: str, schema_request: AddSchemaRequest, admin_session_data: AdminSessionData = Depends(authenticate_admin_session)):
-    if admin_session_data.role not in ["Schema Admin", "Tenant Admin"]:
-        raise HTTPException(
-            status_code=403,
-            detail="You do not have permission to perform this action"
-        )
-    return await SchemaManagerService.add_schema(tenant_id=tenant_id, schema_request=schema_request)
-
 @router.get("/{tenant_id}/schemas")
 async def get_schemas(
     tenant_id: str,
@@ -44,6 +35,16 @@ async def get_schemas(
         return schema
 
     return await SchemaManagerService.get_all_schemas(tenant_id=tenant_id)
+
+
+@router.post("/{tenant_id}/schemas")
+async def add_schema(tenant_id: str, schema_request: AddSchemaRequest, admin_session_data: AdminSessionData = Depends(authenticate_admin_session)):
+    if admin_session_data.role not in ["Schema Admin", "Tenant Admin"]:
+        raise HTTPException(
+            status_code=403,
+            detail="You do not have permission to perform this action"
+        )
+    return await SchemaManagerService.add_schema(tenant_id=tenant_id, schema_request=schema_request)
 
 @router.put("/{tenant_id}/schemas/{schema_name}")
 async def update_schema(tenant_id: str, schema_name: str, schema_request: UpdateSchemaRequest,  admin_session_data: AdminSessionData = Depends(authenticate_admin_session)):

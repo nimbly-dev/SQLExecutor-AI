@@ -1,4 +1,5 @@
-from typing import Dict
+from typing import Dict, Optional
+from api.core.constants.tenant.settings_categories import SQL_GENERATION_KEY
 from utils.prompt_instructions_utils import DefaultPromptInstructionsUtil
 from fastapi import HTTPException
 from openai import OpenAI
@@ -11,6 +12,7 @@ from model.query_scope.query_scope import QueryScope
 from model.requests.sql_generation.user_input_request import UserInputRequest
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
 from utils.llm_wrapper.sql_generation_output_utils import SQLUtils
+from utils.tenant_manager.setting_utils import SettingUtils
 
 class LLMServiceWrapper:
 
@@ -67,21 +69,52 @@ class LLMServiceWrapper:
             )
 
     @staticmethod
-    async def generate_sql_query(user_input: UserInputRequest, resolved_schema: Dict) -> str:
+    async def generate_sql_query(user_input: UserInputRequest, 
+                                 resolved_schema: Dict, 
+                                 tenant: Tenant,
+                                 query_scope: Optional[QueryScope] = None) -> str:
+        include_query_scope = SettingUtils.get_setting_value(
+            settings=tenant.settings,
+            category_key=SQL_GENERATION_KEY,
+            setting_key="INCLUDE_QUERY_SCOPE_ON_SQL_GENERATION"
+        ) or False
+        
         try:
             client = OpenAI(api_key=settings.OPENAI_API_KEY)
-            prompt_instruction = DefaultPromptInstructionsUtil.get_sql_generation_instructions()
-
-            messages = [
+            if not include_query_scope:
+                prompt_instruction = DefaultPromptInstructionsUtil.get_sql_generation_instructions()
+                
+                messages = [
                 {
                     "role": "system",
                     "content": f"{prompt_instruction}\nSchema: {json.dumps(resolved_schema)}"
                 },
-                {
-                    "role": "user",
-                    "content": user_input.input
+                    {
+                        "role": "user",
+                        "content": user_input.input
+                    }
+                ]
+
+            else:
+                prompt_instruction = DefaultPromptInstructionsUtil.SQL_PROMPT_INSTRUCTION_WITH_QUERY_SCOPE
+                #Remove unnecessary fields from query scope
+                new_query_scope = {
+                    "entities": {
+                        "tables": query_scope.entities.tables,
+                        "columns": query_scope.entities.columns,
+                    }
                 }
-            ]
+            
+                messages = [
+                    {
+                        "role": "system",
+                        "content": f"{prompt_instruction}\nQueryScope: {new_query_scope}\nSchema: {json.dumps(resolved_schema)}"
+                    },
+                    {
+                        "role": "user",
+                        "content": user_input.input
+                    }
+                ]
 
             response = client.chat.completions.create(
                 model=f"{settings.DEFAULT_APP_LLM_MODEL}",

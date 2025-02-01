@@ -1,32 +1,64 @@
 from fastapi import APIRouter, HTTPException, Header
 
+from api.core.constants.tenant.settings_categories import EXTERNAL_SYSTEM_DB_SETTING
 from api.core.services.external_system.sql_context.sql_context_integration_service import SQLContextIntegrationService;
+from api.core.services.schema.schema_manager_service import SchemaManagerService
 from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService;
 from api.core.services.external_system.external_session_manager_service import SessionManagerService;
 
 from model.requests.external_system_integration.fetch_external_context_request import CreateExternalSessionRequest;
 from model.requests.external_system_integration.invalidate_external_session_request import InvalidateExternalSession;
-from model.requests.external_system_integration.fetch_external_session_request import FetchExternalSession;
+from model.requests.external_system_integration.fetch_external_session_request import FetchExternalSession
+from utils.tenant_manager.setting_utils import SettingUtils;
 
 router = APIRouter()
 
 @router.post("/{tenant_id}/create-context-session")
-async def create_exrternal_session(tenant_id:str, 
-                                 request: CreateExternalSessionRequest, 
-                                 x_api_key: str = Header(...),):
+async def create_external_session(
+    tenant_id: str,
+    request: CreateExternalSessionRequest,
+    x_api_key: str = Header(...),
+):
     """Create External Context-Aware Session from External System Context Table"""
     tenant = await TenantManagerService.get_tenant(tenant_id)
-    custom_fields = await SQLContextIntegrationService \
-                            .get_customfields_from_context_table(tenant,
-                                                                 request.context_user_identifier_value)
+    schema = await SchemaManagerService.get_schema(tenant_id, request.schema_name)
+
+    if schema.context_setting.sql_context is None:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Schema '{request.schema_name}' does not have an SQL context configured."
+        )
     
-    if custom_fields is None:
-        raise HTTPException(status_code=404, detail="Context User Identifier cannot be found")
-    
-    session_data = await SessionManagerService.create_external_session(tenant, 
-                                                                       request.context_user_identifier_value, 
-                                                                       custom_fields)
-    
+    sql_context = schema.context_setting.sql_context
+    sql_flavor = SettingUtils.get_setting_value(
+        settings=tenant.settings,
+        category_key=EXTERNAL_SYSTEM_DB_SETTING,
+        setting_key="EXTERNAL_TENANT_DB_DIALECT"
+    )
+
+    custom_field_values = await SQLContextIntegrationService.get_custom_fields_from_context_table(
+        tenant=tenant,
+        context_table=sql_context.table,
+        user_identifier_field=sql_context.user_identifier,
+        user_identifier_value=request.context_user_identifier_value,
+        custom_fields=sql_context.custom_fields,
+        sql_flavor=sql_flavor,
+        custom_get_context_query=sql_context.custom_get_context_query,
+        schema_name=request.schema_name
+    )
+
+    if custom_field_values is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Context User Identifier cannot be found in the context table."
+        )
+
+    session_data = await SessionManagerService.create_external_session(
+        tenant=tenant,
+        context_user_identifier=request.context_user_identifier_value,
+        custom_fields=custom_field_values,
+    )
+
     return session_data
     
 

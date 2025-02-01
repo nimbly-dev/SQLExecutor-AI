@@ -27,85 +27,86 @@ from api.core.constants.tenant.settings_categories import SQL_INJECTORS
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-@router.post("/{tenant_id}")
-async def generate_sql(tenant_id: str, 
-                       user_request: UserInputRequest, 
-                       run_sql: bool = True, 
-                       session: ExternalSessionData = Depends(authenticate_session)):
-    # Fetch tenant details
-    tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
-    user_query_scope = await LLMServiceWrapper.get_query_scope_using_default_mode(
-        user_input=user_request
-    )
-    query_scope_resolver = QueryScopeResolver(
-        session_data=session,
-        settings=tenant.settings,
-        query_scope=user_query_scope,
-        tenant=tenant
-    )
-    injector_enabled = SettingUtils.get_setting_value(
-        settings=tenant.settings,
-        category_key=SQL_INJECTORS,
-        setting_key="DYNAMIC_INJECTION"
-    )
+# @DeprecationWarning("The endpoint is currnetly deprecated, due to the fact that Multiple Schema Resolve is not supported")
+# @router.post("/{tenant_id}")
+# async def generate_sql(tenant_id: str, 
+#                        user_request: UserInputRequest, 
+#                        run_sql: bool = True, 
+#                        session: ExternalSessionData = Depends(authenticate_session)):
+#     # Fetch tenant details
+#     tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
+#     user_query_scope = await LLMServiceWrapper.get_query_scope_using_default_mode(
+#         user_input=user_request
+#     )
+#     query_scope_resolver = QueryScopeResolver(
+#         session_data=session,
+#         settings=tenant.settings,
+#         query_scope=user_query_scope,
+#         tenant=tenant
+#     )
+#     injector_enabled = SettingUtils.get_setting_value(
+#         settings=tenant.settings,
+#         category_key=SQL_INJECTORS,
+#         setting_key="DYNAMIC_INJECTION"
+#     )
 
-    try:
-        matched_schema: Schema = await query_scope_resolver.match_user_query_to_schema(tenant_id=tenant_id)
-        resolved_user_query_scope = query_scope_resolver.resolve_query_scope(matched_schema=matched_schema)
-    except HTTPException as e:
-        logger.error(f"QueryScope Resolution Failed: {e.detail}")
-        logger.info(f"Original Query Scope: {user_query_scope.dict()}")
-        raise e
+#     try:
+#         matched_schema: Schema = await query_scope_resolver.match_user_query_to_schema(tenant_id=tenant_id)
+#         resolved_user_query_scope = query_scope_resolver.resolve_query_scope(matched_schema=matched_schema)
+#     except HTTPException as e:
+#         logger.error(f"QueryScope Resolution Failed: {e.detail}")
+#         logger.info(f"Original Query Scope: {user_query_scope.dict()}")
+#         raise e
     
-    # Get ruleset from Schema, currently PoC supports only single ruleset.
-    matched_ruleset_name = extract_ruleset_name(ruleset_placeholder=matched_schema.filter_rules[0])
-    matched_ruleset: Ruleset = await RulesetManagerService.get_ruleset(tenant_id=tenant_id, ruleset_name=matched_ruleset_name)
+#     # Get ruleset from Schema, currently PoC supports only single ruleset.
+#     matched_ruleset_name = extract_ruleset_name(ruleset_placeholder=matched_schema.filter_rules[0])
+#     matched_ruleset: Ruleset = await RulesetManagerService.get_ruleset(tenant_id=tenant_id, ruleset_name=matched_ruleset_name)
     
-    access_resolver = AccessControlResolver(session_data=session, ruleset=matched_ruleset, matched_schema=matched_schema)
-    schema_resolver = SchemaResolver(session_data=session, tenant=tenant, matched_schema=matched_schema, query_scope=resolved_user_query_scope)
+#     access_resolver = AccessControlResolver(session_data=session, ruleset=matched_ruleset, matched_schema=matched_schema)
+#     schema_resolver = SchemaResolver(session_data=session, tenant=tenant, matched_schema=matched_schema, query_scope=resolved_user_query_scope)
     
-    access_resolver.has_access_to_scope(resolved_user_query_scope)
+#     access_resolver.has_access_to_scope(resolved_user_query_scope)
     
-    generated_sql = await LLMServiceWrapper.generate_sql_query(
-        user_input=user_request,
-        resolved_schema=schema_resolver.resolve_schema()
-    )
+#     generated_sql = await LLMServiceWrapper.generate_sql_query(
+#         user_input=user_request,
+#         resolved_schema=schema_resolver.resolve_schema()
+#     )
 
-    # Apply injectors if enabled
-    updated_sql = generated_sql
-    injected_str = None
-    if injector_enabled:
-        injector_resolver = InjectorResolver(session_data=session, ruleset=matched_ruleset)
-        updated_sql, injected_str = injector_resolver.apply_injectors(
-            sql_query=generated_sql,
-            tenant=tenant
-        )
+#     # Apply injectors if enabled
+#     updated_sql = generated_sql
+#     injected_str = None
+#     if injector_enabled:
+#         injector_resolver = InjectorResolver(session_data=session, ruleset=matched_ruleset)
+#         updated_sql, injected_str = injector_resolver.apply_injectors(
+#             sql_query=generated_sql,
+#             tenant=tenant
+#         )
 
-    # Run SQL if specified
-    run_sql_result = None
-    if run_sql:
-        try:
-            run_sql_result = SqlRunnerService.run_sql(
-                orginal_user_input=user_request.input,
-                query_scope=resolved_user_query_scope,
-                query=updated_sql, 
-                tenant=tenant, params={}
-            )
-        except HTTPException as e:
-            logger.error(f"SQL Execution Failed: {e.detail}")
-            logger.info(f"Original Query Scope: {user_query_scope.dict()}")
-            raise e
+#     # Run SQL if specified
+#     run_sql_result = None
+#     if run_sql:
+#         try:
+#             run_sql_result = SqlRunnerService.run_sql(
+#                 orginal_user_input=user_request.input,
+#                 query_scope=resolved_user_query_scope,
+#                 query=updated_sql, 
+#                 tenant=tenant, params={}
+#             )
+#         except HTTPException as e:
+#             logger.error(f"SQL Execution Failed: {e.detail}")
+#             logger.info(f"Original Query Scope: {user_query_scope.dict()}")
+#             raise e
 
-    # Construct the response
-    sql_generation_response = SqlGenerationResponse(
-        query_scope=resolved_user_query_scope,
-        user_input=user_request.input,
-        sql_query=updated_sql,
-        sql_response=run_sql_result,
-        injected_str=injected_str
-    )
+#     # Construct the response
+#     sql_generation_response = SqlGenerationResponse(
+#         query_scope=resolved_user_query_scope,
+#         user_input=user_request.input,
+#         sql_query=updated_sql,
+#         sql_response=run_sql_result,
+#         injected_str=injected_str
+#     )
     
-    return sql_generation_response
+#     return sql_generation_response
     
 @router.post("/{tenant_id}/{schema_name}")
 async def generate_sql_given_schema(tenant_id: str, schema_name: str, 
@@ -138,7 +139,7 @@ async def generate_sql_given_schema(tenant_id: str, schema_name: str,
         logger.info(f"Original Query Scope: {user_query_scope.dict()}")
         raise e
     
-    # Get ruleset from Schema
+    # Get ruleset from Schema, Supports only single ruleset.
     matched_ruleset_name = extract_ruleset_name(ruleset_placeholder=schema.filter_rules[0])
     matched_ruleset: Ruleset = await RulesetManagerService.get_ruleset(tenant_id=tenant_id, ruleset_name=matched_ruleset_name)
     
@@ -149,7 +150,9 @@ async def generate_sql_given_schema(tenant_id: str, schema_name: str,
     
     generated_sql = await LLMServiceWrapper.generate_sql_query(
         user_input=user_request,
-        resolved_schema=schema_resolver.resolve_schema()
+        resolved_schema=schema_resolver.resolve_schema(),
+        tenant=tenant,
+        query_scope=resolved_user_query_scope
     )
 
     # Apply injectors if enabled
@@ -171,6 +174,7 @@ async def generate_sql_given_schema(tenant_id: str, schema_name: str,
                 query_scope=resolved_user_query_scope,
                 query=updated_sql, 
                 tenant=tenant, 
+                schema_name=schema_name,
                 params={}
             )
         except HTTPException as e:

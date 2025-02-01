@@ -6,10 +6,13 @@ import ChatInterfaceErrorDisplay from './chat-interface/ChatInterfaceErrorDispla
 import { ExternalSessionData } from '../../../types/authentication/externalUserSessionData';
 import { useSqlGeneration } from '../../../hooks/sqlexecutor-playground/middle-cards/useSqlGeneration';
 import { useSchemaManagement } from '../../../hooks/sqlexecutor-playground/middle-cards/useSchemaManagement';
+import { SchemaSummary } from '../../../types/sqlexecutor-playground/schemaModalContent';
 
 interface MiddleCardsProps {
   sessionData: ExternalSessionData | null;
   setSessionData: React.Dispatch<React.SetStateAction<ExternalSessionData | null>>;
+  selectedSchema: SchemaSummary | null; // new
+  setSelectedSchema: (schema: SchemaSummary | null) => void; // new
 }
 
 /**
@@ -17,7 +20,7 @@ interface MiddleCardsProps {
  * @param {MiddleCardsProps} props - The props for the component.
  * @returns {JSX.Element} The rendered component.
  */
-function MiddleCards({ sessionData, setSessionData }: MiddleCardsProps) {
+function MiddleCards({ sessionData, setSessionData, selectedSchema, setSelectedSchema }: MiddleCardsProps) {
   const {
     queryHistory,
     generatedSQL,
@@ -53,6 +56,8 @@ function MiddleCards({ sessionData, setSessionData }: MiddleCardsProps) {
         schemas={schemas}
         isLoading={isLoading}
         onError={setError}
+        selectedSchema={selectedSchema}      
+        onSchemaSelect={setSelectedSchema}    
       />
       {error && (
         <ChatInterfaceErrorDisplay 

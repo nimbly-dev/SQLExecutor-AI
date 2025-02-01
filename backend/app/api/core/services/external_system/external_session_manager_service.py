@@ -33,16 +33,18 @@ class SessionManagerService:
             expireAfterSeconds=0 
         )
     
-    async def create_external_session(tenant: Tenant, 
-                                      context_user_identifier: str, 
-                                      custom_fields: Dict[str, Any]) -> ExternalSessionData:
+    async def create_external_session(
+        tenant: Tenant, 
+        context_user_identifier: str, 
+        custom_fields: Dict[str, Any]
+    ) -> ExternalSessionData:
         collection = mongodb.db["sessions"]
         SESSION_EXPIRATION_TIME = SettingUtils.get_setting_value(
             tenant.settings,
             SESSION_MANAGER_CATEGORY_KEY,
             "SESSION_EXPIRATION_TIME"
         )
-        
+
         if SESSION_EXPIRATION_TIME is None:
             raise ValueError("SESSION_EXPIRATION_TIME setting is not configured")
 
@@ -67,6 +69,7 @@ class SessionManagerService:
             raise ValueError(f"Failed to create session: {str(e)}")
         
         return session_data
+
 
     @staticmethod
     async def get_external_session(session_id: str):

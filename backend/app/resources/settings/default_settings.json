@@ -33,40 +33,42 @@
         "EXTERNAL_SYSTEM_DB_SETTING": {
             "EXTERNAL_TENANT_DB_DIALECT": {
                 "setting_basic_name": "Database Dialect",
-                "setting_value": "postgresql",
+                "setting_value": "mysql",
                 "is_custom_setting": false,
-                "setting_description": "Specifies the database dialect (PostgreSQL)",
+                "setting_description": "Specifies the database dialect to use",
                 "setting_default_value": "postgresql"
-            },
-            "EXTERNAL_TENANT_DB_USERNAME": {
+            }
+        },
+        "EXTERNAL_SYSTEM_POSTGRES_DB_SETTING": {
+            "EXTERNAL_TENANT_POSTGRES_DB_USERNAME": {
                 "setting_basic_name": "Database Username",
                 "setting_value": "postgres",
                 "is_custom_setting": false,
                 "setting_description": "Username for database authentication",
                 "setting_default_value": "postgres"
             },
-            "EXTERNAL_TENANT_DB_PASSWORD": {
+            "EXTERNAL_TENANT_POSTGRES_DB_PASSWORD": {
                 "setting_basic_name": "Database Password",
                 "setting_value": "postgres",
                 "is_custom_setting": false,
                 "setting_description": "Password for database authentication",
                 "setting_default_value": "postgres"
             },
-            "EXTERNAL_TENANT_DB_HOST": {
+            "EXTERNAL_TENANT_POSTGRES_DB_HOST": {
                 "setting_basic_name": "Database Host",
                 "setting_value": "db",
                 "is_custom_setting": false,
                 "setting_description": "Hostname or network address of the database server",
                 "setting_default_value": "localhost"
             },
-            "EXTERNAL_TENANT_DB_PORT": {
+            "EXTERNAL_TENANT_POSTGRES_DB_PORT": {
                 "setting_basic_name": "Database Port",
                 "setting_value": "5432",
                 "is_custom_setting": false,
                 "setting_description": "Port number where the database server is listening",
                 "setting_default_value": "5432"
             },
-            "EXTERNAL_TENANT_DB_NAME": {
+            "EXTERNAL_TENANT_POSTGRES_DB_NAME": {
                 "setting_basic_name": "Database Name",
                 "setting_value": "external_system_db",
                 "is_custom_setting": false,
@@ -74,34 +76,34 @@
                 "setting_default_value": "postgres"
             }
         },
-        "SQL_CONTEXT_INTEGRATION":{
-            "EXTERNAL_CONTEXT_CUSTOM_FIELDS": {
-                "setting_basic_name": "External Context Custom Fields",
-                "setting_value": "['is_active','email']",
+        "EXTERNAL_SYSTEM_MYSQL_DB_SETTING": {
+            "EXTERNAL_TENANT_MYSQL_DB_USERNAME": {
+                "setting_basic_name": "Database Username",
+                "setting_value": "my_user",
                 "is_custom_setting": false,
-                "setting_description": "List of column fields that will be used for SQL Context-Awareness",
-                "setting_default_value": null
+                "setting_description": "Username for database authentication",
+                "setting_default_value": "root"
             },
-            "EXTERNAL_CONTEXT_TABLE": {
-                "setting_basic_name": "External Context Table",
-                "setting_value": "users",
+            "EXTERNAL_TENANT_MYSQL_DB_PASSWORD": {
+                "setting_basic_name": "Database Password",
+                "setting_value": "my_password",
                 "is_custom_setting": false,
-                "setting_description": "The SQL table where the context custom fields will get there data",
-                "setting_default_value": null
+                "setting_description": "Password for database authentication",
+                "setting_default_value": ""
             },
-            "EXTERNAL_CONTEXT_USER_IDENTIFIER": {
-                "setting_basic_name": "External Context User Identifier",
-                "setting_value": "username",
+            "EXTERNAL_TENANT_MYSQL_DB_HOST": {
+                "setting_basic_name": "Database Host",
+                "setting_value": "mysql-db",
                 "is_custom_setting": false,
-                "setting_description": "SQL Context Identifer for table, will be use to find/match a user",
-                "setting_default_value": null
+                "setting_description": "Hostname or network address of the database server",
+                "setting_default_value": "localhost"
             },
-            "SQL_CONTEXT_INTEGRATION_TOGGLE":{
-                "setting_basic_name": "SQl Context Toggle Integration",
-                "setting_value": true,
+            "EXTERNAL_TENANT_MYSQL_DB_PORT": {
+                "setting_basic_name": "Database Port",
+                "setting_value": "3306",
                 "is_custom_setting": false,
-                "setting_description": "Toggle to Enable/Disable SQL Context Integration",
-                "setting_default_value": null
+                "setting_description": "Port number where the database server is listening",
+                "setting_default_value": "3306"
             }
         },
         "API_CONTEXT_INTEGRATION":{
@@ -204,57 +206,6 @@
             }
 
         },
-        "EXTERNAL_JWT_AUTH": {
-            "EXTERNAL_JWT_LOGIN_ENDPOINT": {
-                "setting_basic_name": "External JWT Login Endpoint",
-                "setting_value": "http://external-system-app:8000/login",
-                "is_custom_setting": false,
-                "setting_description": "EXTERNAL_JWT_LOGIN_ENDPOINT description not provided",
-                "setting_default_value": null
-            },
-            "EXTERNAL_JWT_AUTH_FIELD": {
-                "setting_basic_name": "External JWT Authentication Field",
-                "setting_value": "username",
-                "is_custom_setting": false,
-                "setting_description": "EXTERNAL_JWT_AUTH_FIELD description not provided",
-                "setting_default_value": null
-            },
-            "EXTERNAL_JWT_AUTH_PASSKEY_FIELD": {
-                "setting_basic_name": "External JWT Passkey Field",
-                "setting_value": "password",
-                "is_custom_setting": false,
-                "setting_description": "EXTERNAL_JWT_AUTH_PASSKEY_FIELD description not provided",
-                "setting_default_value": null
-            },
-            "EXTERNAL_JWT_LOGOUT_ENDPOINT": {
-                "setting_basic_name": "External JWT Logout Endpoint",
-                "setting_value": "http://external-system-app:8000/logout",
-                "is_custom_setting": false,
-                "setting_description": "EXTERNAL_JWT_LOGOUT_ENDPOINT description not provided",
-                "setting_default_value": null
-            },
-            "EXTERNAL_JWT_SECRET_KEY": {
-                "setting_basic_name": "External JWT Secret Key",
-                "setting_value": "demo_secret_key_123456",
-                "is_custom_setting": false,
-                "setting_description": "EXTERNAL_JWT_SECRET_KEY description not provided",
-                "setting_default_value": null
-            },
-            "EXTERNAL_JWT_USER_IDENTIFIER_FIELD": {
-                "setting_basic_name": "External JWT User Identifier Field",
-                "setting_value": "sub",
-                "is_custom_setting": false,
-                "setting_description": "EXTERNAL_JWT_USER_IDENTIFIER_FIELD description not provided",
-                "setting_default_value": null
-            },
-            "EXTERNAL_JWT_CUSTOM_FIELDS": {
-                "setting_basic_name": "External JWT Custom Fields",
-                "setting_value": "['role', 'is_admin', 'is_active', 'sub', 'user_id']",
-                "is_custom_setting": false,
-                "setting_description": "EXTERNAL_JWT_CUSTOM_FIELDS description not provided",
-                "setting_default_value": null
-            }
-        },
         "SQL_RUNNER":{
             "SQL_FLAVOR":{
                 "setting_basic_name": "SQL Flavor",
@@ -329,11 +280,11 @@
             }
         },
         "SQL_GENERATION":{
-            "REMOVE_SENSITIVE_COLUMNS":{
-                "setting_basic_name": "Remove sensitive columns",
+            "INCLUDE_QUERY_SCOPE_ON_SQL_GENERATION":{
+                "setting_basic_name": "Include Query Scope on SQL Generation",
                 "setting_value": true,
                 "is_custom_setting": false,
-                "setting_description": "Removes sensitive columns that were declared on schema",
+                "setting_description": "Inclues Query Scope on SQL Generation Prompt, improving complex Text to SQL requests at a cost of more token usage",
                 "setting_default_value": true
             }
         }

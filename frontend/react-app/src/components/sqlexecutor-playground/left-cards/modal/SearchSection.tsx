@@ -7,7 +7,6 @@ import {
   Select,
   MenuItem,
   Stack,
-  Tooltip,
 } from '@mui/material';
 
 interface SearchSectionProps {
@@ -27,25 +26,16 @@ const SearchSection: React.FC<SearchSectionProps> = ({
   onFieldChange,
   onSearch,
 }) => {
-  const integrationType = sessionStorage.getItem('chatInterfaceIntegrationType');
-  const isApiIntegration = integrationType === 'api';
-
   return (
     <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-      <Tooltip
-        title={isApiIntegration ? "Search is not supported for API Context Integration" : ""}
-        arrow
-      >
-        <TextField
-          placeholder={isApiIntegration ? "Search not available for API integration" : "Search..."}
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          size="small"
-          sx={{ flexGrow: 1 }}
-          disabled={isApiIntegration}
-        />
-      </Tooltip>
-      <FormControl size="small" sx={{ minWidth: 150 }} disabled={isApiIntegration}>
+      <TextField
+        placeholder="Search..."
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
+        size="small"
+        sx={{ flexGrow: 1 }}
+      />
+      <FormControl size="small" sx={{ minWidth: 150 }}>
         <InputLabel id="search-field-label">Search Field</InputLabel>
         <Select
           labelId="search-field-label"
@@ -61,12 +51,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({
           ))}
         </Select>
       </FormControl>
-      <Button
-        variant="contained"
-        onClick={onSearch}
-        size="small"
-        disabled={isApiIntegration}
-      >
+      <Button variant="contained" onClick={onSearch} size="small">
         Search
       </Button>
     </Stack>
