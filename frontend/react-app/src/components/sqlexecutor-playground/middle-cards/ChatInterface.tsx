@@ -10,9 +10,9 @@ import {
   useTheme,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import SchemaSelector from './schema-selector/SchemaSelector';
-import { SchemaSummary } from '../../../types/sqlexecutor-playground/schemaModalContent';
-import { APIError } from '../../../types/sql-generation/errors/errorResponses';
+import SchemaSelector from 'components/sqlexecutor-playground/middle-cards/schema-selector/SchemaSelector';
+import { SchemaSummary } from 'types/schema/schemaType';
+import { APIError } from 'types/sql-generation/errors/errorResponses';
 
 interface ChatInterfaceProps {
   onGenerateSQL: (prompt: string, schema: string | null, runSql: boolean) => Promise<void>;

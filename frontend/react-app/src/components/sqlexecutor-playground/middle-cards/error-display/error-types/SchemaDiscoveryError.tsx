@@ -1,6 +1,6 @@
 import React from 'react';
-import { Typography, Box, List, ListItem, Stack, Chip } from '@mui/material';
-import { SchemaDiscoveryErrorResponse } from '../../../../../types/sql-generation/errors/errorResponses';
+import { Typography, Box, List, ListItem, Stack } from '@mui/material';
+import { SchemaDiscoveryErrorResponse } from 'types/sql-generation/errors/errorResponses';
 
 /**
  * Props for SchemaDiscoveryError component

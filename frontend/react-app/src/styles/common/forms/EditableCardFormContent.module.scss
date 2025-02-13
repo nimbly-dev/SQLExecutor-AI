@@ -1,0 +1,92 @@
+.accordionSummary {
+  align-items: center;
+  padding: 4px 8px;
+  background-color: transparent !important;
+
+  :global(.MuiAccordionSummary-content) {
+    margin: 8px 0;
+    background-color: transparent !important;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &:global(.Mui-focusVisible) {
+    background-color: transparent !important;
+  }
+
+  &:global(.Mui-disabled) {
+    opacity: 1;
+    background-color: transparent !important;
+  }
+
+  :global(.MuiAccordionSummary-expandIconWrapper) {
+    margin-left: 16px;
+  }
+}
+
+.contentWrapper {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.label {
+  margin-right: 12px;
+  font-size: 1.15rem; 
+  opacity: 0.85;
+}
+
+.titleField {
+  flex: 1;
+  margin-right: 8px;
+  & input {
+    background-color: transparent !important;
+  }
+}
+
+.titleText {
+  cursor: pointer;
+  flex: 1;
+  margin-right: 8px;
+  font-weight: 500;
+  font-size: 0.95rem; // Slightly reduced from 1rem
+  opacity: 0.9;
+  &:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+}
+
+.buttonsGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 16px;
+}
+
+.actionButton {
+  padding: 10px;
+  min-width: 42px;
+  min-height: 42px;
+  transition: all 0.2s;
+  &:global(.editButton) {
+    &:hover {
+      background-color: var(--action-hover);
+    }
+  }
+  &:global(.deleteButton) {
+    &:hover {
+      background-color: var(--error-lighter);
+      color: var(--error-main);
+    }
+  }
+}
+
+.icon {
+  font-size: 1.3rem;
+}
+
+.expandIcon {
+  font-size: 1.25rem;
+}

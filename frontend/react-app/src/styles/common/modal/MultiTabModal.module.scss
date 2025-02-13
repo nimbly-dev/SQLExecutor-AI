@@ -1,0 +1,41 @@
+/* MultiTabModal.module.scss */
+.dialogContent {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100%;
+  }
+  
+  .tabHeader {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff !important;  // Opaque background to hide underlying content
+    z-index: 1200;
+    border-bottom: 1px solid var(--mui-divider);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    // Removed any transparency or blur effects:
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  
+    :global(.MuiTabs-root) {
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+  }
+  
+  .tabContent {
+    padding: 24px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+  
+  .dialogActions {
+    justify-content: flex-end;
+  }
+  

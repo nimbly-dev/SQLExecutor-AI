@@ -1,6 +1,6 @@
 import React from 'react';
-import { Typography, Box, Stack, Chip } from '@mui/material';
-import { QueryScopeErrorResponse } from '../../../../../types/sql-generation/errors/errorResponses';
+import { Typography, Box, Stack } from '@mui/material';
+import { QueryScopeErrorResponse } from 'types/sql-generation/errors/errorResponses';
 import { ErrorSection } from './shared/ErrorSection';
 
 /**

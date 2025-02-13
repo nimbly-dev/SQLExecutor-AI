@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import LoginForm from '../components/login_authentication/LoginForm';
-import { loginAdmin } from '../services/authService';
+import { useAuth } from 'contexts/AuthContext';
+import LoginForm from 'components/login_authentication/LoginForm';
+import { loginAdmin } from 'services/authService';
 import Cookies from 'js-cookie';
 
 function LoginPage () {

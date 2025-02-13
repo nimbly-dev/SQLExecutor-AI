@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { AuthContextType } from '../types/authentication/authContextType';
+import { AuthContextType } from 'types/authentication/authContextType';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

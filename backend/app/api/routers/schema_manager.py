@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from api.core.services.schema.schema_manager_service import SchemaManagerService
@@ -9,11 +10,18 @@ from utils.auth_utils import authenticate_admin_session
 
 router = APIRouter()
 
+from fastapi import APIRouter, Query, HTTPException, Depends
+
 @router.get("/{tenant_id}/schemas")
 async def get_schemas(
     tenant_id: str,
-    summary: bool = Query(False),  
-    name: str | None = Query(None), 
+    summary: bool = Query(False),
+    summary_paginated: bool = Query(False),
+    name: Optional[str] = Query(None),
+    filter_name: Optional[str] = Query(None),
+    context_type: Optional[str] = Query(None),
+    page: int = Query(1),
+    page_size: int = Query(10),
     admin_session_data: AdminSessionData = Depends(authenticate_admin_session)
 ):
     if admin_session_data.role not in ["Schema Admin", "Tenant Admin"]:
@@ -22,8 +30,26 @@ async def get_schemas(
             detail="You do not have permission to perform this action"
         )
 
+    if summary and summary_paginated:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot use both 'summary' and 'summary_paginated' query parameters simultaneously."
+        )
+
     if summary:
         return await SchemaManagerService.get_schemas_names_and_descriptions(tenant_id=tenant_id)
+
+    if summary_paginated:
+        # Use the dedicated filter parameter for paginated queries.
+        # If 'filter_name' is not provided, fallback to 'name' (but avoid ambiguity with single schema retrieval).
+        effective_filter = filter_name if filter_name is not None else name
+        return await SchemaManagerService.get_schemas_names_and_descriptions_paginated(
+            tenant_id=tenant_id,
+            page=page,
+            page_size=page_size,
+            filter_name=effective_filter,
+            context_type=context_type
+        )
 
     if name:
         schema = await SchemaManagerService.get_schema(tenant_id=tenant_id, schema_name=name)

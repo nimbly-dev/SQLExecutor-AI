@@ -1,4 +1,3 @@
-// App.tsx
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
@@ -10,9 +9,12 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import MainLayout from './components/layout/MainLayout';
 import LoginPage from './pages/LoginPage';
 import SQLExecutorPlayground from './pages/SQLExecutorPlayground';
+import SchemaManager from './pages/SchemaManager';
 import LandingPage from './pages/LandingPage';
+import SchemaView from './pages/schema-manager/SchemaView';
 import ToastProvider from './components/common/ToastProvider';
-import './styles/themes/index.scss';  // Using relative path instead of alias
+import './styles/themes/index.scss'; 
+import SchemaAddWizard from './pages/schema-manager/SchemaAddWizard';
 
 // Protected Route Component
 const ProtectedRoute: React.FC = () => {
@@ -40,6 +42,10 @@ const App: React.FC = () => {
               <Route element={<MainLayout darkMode={darkMode} toggleTheme={toggleTheme} />}>
                 <Route path="/getting-started" element={<LandingPage />} />
                 <Route path="/sqlexecutor-playground" element={<SQLExecutorPlayground />} />
+                <Route path="/schema-manager" element={<SchemaManager />} />
+                {/*Schema Child-links below*/}
+                <Route path="/schema-manager/view/:schema_name" element={<SchemaView />} />
+                <Route path="/schema-manager/add" element={<SchemaAddWizard />} />
               </Route>
               {/* Wildcard inside Protected Routes */}
               <Route path="*" element={<Navigate to="/getting-started" replace />} />

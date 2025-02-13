@@ -140,8 +140,7 @@ async def generate_sql_given_schema(tenant_id: str, schema_name: str,
         raise e
     
     # Get ruleset from Schema, Supports only single ruleset.
-    matched_ruleset_name = extract_ruleset_name(ruleset_placeholder=schema.filter_rules[0])
-    matched_ruleset: Ruleset = await RulesetManagerService.get_ruleset(tenant_id=tenant_id, ruleset_name=matched_ruleset_name)
+    matched_ruleset: Ruleset = await RulesetManagerService.get_ruleset(tenant_id=tenant_id, ruleset_name=schema.filter_rules[0])
     
     access_resolver = AccessControlResolver(session_data=session, ruleset=matched_ruleset, matched_schema=schema)
     schema_resolver = SchemaResolver(session_data=session, tenant=tenant, matched_schema=schema, query_scope=resolved_user_query_scope)

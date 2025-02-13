@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { ExternalContextUserRow } from '../../../types/chat-interface/contextUsers';
-import { getUsersContext, createContextSession } from '../../../services/chatInterface';
-import { getSetting } from '../../../services/tenantSetting';
+import { ExternalContextUserRow } from 'types/chat-interface/contextUsers';
+import { getUsersContext, createContextSession } from 'services/chatInterface';
+import { getSetting } from 'services/tenantSetting';
 
 /**
  * Custom hook for user impersonation.

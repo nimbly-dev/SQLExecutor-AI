@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import SchemaSelectorModal from './SchemaSelectorModal';
-import { SchemaSummary } from '../../../../types/sqlexecutor-playground/schemaModalContent';
-import { useSQLExecutorContext } from '../../../../pages/SQLExecutorPlayground';
+import SchemaSelectorModal from 'components/sqlexecutor-playground/middle-cards/schema-selector/SchemaSelectorModal';
+import { SchemaSummary } from 'types/schema/schemaType';
+import { useSQLExecutorContext } from 'pages/SQLExecutorPlayground';
 
 interface SchemaSelectorProps {
     schemas: SchemaSummary[];

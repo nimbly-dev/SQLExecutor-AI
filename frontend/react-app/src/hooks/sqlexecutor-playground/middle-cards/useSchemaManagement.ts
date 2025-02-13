@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getSchemas } from '../../../services/schemaService';
-import { SchemaSummary } from '../../../types/sqlexecutor-playground/schemaModalContent';
+import { getSchemas } from 'services/schemaService';
+import { SchemaSummary } from 'types/schema/schemaType';
 
 export const useSchemaManagement = () => {
   const [schemas, setSchemas] = useState<SchemaSummary[]>([]);

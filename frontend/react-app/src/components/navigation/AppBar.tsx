@@ -3,7 +3,7 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import MyAccount from '../account/MyAccount';
+import MyAccount from 'components/account/MyAccount';
 
 interface AppBarProps {
   open: boolean;

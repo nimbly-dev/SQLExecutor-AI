@@ -12,7 +12,7 @@ import {
   CircularProgress,
   Fade,
 } from '@mui/material';
-import { ExternalContextUserRow } from '../../../../types/chat-interface/contextUsers';
+import { ExternalContextUserRow } from 'types/chat-interface/contextUsers';
 
 interface UsersTableProps {
   users: ExternalContextUserRow[];

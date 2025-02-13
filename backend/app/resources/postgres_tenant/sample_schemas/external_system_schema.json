@@ -469,7 +469,7 @@
         }
     },
     "filter_rules": [
-        "${external_system_ruleset}"
+        "external_system_ruleset"
     ],
     "synonyms": [
         "customer_management",

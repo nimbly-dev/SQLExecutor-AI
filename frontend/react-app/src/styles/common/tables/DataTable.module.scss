@@ -1,0 +1,82 @@
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--border-radius-md);
+  max-height: 100%; // Changed from height: 100%
+  overflow: hidden; // Hide overflow
+  flex: 1;
+  min-height: 0; // Important for scrollable flex children
+}
+
+.tableWrapper {
+  flex: 1;
+  overflow: auto;
+  min-height: 0; // Ensure the flex container can shrink
+  // Removed: max-height: calc(100vh - 300px);
+
+  table {
+    width: 100%; // Ensure table takes full width
+    position: relative;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+    z-index: 2; // ensure header stays on top
+    background-color: var(--table-header-bg) !important; // ensure no transparency
+  }
+  
+  .filterSection {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .tableHeader {
+    th {
+      font-weight: 600;
+      font-size: 1.05rem;
+      background-color: white !important; // Force solid background
+      color: var(--text-primary);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      border-bottom: 1px solid var(--border-color);
+    }
+  }
+
+  .tableRow {
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid var(--border-color);
+
+    &:hover {
+      background-color: var(--hover-background);
+    }
+  }
+
+  .actionButtons {
+    display: flex;
+    gap: var(--spacing-xs);
+    justify-content: flex-end;
+
+    button {
+      padding: 6px 12px;
+    }
+  }
+}
+
+.paginationWrapper {
+  flex-shrink: 0; // Prevent pagination from shrinking
+  position: sticky;
+  bottom: 0;
+  background-color: #fff;
+  z-index: 1;
+  border-top: 1px solid var(--border-color);
+  width: 100%; // Ensure full width
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xl);
+}

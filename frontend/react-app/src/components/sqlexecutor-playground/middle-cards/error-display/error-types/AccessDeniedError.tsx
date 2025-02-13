@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Box, Stack, Chip } from '@mui/material';
-import { SqlGenerationErrorResponse, QueryScopeErrorResponse } from '../../../../../types/sql-generation/errors/errorResponses';
-import { ErrorSection } from './shared/ErrorSection';
+import { SqlGenerationErrorResponse, QueryScopeErrorResponse } from 'types/sql-generation/errors/errorResponses';
+import { ErrorSection } from 'components/sqlexecutor-playground/middle-cards/error-display/error-types/shared/ErrorSection';
 
 /**
  * Props for AccessDeniedError component

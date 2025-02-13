@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, useTheme } from '@mui/material';
 import SettingsAccordion from './SettingsAccordion';
-import { useSettingsManagement } from '../../../hooks/sqlexecutor-playground/right-cards/useSettingsManagement';
-import { useSQLExecutorContext } from '../../../pages/SQLExecutorPlayground';
-import { TransformedSettings, SettingDetail } from '../../../types/chat-interface/chatInterfaceSettings';
+import { useSettingsManagement } from 'hooks/sqlexecutor-playground/right-cards/useSettingsManagement';
+import { useSQLExecutorContext } from 'pages/SQLExecutorPlayground';
+import { TransformedSettings, SettingDetail } from 'types/chat-interface/chatInterfaceSettings';
 
 function RightCards() {
   const theme = useTheme();

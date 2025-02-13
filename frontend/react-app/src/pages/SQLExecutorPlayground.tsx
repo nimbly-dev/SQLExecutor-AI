@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Box, useTheme } from '@mui/material';
-import { ExternalSessionData } from '../types/authentication/externalUserSessionData';
-import { fetchContextSession } from '../services/chatInterface';
-import { getSetting } from '../services/tenantSetting';
-import { fetchChatInterfaceSettings } from '../services/chatInterfaceSettingsService';
+import { ExternalSessionData } from 'types/authentication/externalUserSessionData';
+import { fetchContextSession } from 'services/chatInterface';
+import { getSetting } from 'services/tenantSetting';
+import { fetchChatInterfaceSettings } from 'services/chatInterfaceSettingsService';
 import { toast } from 'react-toastify';
-import LeftPanel from '../components/sqlexecutor-playground/left-cards/LeftCards';
-import MiddleCards from '../components/sqlexecutor-playground/middle-cards/MiddleCards';
-import RightCards from '../components/sqlexecutor-playground/right-cards/RightCards';
-import { TransformedSettings } from '../types/chat-interface/chatInterfaceSettings';
-import { transformSettingsResponse } from '../hooks/sqlexecutor-playground/right-cards/useSettingsManagement';
-import { SchemaSummary } from '../types/sqlexecutor-playground/schemaModalContent';
+import LeftPanel from 'components/sqlexecutor-playground/left-cards/LeftCards';
+import MiddleCards from 'components/sqlexecutor-playground/middle-cards/MiddleCards';
+import RightCards from 'components/sqlexecutor-playground/right-cards/RightCards';
+import { TransformedSettings } from 'types/chat-interface/chatInterfaceSettings';
+import { transformSettingsResponse } from 'hooks/sqlexecutor-playground/right-cards/useSettingsManagement';
+import { SchemaSummary } from 'types/schema/schemaType';
 
 interface ContextUserContextType {
   sessionData: ExternalSessionData | null;

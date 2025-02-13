@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, Box, List, ListItem } from '@mui/material';
-import { ValidationErrorResponse } from '../../../../../types/sql-generation/errors/errorResponses';
+import { ValidationErrorResponse } from 'types/sql-generation/errors/errorResponses';
 
 /**
  * Props for ValidationError component
@@ -37,4 +37,4 @@ export const ValidationError: React.FC<ValidationErrorProps> = ({ response }) =>
       </Box>
     </>
   );
-};// No changes needed as the validation errors are already displayed with consistent styling.// Ensure that any new badges or interactive elements are styled using the existing .error-badge classes.// Optionally, add badges if validation errors include specific fields or types.
+};

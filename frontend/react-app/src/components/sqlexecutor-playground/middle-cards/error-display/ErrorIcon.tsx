@@ -4,7 +4,7 @@ import SearchOffIcon from '@mui/icons-material/SearchOff';
 import SchemaIcon from '@mui/icons-material/Schema';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { SvgIconProps } from '@mui/material';
-import { ErrorType } from '../../../../types/sql-generation/errors/errorTypes';
+import { ErrorType } from 'types/sql-generation/errors/errorTypes';
 
 /**
  * Props for ErrorIcon component

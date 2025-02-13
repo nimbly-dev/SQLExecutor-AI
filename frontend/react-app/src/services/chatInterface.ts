@@ -1,8 +1,8 @@
-import { BASE_URL } from '../utils/apiConfig';
 import axios from 'axios';
-import { GetUserContextsResponse } from '../types/chat-interface/contextUsers';
 import Cookies from 'js-cookie';
-import { ExternalSessionData } from '../types/authentication/externalUserSessionData';
+import { BASE_URL } from 'utils/apiConfig';
+import { GetUserContextsResponse } from 'types/chat-interface/contextUsers';
+import { ExternalSessionData } from 'types/authentication/externalUserSessionData';
 
 const API_URL = `${BASE_URL}/v1/chat-interface`;
 
@@ -125,4 +125,8 @@ export const invalidateContextSession = async (sessionId: string, apiKey: string
     }
     throw new Error('Network error: Unable to invalidate session');
   }
+};
+
+export const chatInterface = () => {
+  // ...stub implementation...
 };

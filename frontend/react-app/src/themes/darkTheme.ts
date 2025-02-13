@@ -26,6 +26,15 @@ export const darkTheme = createTheme({
       secondary: '#94a3b8', // Softer gray for secondary text
     },
   },
+  zIndex: {
+    appBar: 1300,
+    drawer: 1200,
+    modal: 1300,
+    modalContent: 1301,
+    snackbar: 1900,
+    tooltip: 1800,
+    select: 1250,
+  },
   components: {
     MuiButton: {
       styleOverrides: {
@@ -82,7 +91,7 @@ export const darkTheme = createTheme({
           height: '100%',
           width: '100%',
           backgroundColor: '#0f172a',
-          overflow: 'hidden',
+          overflow: 'auto', // changed from 'hidden'
           boxSizing: 'border-box',
         },
         '#root': {
@@ -172,5 +181,41 @@ export const darkTheme = createTheme({
         },
       },
     },
+    MuiSelect: {
+      defaultProps: {
+        MenuProps: {
+          sx: {
+            zIndex: 1250
+          },
+          PaperProps: {
+            sx: {
+              zIndex: 1200
+            }
+          }
+        }
+      }
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          zIndex: 1300
+        }
+      }
+    },
+    MuiSnackbar: {
+      styleOverrides: {
+        root: {
+          position: 'fixed',
+          zIndex: 1900,
+        }
+      }
+    },
+    MuiDialog: {
+      styleOverrides: {
+        root: {
+          zIndex: 1300,
+        }
+      }
+    }
   },
 });

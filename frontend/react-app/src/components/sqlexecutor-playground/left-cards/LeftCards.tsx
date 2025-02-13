@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import ContextUserCard from './ContextUserCard';
-import ImpersonationModal from './ImpersonationModal';
-import { useSQLExecutorContext } from '../../../pages/SQLExecutorPlayground';
+import ContextUserCard from 'components/sqlexecutor-playground/left-cards/ContextUserCard';
+import ImpersonationModal from 'components/sqlexecutor-playground/left-cards/ImpersonationModal';
+import { useSQLExecutorContext } from 'pages/SQLExecutorPlayground';
 
 const LeftPanel: React.FC = () => {
   const theme = useTheme();

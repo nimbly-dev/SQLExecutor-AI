@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { BASE_URL } from '../utils/apiConfig';
-import { SettingsResponse, SettingsUpdatePayload } from '../types/chat-interface/chatInterfaceSettings';
 import Cookies from 'js-cookie';
+import { BASE_URL } from 'utils/apiConfig';
+import { SettingsResponse, SettingsUpdatePayload } from 'types/chat-interface/chatInterfaceSettings';
 
 export const fetchChatInterfaceSettings = async (sessionId: string): Promise<SettingsResponse> => {
   try {
@@ -58,4 +58,8 @@ export const updateChatInterfaceSettings = async (
     }
     throw new Error('Failed to update settings');
   }
+};
+
+export const chatInterfaceSettingsService = () => {
+  // ...stub implementation...
 };

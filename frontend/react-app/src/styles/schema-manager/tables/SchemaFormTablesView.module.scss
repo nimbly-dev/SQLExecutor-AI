@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+}
+
+.tableSection {
+  flex: 1;
+  min-height: 400px;
+  margin: 16px 0;
+}
+
+.dataTable {
+  height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+
+  :global {
+    .MuiTableContainer-root {
+      height: calc(100% - 52px); // Account for pagination height
+    }
+
+    .MuiTable-root {
+      min-width: 650px;
+    }
+
+    .MuiTableHead-root {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1;
+    }
+
+    .MuiTableRow-root {
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+    }
+
+    .MuiTablePagination-root {
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}

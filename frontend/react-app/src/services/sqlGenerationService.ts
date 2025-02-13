@@ -1,10 +1,10 @@
-import { BASE_URL } from '../utils/apiConfig';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { getSetting } from './tenantSetting';
-import { SqlGenerationResponse } from '../types/sql-generation/sqlGeneration';
-import { ErrorType } from '../types/sql-generation/errors/errorTypes';
-import { APIError } from '../types/sql-generation/errors/errorResponses';
+import { BASE_URL } from 'utils/apiConfig';
+import { getSetting } from 'services/tenantSetting';
+import { SqlGenerationResponse } from 'types/sql-generation/sqlGeneration';
+import { ErrorType } from 'types/sql-generation/errors/errorTypes';
+import { APIError } from 'types/sql-generation/errors/errorResponses';
 
 const API_URL = `${BASE_URL}/v1/sql-generation`;
 

@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-import { Box, Typography, useTheme, Collapse, IconButton, Stack, useMediaQuery, Theme } from '@mui/material';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Box, Typography, useTheme, Collapse, IconButton, Stack } from '@mui/material';
 import ErrorIcon from './ErrorIcon';
-import { ErrorType } from '../../../../types/sql-generation/errors/errorTypes';
+import { ErrorType } from 'types/sql-generation/errors/errorTypes';
 import { QueryScopeErrorResponse, 
          SchemaDiscoveryErrorResponse, 
          SqlGenerationErrorResponse, 
          ValidationErrorResponse, 
-         APIError } from '../../../../types/sql-generation/errors/errorResponses';
-import { AccessDeniedError } from './error-types/AccessDeniedError';
-import { QueryScopeError } from './error-types/QueryScopeError';
-import { SchemaDiscoveryError } from './error-types/SchemaDiscoveryError';
-import { ValidationError } from './error-types/ValidationError';
-import { GenericError } from './error-types/GenericError';
-import '../../../../styles/sqlexecutor-playground/middle-cards/error-display/ErrorCard.scss';  // Using relative path
+         APIError } from 'types/sql-generation/errors/errorResponses';
+import { AccessDeniedError } from 'components/sqlexecutor-playground/middle-cards/error-display/error-types/AccessDeniedError';
+import { QueryScopeError } from 'components/sqlexecutor-playground/middle-cards/error-display/error-types/QueryScopeError';
+import { SchemaDiscoveryError } from 'components/sqlexecutor-playground/middle-cards/error-display/error-types/SchemaDiscoveryError';
+import { ValidationError } from 'components/sqlexecutor-playground/middle-cards/error-display/error-types/ValidationError';
+import { GenericError } from 'components/sqlexecutor-playground/middle-cards/error-display/error-types/GenericError';
+import 'styles/sqlexecutor-playground/middle-cards/error-display/ErrorCard.scss';  
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 

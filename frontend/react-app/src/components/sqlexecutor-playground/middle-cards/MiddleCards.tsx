@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import ChatInterface from './ChatInterface';
 import SQLResults from './sql-results/SQLResults';
-import ChatInterfaceErrorDisplay from './chat-interface/ChatInterfaceErrorDisplay';
-import { ExternalSessionData } from '../../../types/authentication/externalUserSessionData';
-import { useSqlGeneration } from '../../../hooks/sqlexecutor-playground/middle-cards/useSqlGeneration';
-import { useSchemaManagement } from '../../../hooks/sqlexecutor-playground/middle-cards/useSchemaManagement';
-import { SchemaSummary } from '../../../types/sqlexecutor-playground/schemaModalContent';
+import ChatInterfaceErrorDisplay from 'components/sqlexecutor-playground/middle-cards/chat-interface/ChatInterfaceErrorDisplay';
+import { ExternalSessionData } from 'types/authentication/externalUserSessionData';
+import { useSqlGeneration } from 'hooks/sqlexecutor-playground/middle-cards/useSqlGeneration';
+import { useSchemaManagement } from 'hooks/sqlexecutor-playground/middle-cards/useSchemaManagement';
+import { SchemaSummary } from 'types/schema/schemaType';
 
 interface MiddleCardsProps {
   sessionData: ExternalSessionData | null;

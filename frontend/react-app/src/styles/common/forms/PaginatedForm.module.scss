@@ -1,0 +1,56 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.searchField {
+  margin-bottom: 16px;
+}
+
+.contentContainer {
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.contentItem {
+  margin-bottom: 16px;
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pagination {
+  margin-left: auto;
+
+  :global {
+    .MuiTablePagination-selectRoot {
+      min-width: 80px;
+      margin-right: 16px;
+      margin-left: 8px;
+    }
+
+    .MuiTablePagination-select {
+      min-width: 80px;
+      padding: 8px 16px;
+    }
+
+    .MuiTablePagination-selectLabel {
+      margin-right: 8px;
+      display: flex;
+      align-items: center;
+    }
+
+    .MuiTablePagination-menuItem {
+      padding: 8px 16px;
+    }
+
+    .MuiTablePagination-toolbar {
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+}

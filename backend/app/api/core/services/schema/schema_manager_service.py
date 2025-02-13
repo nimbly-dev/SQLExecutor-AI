@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from utils.database import mongodb
 from pymongo.errors import DuplicateKeyError
@@ -47,8 +47,8 @@ class SchemaManagerService:
         collection_schema = mongodb.db["schemas"]
         
         try:
-            result = await collection_schema.insert_one(schema_data.dict())
-            return {"message": "Schema added successfully", "schema_id": str(result.inserted_id)}
+            await collection_schema.insert_one(schema_data.dict())
+            return Schema(**schema_data.dict())
         except DuplicateKeyError:
             raise HTTPException(
                 status_code=400,
@@ -124,6 +124,79 @@ class SchemaManagerService:
             )
 
         return schemas
+    
+
+    @staticmethod
+    async def get_schemas_names_and_descriptions_paginated(
+        tenant_id: str,
+        page: int = 1,
+        page_size: int = 10,
+        filter_name: Optional[str] = None,
+        context_type: Optional[str] = None
+    ) -> Dict[str, Any]:
+        collection = mongodb.db["schemas"]
+        skip = (page - 1) * page_size
+
+        query: Dict[str, Any] = {"tenant_id": tenant_id}
+
+        if filter_name:
+            # Split the filter string into keywords for a more precise match.
+            keywords = filter_name.split()
+            # Each keyword must match either the schema_name or description.
+            query["$and"] = [
+                {"$or": [
+                    {"schema_name": {"$regex": keyword, "$options": "i"}},
+                    {"description": {"$regex": keyword, "$options": "i"}}
+                ]}
+                for keyword in keywords
+            ]
+
+        if context_type and context_type.lower() in ("api", "sql"):
+            query["context_type"] = context_type.lower()
+
+        schemas_cursor = collection.find(
+            query,
+            {
+                "schema_name": 1,
+                "description": 1,
+                "context_type": 1,
+                "context_setting": 1,
+                "_id": 0
+            }
+        ).skip(skip).limit(page_size)
+
+        schemas = []
+        async for schema_data in schemas_cursor:
+            ct = schema_data.get("context_type")
+            context_setting = schema_data.get("context_setting", {})
+
+            user_identifier = None
+            if ct == "api" and "api_context" in context_setting:
+                user_identifier = context_setting["api_context"].get("user_identifier")
+            elif ct == "sql" and "sql_context" in context_setting:
+                user_identifier = context_setting["sql_context"].get("user_identifier")
+
+            schemas.append({
+                "schema_name": schema_data["schema_name"],
+                "description": schema_data["description"],
+                "context_type": ct,
+                "user_identifier": user_identifier
+            })
+
+        total = await collection.count_documents(query)
+        if not schemas:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No schemas found for tenant '{tenant_id}'."
+            )
+
+        return {
+            "page": page,
+            "page_size": page_size,
+            "total": total,
+            "schemas": schemas
+        }
+
 
     @staticmethod
     async def get_schema_tables(tenant_id: str) -> List[SchemaTablesResponse]:
@@ -167,23 +240,34 @@ class SchemaManagerService:
 
     @staticmethod
     async def update_schema(tenant_id: str, schema_name: str, update_schema_request: UpdateSchemaRequest):
+        collection = mongodb.db["schemas"]
+        
+        existing_schema = await collection.find_one({"tenant_id": tenant_id, "schema_name": schema_name})
+        if not existing_schema:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Schema '{schema_name}' not found for tenant '{tenant_id}'."
+            )
+
         update_schema_data = update_schema_request.dict(exclude_unset=True)
+
+        new_schema_name = update_schema_data.get("schema_name")
+        if new_schema_name and new_schema_name != schema_name:
+            existing_with_new_name = await collection.find_one({
+                "tenant_id": tenant_id,
+                "schema_name": new_schema_name
+            })
+            if existing_with_new_name:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Schema name '{new_schema_name}' already exists for this tenant."
+                )
 
         if "tables" in update_schema_data:
             update_schema_data["tables"] = {
                 table_name: (table.to_dict() if hasattr(table, "to_dict") else table)
                 for table_name, table in update_schema_data["tables"].items()
             }
-
-        update_schema_data.pop("schema_name", None)
-
-        collection = mongodb.db["schemas"]
-        schema = await collection.find_one({"tenant_id": tenant_id, "schema_name": schema_name})
-        if not schema:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Schema '{schema_name}' not found for tenant '{tenant_id}'."
-            )
 
         result = await collection.update_one(
             {"tenant_id": tenant_id, "schema_name": schema_name},
@@ -196,7 +280,13 @@ class SchemaManagerService:
                 detail=f"Schema '{schema_name}' not found for tenant '{tenant_id}' or no changes were made."
             )
 
-        return {"message": f"Schema '{schema_name}' updated successfully for tenant '{tenant_id}'."}
+        # Fetch the updated schema
+        updated_schema = await collection.find_one(
+            {"tenant_id": tenant_id, "schema_name": update_schema_data.get("schema_name", schema_name)},
+            {"_id": 0}
+        )
+        
+        return Schema(**updated_schema)
 
     @staticmethod
     async def delete_schema(tenant_id: str, schema_name: str):
