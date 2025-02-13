@@ -18,7 +18,21 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "paths": {
+      "@sqlexecutor-styles/*": ["styles/*"],
+      "@sqlexecutor-components/*": ["components/*"],
+      "@sqlexecutor-hooks/*": ["hooks/*"],
+      "@sqlexecutor-contexts/*": ["contexts/*"],
+      "@sqlexecutor-pages/*": ["pages/*"],
+      "@sqlexecutor-routes/*": ["routes/*"],
+      "@sqlexecutor-services/*": ["services/*"],
+      "@sqlexecutor-themes/*": ["themes/*"],
+      "@sqlexecutor-types/*": ["types/*"],
+      "@sqlexecutor-utils/*": ["utils/*"],
+      "@sqlexecutor-validations/*": ["validations/*"]
+    },
   },
   "include": [
     "src"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Box, Tooltip, IconButton, Switch, useTheme } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { SettingDetail } from '../../../types/chat-interface/chatInterfaceSettings';
+import { SettingDetail } from 'types/chat-interface/chatInterfaceSettings';
 
 interface SQLSettingsGroupProps {
   group: {

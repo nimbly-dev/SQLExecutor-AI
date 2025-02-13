@@ -564,7 +564,7 @@
         }
     },
     "filter_rules": [
-        "${healthcare_ruleset}"
+        "healthcare_ruleset"
     ],
     "synonyms": [
         "healthcare_schema",

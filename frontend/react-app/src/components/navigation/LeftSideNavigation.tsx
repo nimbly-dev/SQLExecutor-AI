@@ -19,6 +19,7 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import InfoIcon from '@mui/icons-material/Info';
+import SchemaIcon from '@mui/icons-material/Schema';
 
 interface LeftSideNavigationProps {
   open: boolean;
@@ -31,6 +32,7 @@ const LeftSideNavigation: React.FC<LeftSideNavigationProps> = ({ open, handleDra
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
     { text: 'Playground', icon: <QueryStatsIcon />, path: '/sqlexecutor-playground' },
+    { text: 'Schema Management', icon: <SchemaIcon />, path: '/schema-manager' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
     { text: 'Docs', icon: <MenuBookIcon />, path: '/docs' },
     { text: 'About', icon: <InfoIcon />, path: '/about' },
@@ -48,6 +50,10 @@ const LeftSideNavigation: React.FC<LeftSideNavigationProps> = ({ open, handleDra
           width: open ? 240 : 60,
           boxSizing: 'border-box',
           transition: 'width 0.3s',
+          position: open ? 'fixed' : 'fixed', // always fixed to remain in viewport
+          top: 0,
+          left: 0,
+          height: '100vh', // full viewport height
         },
       }}
     >

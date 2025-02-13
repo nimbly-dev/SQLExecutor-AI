@@ -4,8 +4,8 @@ import {
   SettingsUpdatePayload, 
   TransformedSettings,
   SettingDetail 
-} from '../../../types/chat-interface/chatInterfaceSettings';
-import { fetchChatInterfaceSettings, updateChatInterfaceSettings } from '../../../services/chatInterfaceSettingsService';
+} from '@sqlexecutor-types/chat-interface/chatInterfaceSettings';
+import { fetchChatInterfaceSettings, updateChatInterfaceSettings } from 'services/chatInterfaceSettingsService';
 import { toast } from 'react-toastify';
 
 export const useSettingsManagement = (initialSettings: TransformedSettings | null) => {

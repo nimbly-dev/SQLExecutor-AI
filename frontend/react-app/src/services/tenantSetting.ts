@@ -1,10 +1,9 @@
-import { BASE_URL } from '../utils/apiConfig';
 import axios from 'axios';
-import { TenantSetting } from '../types/settings/tenantSetting';
 import Cookies from 'js-cookie';
+import { BASE_URL } from 'utils/apiConfig';
+import { TenantSetting } from 'types/settings/tenantSetting';
 
 const API_URL = `${BASE_URL}/v1/tenants`;
-
 
 export const getSetting = async (setting_category_key: string, setting_key: string):  Promise<TenantSetting> =>{
     try {

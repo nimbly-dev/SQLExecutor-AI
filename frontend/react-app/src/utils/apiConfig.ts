@@ -3,7 +3,7 @@ const getBaseURL = (): string => {
     if (env === 'development') {
       //http://localhost:5001
       //http://localhost:5000
-      return 'http://localhost:5001'; 
+      return 'http://localhost:5000'; 
     }
     // Placeholder for production (adjust later)
     return 'https://api.sqlexecutor.com'; 

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ExternalSessionData } from '../types/authentication/externalUserSessionData';
+import { ExternalSessionData } from 'types/authentication/externalUserSessionData';
 
 interface ContextUserContextType {
   sessionData: ExternalSessionData | null;

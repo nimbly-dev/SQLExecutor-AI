@@ -17,9 +17,9 @@ import {
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import SortIcon from '@mui/icons-material/Sort';
-import { SchemaSummary } from '../../../../types/sqlexecutor-playground/schemaModalContent';
-import '../../../../styles/sqlexecutor-playground/middle-cards/SchemaSelectorModal.scss';
-import useSortableData from '../../../../hooks/common/useSortableData';
+import { SchemaSummary } from 'types/schema/schemaType';
+import 'styles/sqlexecutor-playground/middle-cards/SchemaSelectorModal.scss';
+import useSortableData from 'hooks/common/useSortableData';
 
 interface SchemaSelectModalProps {
   open: boolean;

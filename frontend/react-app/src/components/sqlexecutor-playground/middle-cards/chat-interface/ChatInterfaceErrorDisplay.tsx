@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import ErrorCard from '../error-display/ErrorCard';
-import { APIError } from '../../../../types/sql-generation/errors/errorResponses';
+import ErrorCard from 'components/sqlexecutor-playground/middle-cards/error-display/ErrorCard';
+import { APIError } from 'types/sql-generation/errors/errorResponses';
 
 interface ChatInterfaceErrorDisplayProps {
   error: APIError | null;

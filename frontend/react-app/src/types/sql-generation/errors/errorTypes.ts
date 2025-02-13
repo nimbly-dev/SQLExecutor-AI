@@ -37,3 +37,5 @@ export interface QueryScope {
   intent: string;
   entities: Entities;
 }
+
+export type ErrorTypes = any; // ...stub type definition...

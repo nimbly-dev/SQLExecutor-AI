@@ -1,5 +1,24 @@
 import { createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/styles' {
+  interface Theme {
+    zIndex: {
+      modal: number;
+      modalContent: number;
+      snackbar: number;
+      tooltip: number;
+      appBar: number;
+      drawer: number;
+      select: number;
+    }
+  }
+
+  interface ZIndex {
+    modalContent: number;
+    select: number;
+  }
+}
+
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
@@ -11,6 +30,17 @@ export const lightTheme = createTheme({
       paper: '#ffffff',
     },
   },
+  
+  zIndex: {
+    modal: 1300,        // Base modal level
+    modalContent: 1301, // Content inside modal
+    drawer: 1200,       // Drawer below modal
+    appBar: 1300,       // Same as modal for proper stacking
+    select: 1250,       // Select below modal but above drawer
+    tooltip: 1800,      // Above most elements
+    snackbar: 1900,     // Always on top
+  },
+  
   components: {
     MuiButton: {
       styleOverrides: {
@@ -63,7 +93,7 @@ export const lightTheme = createTheme({
           height: '100%',
           width: '100%',
           backgroundColor: '#f8f9fa',
-          overflow: 'hidden',
+          overflow: 'auto', // changed from 'hidden' to enable scrollbar
           boxSizing: 'border-box',
         },
         '#root': {
@@ -165,5 +195,42 @@ export const lightTheme = createTheme({
         },
       },
     },
+    MuiSelect: {
+      defaultProps: {
+        MenuProps: {
+          sx: {
+            zIndex: 1250 // Below modal
+          },
+          PaperProps: {
+            sx: {
+              zIndex: 1250
+            }
+          }
+        }
+      }
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          zIndex: 1300 // Ensure AppBar is above Select
+        }
+      }
+    },
+    MuiSnackbar: {
+      styleOverrides: {
+        root: {
+          // Ensure Snackbar is always on top
+          position: 'fixed',
+          zIndex: 1900,
+        }
+      }
+    },
+    MuiDialog: {
+      styleOverrides: {
+        root: {
+          zIndex: 1300,
+        }
+      }
+    }
   },
 });

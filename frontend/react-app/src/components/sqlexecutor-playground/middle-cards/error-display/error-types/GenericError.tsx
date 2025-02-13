@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Box } from '@mui/material';
-import { GenericErrorDetail } from '../../../../../types/sql-generation/errors/errorResponses';
-import { ErrorType } from '../../../../../types/sql-generation/errors/errorTypes';
+import { GenericErrorDetail } from 'types/sql-generation/errors/errorResponses';
+import { ErrorType } from 'types/sql-generation/errors/errorTypes';
 
 /**
  * Props for GenericError component

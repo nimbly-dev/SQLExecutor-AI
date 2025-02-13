@@ -5,9 +5,16 @@ $border-radius-lg: 12px;
 
 // Transitions
 $transition-default: all 0.2s ease;
+$transition-fast: all 0.1s ease;
+$transition-slow: all 0.3s ease;
 $transition-box-shadow: box-shadow 0.3s ease-in-out;
 
 // Spacing
+$spacing-xs: 0.5rem;
+$spacing-sm: 0.75rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
 $padding-standard: 20px;
 $padding-container: 16px;
 
@@ -20,3 +27,49 @@ $shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.12);
 $shadow-dark-sm: 0px 2px 4px rgba(0, 0, 0, 0.2);
 $shadow-dark-md: 0px 4px 6px rgba(0, 0, 0, 0.2);
 $shadow-dark-lg: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+// Z-indices
+$z-index-select: 1200;
+$z-index-appbar: 1300;
+$z-index-drawer: 1100;
+
+// CSS Custom Properties (for runtime theme switching)
+:root {
+  // Border radius
+  --border-radius-sm: #{$border-radius-sm};
+  --border-radius-md: #{$border-radius-md};
+  --border-radius-lg: #{$border-radius-lg};
+
+  // Transitions
+  --transition-default: #{$transition-default};
+  --transition-fast: #{$transition-fast};
+  --transition-slow: #{$transition-slow};
+  --transition-box-shadow: #{$transition-box-shadow};
+
+  // Spacing
+  --spacing-xs: #{$spacing-xs};
+  --spacing-sm: #{$spacing-sm};
+  --spacing-md: #{$spacing-md};
+  --spacing-lg: #{$spacing-lg};
+  --spacing-xl: #{$spacing-xl};
+
+  // Shadows
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+
+  // Z-indices
+  --z-index-select: #{$z-index-select};
+  --z-index-appbar: #{$z-index-appbar};
+  --z-index-drawer: #{$z-index-drawer};
+
+  // Theme-specific colors (will be overridden by theme)
+  --hover-background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='dark'] {
+  --shadow-sm: #{$shadow-dark-sm};
+  --shadow-md: #{$shadow-dark-md};
+  --shadow-lg: #{$shadow-dark-lg};
+  --hover-background: rgba(255, 255, 255, 0.08);
+}

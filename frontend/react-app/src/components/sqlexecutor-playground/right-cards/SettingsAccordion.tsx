@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { Typography, Box, Button, useTheme, Divider } from '@mui/material';
 import SQLSettingsGroup from './SQLSettingsGroup';
-import { Setting, SettingDetail, TransformedSettingsGroup } from '../../../types/chat-interface/chatInterfaceSettings';
-import '../../../styles/sqlexecutor-playground/right-cards/settings.scss';
+import { Setting, SettingDetail, TransformedSettingsGroup } from 'types/chat-interface/chatInterfaceSettings';
+import 'styles/sqlexecutor-playground/right-cards/settings.scss';
 
 export interface SettingsAccordionProps {
   section: {

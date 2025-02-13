@@ -1,0 +1,40 @@
+.tabsContainer {
+  width: 100%;
+
+  :global {
+    .MuiTabs-flexContainer {
+      width: 100%;
+    }
+
+    .MuiTab-root {
+      flex: 1;
+      max-width: none;
+
+      &.Mui-disabled {
+        color: rgba(0, 0, 0, 0.38); // text.disabled
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+.tabContent {
+  margin-top: 16px;
+}
+
+.buttonsContainer {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.leftButtons {
+  flex: 1;
+}
+
+.rightButtons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}

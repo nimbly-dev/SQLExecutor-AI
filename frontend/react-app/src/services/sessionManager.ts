@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { ExternalSessionData } from '../types/authentication/externalUserSessionData';
+import { ExternalSessionData } from 'types/authentication/externalUserSessionData';
 
 export const saveExternalSession = (sessionData: ExternalSessionData) => {
     Cookies.set('external_session_id', sessionData.session_id);

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { generateSql } from '../../../services/sqlGenerationService';
-import { SqlGenerationResponse } from '../../../types/sql-generation/sqlGeneration';
-import { APIError } from '../../../types/sql-generation/errors/errorResponses';
-import { ErrorType } from '../../../types/sql-generation/errors/errorTypes';
+import { generateSql } from 'services/sqlGenerationService';
+import { SqlGenerationResponse } from 'types/sql-generation/sqlGeneration';
+import { APIError } from 'types/sql-generation/errors/errorResponses';
+import { ErrorType } from 'types/sql-generation/errors/errorTypes';
 
 export interface QueryHistoryItem {
   prompt: string;

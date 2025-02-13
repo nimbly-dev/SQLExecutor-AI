@@ -1,10 +1,11 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { BASE_URL } from '../utils/apiConfig';
 import { jwtDecode } from 'jwt-decode';
-import { AdminSessionData } from '../types/authentication/adminSessionData';
-import { AdminLoginRequest } from '../types/authentication/adminLoginRequest';
 import { toast } from 'react-toastify';
+import { BASE_URL } from 'utils/apiConfig';
+import { AdminSessionData } from 'types/authentication/adminSessionData';
+import { AdminLoginRequest } from 'types/authentication/adminLoginRequest';
+
 const API_URL = `${BASE_URL}/v1/admin-auth`;
 
 

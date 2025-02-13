@@ -8,12 +8,12 @@ import {
   Fade,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useImpersonation } from '../../../hooks/sqlexecutor-playground/left-cards/useImpersonation';
-import SearchSection from './modal/SearchSection';
-import UsersTable from './modal/UsersTable';
-import ModalFooter from './modal/ModalFooter';
-import useImpersonationPagination from '../../../hooks/sqlexecutor-playground/left-cards/useImpersonationPagination';
-import { SchemaSummary } from '../../../types/sqlexecutor-playground/schemaModalContent';
+import { useImpersonation } from 'hooks/sqlexecutor-playground/left-cards/useImpersonation';
+import SearchSection from 'components/sqlexecutor-playground/left-cards/modal/SearchSection';
+import UsersTable from 'components/sqlexecutor-playground/left-cards/modal/UsersTable';
+import ModalFooter from 'components/sqlexecutor-playground/left-cards/modal/ModalFooter';
+import useImpersonationPagination from 'hooks/sqlexecutor-playground/left-cards/useImpersonationPagination';
+import { SchemaSummary } from 'types/schema/schemaType';
 
 interface ImpersonationModalProps {
   open: boolean;

@@ -1,0 +1,23 @@
+.card {
+  margin-bottom: var(--spacing-sm);
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--hover-background);
+  }
+}
+
+.cardContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cardInfo {
+  flex: 1;
+}
+
+.actionButtons {
+  display: flex;
+  gap: var(--spacing-xs);
+}

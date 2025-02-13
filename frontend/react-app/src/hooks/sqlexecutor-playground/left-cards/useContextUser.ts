@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { ExternalSessionData } from '../../../types/authentication/externalUserSessionData';
-import { fetchContextSession, invalidateContextSession } from '../../../services/chatInterface';
-import { getSetting } from '../../../services/tenantSetting';
+import { ExternalSessionData } from 'types/authentication/externalUserSessionData';
+import { fetchContextSession, invalidateContextSession } from 'services/chatInterface';
+import { getSetting } from 'services/tenantSetting';
 import { toast } from 'react-toastify';
 
 export const useContextUser = () => {
