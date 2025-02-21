@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ExternalSessionData } from 'types/authentication/externalUserSessionData';
 import { fetchContextSession, invalidateContextSession } from 'services/chatInterface';
-import { getSetting } from 'services/tenantSetting';
+import { getSettingDetail } from 'services/tenantSetting';
 import { toast } from 'react-toastify';
 
 export const useContextUser = () => {
@@ -17,7 +17,7 @@ export const useContextUser = () => {
 
     setLoading(true);
     try {
-      const apiKeyResponse = await getSetting('API_KEYS', 'TENANT_APPLICATION_TOKEN');
+      const apiKeyResponse = await getSettingDetail('API_KEYS', 'TENANT_APPLICATION_TOKEN');
       const apiKey = apiKeyResponse.setting_detail.setting_value;
       // Make sure context type is properly passed through
       const data = await fetchContextSession(sessionId, apiKey, contextType.toLowerCase());
@@ -35,7 +35,7 @@ export const useContextUser = () => {
   const stopImpersonation = async () => {
     if (sessionData?.session_id) {
       try {
-        const apiKeyResponse = await getSetting('API_KEYS', 'TENANT_APPLICATION_TOKEN');
+        const apiKeyResponse = await getSettingDetail('API_KEYS', 'TENANT_APPLICATION_TOKEN');
         const apiKey = apiKeyResponse.setting_detail.setting_value;
         
         await invalidateContextSession(sessionData.session_id, apiKey);

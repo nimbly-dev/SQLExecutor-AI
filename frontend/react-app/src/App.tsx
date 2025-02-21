@@ -18,6 +18,8 @@ import SchemaAddWizard from 'pages/schema-manager/SchemaAddWizard';
 import RulesetManager from 'pages/RulesetManager';
 import RulesetView from 'pages/ruleset-manager/RulesetView';
 import RulesetAddWizard from 'pages/ruleset-manager/RulesetAddWizard';
+import TenantSettingsManager from 'pages/TenantSettingsManager';
+import TenantSettingCategoryDetailsView from 'pages/tenant-setting-manager/TenantSettingCategoryDetailsView';
 
 // Protected Route Component
 const ProtectedRoute: React.FC = () => {
@@ -54,6 +56,10 @@ const App: React.FC = () => {
                 {/*Ruleset Child-links below*/}
                 <Route path="/ruleset-manager/view/:ruleset_name" element={<RulesetView />} />
                 <Route path="/ruleset-manager/add/" element={<RulesetAddWizard />} />
+
+                {/*Tenant Settings Child-links below*/}
+                <Route path="/tenant-settings-manager" element={<TenantSettingsManager />} /> 
+                <Route path="/tenant-settings-manager/:categoryKey" element={<TenantSettingCategoryDetailsView />} />
               </Route>
               {/* Wildcard inside Protected Routes */}
               <Route path="*" element={<Navigate to="/getting-started" replace />} />

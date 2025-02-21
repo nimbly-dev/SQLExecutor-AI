@@ -1,0 +1,48 @@
+.container {
+  padding: 20px;
+  min-height: 100%;
+  background: var(--background-default);
+}
+
+.topBar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.searchContainer {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  background-color: var(--background-paper);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  box-shadow: var(--shadow-sm);
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}
+
+.searchField {
+  flex: 1;
+  
+  input {
+    height: 20px;
+  }
+}
+
+.tableSection {
+  flex: 1;
+  background: var(--background-paper);
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  box-shadow: var(--shadow-sm);
+}
