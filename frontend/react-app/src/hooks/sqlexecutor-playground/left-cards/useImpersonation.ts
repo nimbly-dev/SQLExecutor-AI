@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { ExternalContextUserRow } from 'types/chat-interface/contextUsers';
 import { getUsersContext, createContextSession } from 'services/chatInterface';
-import { getSetting } from 'services/tenantSetting';
+import { getSettingDetail } from 'services/tenantSetting';
 import { toast } from 'react-toastify';
 import { SchemaSummary } from 'types/schema/schemaType';
 
@@ -50,7 +50,7 @@ export const useImpersonation = (onSessionCreated: () => void) => {
     }
 
     try {
-      const apiKeyResponse = await getSetting('API_KEYS', 'TENANT_APPLICATION_TOKEN');
+      const apiKeyResponse = await getSettingDetail('API_KEYS', 'TENANT_APPLICATION_TOKEN');
       const apiKey = apiKeyResponse.setting_detail.setting_value;
       
       // Get context type from schema instead of user
@@ -73,7 +73,7 @@ export const useImpersonation = (onSessionCreated: () => void) => {
 
   const fetchIdentifierField = async () => {
     try {
-      const response = await getSetting(
+      const response = await getSettingDetail(
         'FRONTEND_SANDBOX_CHAT_INTERFACE',
         'CHAT_CONTEXT_DISPLAY_IDENTIFIER_FIELD'
       );

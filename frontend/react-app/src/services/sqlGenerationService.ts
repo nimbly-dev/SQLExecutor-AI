@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { BASE_URL } from 'utils/apiConfig';
-import { getSetting } from 'services/tenantSetting';
+import { getSettingDetail } from 'services/tenantSetting';
 import { SqlGenerationResponse } from 'types/sql-generation/sqlGeneration';
 import { ErrorType } from 'types/sql-generation/errors/errorTypes';
 import { APIError } from 'types/sql-generation/errors/errorResponses';
@@ -11,7 +11,7 @@ const API_URL = `${BASE_URL}/v1/sql-generation`;
 export const generateSql = async (run_sql: boolean, user_input: string, schema_selected: string | null): Promise<SqlGenerationResponse> => {
     try {
         const tenantId = Cookies.get('tenant_id');
-        const apiKeyResponse = await getSetting('API_KEYS', 'TENANT_APPLICATION_TOKEN');
+        const apiKeyResponse = await getSettingDetail('API_KEYS', 'TENANT_APPLICATION_TOKEN');
         const apiKey = apiKeyResponse.setting_detail.setting_value;
         const sessionId = sessionStorage.getItem('contextUserSessionId');
 

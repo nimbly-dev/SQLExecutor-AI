@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Box, useTheme } from '@mui/material';
 import { ExternalSessionData } from 'types/authentication/externalUserSessionData';
 import { fetchContextSession } from 'services/chatInterface';
-import { getSetting } from 'services/tenantSetting';
+import { getSettingDetail } from 'services/tenantSetting';
 import { fetchChatInterfaceSettings } from 'services/chatInterfaceSettingsService';
 import { toast } from 'react-toastify';
 import LeftPanel from 'components/sqlexecutor-playground/left-cards/LeftCards';
@@ -49,7 +49,7 @@ function SQLExecutorPlayground() {
     }
 
     try {
-      const apiKeyResponse = await getSetting('API_KEYS', 'TENANT_APPLICATION_TOKEN');
+      const apiKeyResponse = await getSettingDetail('API_KEYS', 'TENANT_APPLICATION_TOKEN');
       const apiKey = apiKeyResponse.setting_detail.setting_value;
       // Make sure we're using the actual context type from the schema
       const contextType = selectedSchema?.context_type?.toLowerCase() || 'sql';
@@ -82,7 +82,7 @@ function SQLExecutorPlayground() {
       const storedType = sessionStorage.getItem('chatInterfaceIntegrationType');
       if (!storedType) {
         try {
-          const response = await getSetting(
+          const response = await getSettingDetail(
             'FRONTEND_SANDBOX_CHAT_INTERFACE',
             'CHAT_CONTEXT_INTEGRATION_TYPE'
           );

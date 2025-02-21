@@ -144,6 +144,13 @@ class TenantSettingsService:
 
     @staticmethod
     async def get_tenant_settings(tenant_id: str):
+        """
+        Get tenant settings or just categories based on the categories_only flag.
+        
+        Args:
+            tenant_id (str): The ID of the tenant
+            categories_only (bool, optional): If True, return only categories. Defaults to False.
+        """ 
         tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
         return {"settings": tenant.settings or {}}
 
@@ -164,6 +171,38 @@ class TenantSettingsService:
         return {
             "setting_key": setting_key,
             "setting_detail": setting_detail.dict()
+        }
+
+    @staticmethod
+    async def get_setting_details_by_category(tenant_id: str, setting_category: str):
+        """
+        Get all settings for a specific category.
+        
+        Args:
+            tenant_id (str): The ID of the tenant
+            setting_category (str): The category to get settings for
+            
+        Returns:
+            Dict containing the category settings
+            
+        Raises:
+            HTTPException: If category is not found
+        """
+        tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
+
+        if setting_category not in tenant.settings:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Category '{setting_category}' not found in tenant settings"
+            )
+
+        category_settings = tenant.settings[setting_category]
+        return {
+            "category": setting_category,
+            "settings": {
+                key: setting.dict() if isinstance(setting, Setting) else setting
+                for key, setting in category_settings.items()
+            }
         }
 
     @staticmethod
@@ -195,3 +234,25 @@ class TenantSettingsService:
             "message": f"Setting '{setting_key}' deleted successfully from category '{setting_category}'",
             "updated_settings": category_settings
         }
+
+    @staticmethod
+    async def get_tenant_setting_categories(tenant_id: str) -> Dict[str, List[str]]:
+        """
+        Get all categories and their setting keys from tenant settings.
+        
+        Args:
+            tenant_id (str): The ID of the tenant
+            
+        Returns:
+            Dict[str, List[str]]: Dictionary with categories as keys and lists of setting keys as values
+        """
+        tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
+        
+        if not tenant.settings:
+            return {"categories": []}
+            
+        categories_info = {
+            "categories": list(tenant.settings.keys())
+        }
+        
+        return categories_info

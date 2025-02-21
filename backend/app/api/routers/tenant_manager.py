@@ -73,13 +73,34 @@ async def delete_settings(tenant_id: str, setting_category: str, setting_key: st
     return await TenantSettingsService.delete_setting(tenant_id=tenant_id,setting_category=setting_category,setting_key=setting_key)
 
 @router.get("/{tenant_id}/settings")
-async def get_settings(tenant_id: str, admin_session_data: AdminSessionData = Depends(authenticate_admin_session)):
+async def get_settings(
+    tenant_id: str, 
+    categories_only: bool = False,
+    admin_session_data: AdminSessionData = Depends(authenticate_admin_session)
+):
+    """Get tenant settings with option to return only categories"""
     if admin_session_data.role not in ["Tenant Admin"]:
         raise HTTPException(
             status_code=403,
             detail="You do not have permission to perform this action"
         )
-    return await TenantSettingsService.get_tenant_settings(tenant_id=tenant_id)
+   
+    if categories_only:
+        return await TenantSettingsService.get_tenant_setting_categories(tenant_id=tenant_id)
+    else: 
+        return await TenantSettingsService.get_tenant_settings(tenant_id=tenant_id) 
+    
+@router.get("/{tenant_id}/settings/{setting_category}")
+async def get_setting_details_by_category(
+    tenant_id: str, 
+    setting_category: str, 
+    admin_session_data: AdminSessionData = Depends(authenticate_admin_session)):
+    if admin_session_data.role not in ["Tenant Admin"]:
+        raise HTTPException(
+            status_code=403,
+            detail="You do not have permission to perform this action"
+        )
+    return await TenantSettingsService.get_setting_details_by_category(tenant_id=tenant_id, setting_category=setting_category)
 
 @router.get("/{tenant_id}/settings/{setting_category}/{setting_key}")
 async def get_setting_detail(tenant_id: str, setting_category: str, setting_key: str, admin_session_data: AdminSessionData = Depends(authenticate_admin_session)):

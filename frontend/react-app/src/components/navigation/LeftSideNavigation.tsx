@@ -9,18 +9,17 @@ import {
   ListItemText,
   Divider,
   IconButton,
-  Toolbar,
   Box,
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import InfoIcon from '@mui/icons-material/Info';
 import SchemaIcon from '@mui/icons-material/Schema';
 import RuleIcon from '@mui/icons-material/Rule';
+import ApiIcon from '@mui/icons-material/Api';
 
 interface LeftSideNavigationProps {
   open: boolean;
@@ -32,10 +31,10 @@ const LeftSideNavigation: React.FC<LeftSideNavigationProps> = ({ open, handleDra
   
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-    { text: 'Playground', icon: <QueryStatsIcon />, path: '/sqlexecutor-playground' },
+    { text: 'Playground', icon: <ApiIcon />, path: '/sqlexecutor-playground' },
     { text: 'Schema Management', icon: <SchemaIcon />, path: '/schema-manager' },
     { text: 'Ruleset Management', icon: <RuleIcon />, path: '/ruleset-manager' },
-    { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+    { text: 'Tenant Settings Management', icon: <SettingsIcon />, path: '/tenant-settings-manager' },
     { text: 'Docs', icon: <MenuBookIcon />, path: '/docs' },
     { text: 'About', icon: <InfoIcon />, path: '/about' },
   ];
