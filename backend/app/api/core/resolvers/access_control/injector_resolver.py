@@ -65,7 +65,7 @@ class InjectorResolver:
                 logger.debug("Injector '%s' is disabled. Skipping.", injector_name)
                 continue
 
-            if self._matches_condition(injector.condition.condition):
+            if self._matches_condition(injector.condition):
                 logger.debug("Injector '%s' condition matched.", injector_name)
                 for table, rule in injector.tables.items():
                     filter_clause = RulesetConditionsService.resolve_condition(

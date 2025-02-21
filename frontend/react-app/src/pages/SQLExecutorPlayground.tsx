@@ -51,7 +51,9 @@ function SQLExecutorPlayground() {
     try {
       const apiKeyResponse = await getSetting('API_KEYS', 'TENANT_APPLICATION_TOKEN');
       const apiKey = apiKeyResponse.setting_detail.setting_value;
-      const data = await fetchContextSession(sessionId, apiKey);
+      // Make sure we're using the actual context type from the schema
+      const contextType = selectedSchema?.context_type?.toLowerCase() || 'sql';
+      const data = await fetchContextSession(sessionId, apiKey, contextType);
       setSessionData(data);
       
       // Load settings

@@ -1,0 +1,278 @@
+{
+    "settings": {
+        "LLM_GENERATION": {
+            "BASE_MODEL_LLM_URL": {
+                "setting_basic_name": "Base Model LLM URL",
+                "setting_value": "{BASE_URL_FOR_LLM_API_URL}",
+                "is_custom_setting": false,
+                "setting_description": "BASE_MODEL_LLM_URL description not provided",
+                "setting_default_value": null
+            },
+            "MODEL_INTENT_ENDPOINT": {
+                "setting_basic_name": "Base Model Intent Endpoint",
+                "setting_value": "/intent-generation",
+                "is_custom_setting": false,
+                "setting_description": "MODEL_INTENT_ENDPOINT description not provided",
+                "setting_default_value": null
+            },
+            "MODEL_GENERATION_ENDPOINT": {
+                "setting_basic_name": "Base Model LLM SQL-Generation Endpoint",
+                "setting_value": "/sql-generation",
+                "is_custom_setting": false,
+                "setting_description": "MODEL_GENERATION_ENDPOINT description not provided",
+                "setting_default_value": null
+            },
+            "USE_DEFAULT_MODEL": {
+                "setting_basic_name": "Default Toggle to use SQL-Executor's LLM Model",
+                "setting_value": "true",
+                "is_custom_setting": false,
+                "setting_description": "USE_DEFAULT_MODEL description not provided",
+                "setting_default_value": null
+            }
+        },
+        "EXTERNAL_SYSTEM_DB_SETTING": {
+            "EXTERNAL_TENANT_DB_DIALECT": {
+                "setting_basic_name": "Database Dialect",
+                "setting_value": "mysql",
+                "is_custom_setting": false,
+                "setting_description": "Specifies the database dialect to use",
+                "setting_default_value": "postgresql"
+            }
+        },
+        "EXTERNAL_SYSTEM_POSTGRES_DB_SETTING": {
+            "EXTERNAL_TENANT_POSTGRES_DB_USERNAME": {
+                "setting_basic_name": "Database Username",
+                "setting_value": "postgres",
+                "is_custom_setting": false,
+                "setting_description": "Username for database authentication",
+                "setting_default_value": "postgres"
+            },
+            "EXTERNAL_TENANT_POSTGRES_DB_PASSWORD": {
+                "setting_basic_name": "Database Password",
+                "setting_value": "postgres",
+                "is_custom_setting": false,
+                "setting_description": "Password for database authentication",
+                "setting_default_value": "postgres"
+            },
+            "EXTERNAL_TENANT_POSTGRES_DB_HOST": {
+                "setting_basic_name": "Database Host",
+                "setting_value": "db",
+                "is_custom_setting": false,
+                "setting_description": "Hostname or network address of the database server",
+                "setting_default_value": "localhost"
+            },
+            "EXTERNAL_TENANT_POSTGRES_DB_PORT": {
+                "setting_basic_name": "Database Port",
+                "setting_value": "5432",
+                "is_custom_setting": false,
+                "setting_description": "Port number where the database server is listening",
+                "setting_default_value": "5432"
+            },
+            "EXTERNAL_TENANT_POSTGRES_DB_NAME": {
+                "setting_basic_name": "Database Name",
+                "setting_value": "external_system_db",
+                "is_custom_setting": false,
+                "setting_description": "The name of the specific database to connect to",
+                "setting_default_value": "postgres"
+            }
+        },
+        "EXTERNAL_SYSTEM_MYSQL_DB_SETTING": {
+            "EXTERNAL_TENANT_MYSQL_DB_USERNAME": {
+                "setting_basic_name": "Database Username",
+                "setting_value": "my_user",
+                "is_custom_setting": false,
+                "setting_description": "Username for database authentication",
+                "setting_default_value": "root"
+            },
+            "EXTERNAL_TENANT_MYSQL_DB_PASSWORD": {
+                "setting_basic_name": "Database Password",
+                "setting_value": "my_password",
+                "is_custom_setting": false,
+                "setting_description": "Password for database authentication",
+                "setting_default_value": ""
+            },
+            "EXTERNAL_TENANT_MYSQL_DB_HOST": {
+                "setting_basic_name": "Database Host",
+                "setting_value": "mysql-db",
+                "is_custom_setting": false,
+                "setting_description": "Hostname or network address of the database server",
+                "setting_default_value": "localhost"
+            },
+            "EXTERNAL_TENANT_MYSQL_DB_PORT": {
+                "setting_basic_name": "Database Port",
+                "setting_value": "3306",
+                "is_custom_setting": false,
+                "setting_description": "Port number where the database server is listening",
+                "setting_default_value": "3306"
+            }
+        },
+        "API_CONTEXT_INTEGRATION":{
+            "EXTERNAL_API_CONTEXT_GET_USER_ENDPOINT": {
+                "setting_basic_name": "External Context Get User API Endpoint",
+                "setting_value": "http://external-system-app:8000/get-user",
+                "is_custom_setting": false,
+                "setting_description": "An external API endpoint used to retrieve user details. The response format must align with the requirements of SQLExecutor.",
+                "setting_default_value": null
+            },
+            "EXTERNAL_API_CONTEXT_IDENTIFIER_FIELD": {
+                "setting_basic_name": "External API Context Identifier Field",
+                "setting_value": "username",
+                "is_custom_setting": false,
+                "setting_description": "Idendifier field that will be used for authenticating the external system's user",
+                "setting_default_value": null
+            },
+            "EXTERNAL_API_CONTEXT_CUSTOM_FIELDS": {
+                "setting_basic_name": "External API Context Custom Fields",
+                "setting_value": "['role', 'is_admin', 'is_active', 'sub', 'user_id']",
+                "is_custom_setting": false,
+                "setting_description": "Supported custom fields that will be used for SQL User Context Awareness",
+                "setting_default_value": null
+            },
+            "API_CONTEXT_INTEGRATION": {
+                "setting_basic_name": "API Context Toggle Integration",
+                "setting_value": false,
+                "is_custom_setting": false,
+                "setting_description": "Toggle to Enable/Disable API Context Integration",
+                "setting_default_value": null
+            }
+        },
+        "API_KEYS":{
+            "TENANT_APPLICATION_TOKEN": {
+                "setting_basic_name": "Tenant SQLExecutor Application Token",
+                "setting_value": "",
+                "is_custom_setting": false,
+                "setting_description": "TENANT_APPLICATION_TOKEN description not provided",
+                "setting_default_value": ""
+            },
+            "EXTERNAL_SYSTEM_CLIENT_TOKEN":{
+                "setting_basic_name": "External Application Token",
+                "setting_value": "demo_secret_key_123456",
+                "is_custom_setting": false,
+                "setting_description": "External Application Token description not provided",
+                "setting_default_value": ""
+            }
+        },
+        "SESSION_MANAGEMENT": {
+            "SESSION_EXPIRATION_TIME": {
+                "setting_basic_name": "Session Expiration Time",
+                "setting_value": 900,
+                "is_custom_setting": false,
+                "setting_description": "The time in seconds before a session expires",
+                "setting_default_value": 900
+            }
+        },
+        "FRONTEND_SANDBOX_CHAT_INTERFACE":{
+            "CHAT_CONTEXT_INTEGRATION_TYPE": {
+                "setting_basic_name": "Chat Interface Integration Type",
+                "setting_value": "api",
+                "is_custom_setting": false,
+                "setting_description": "Define the Type of Context Integration for the Chat Interface",
+                "setting_default_value": "sql"
+            },
+            "CHAT_CONTEXT_DISPLAY_IDENTIFIER_FIELD": {
+                "setting_basic_name": "Chat Interface Integration Type",
+                "setting_value": "username",
+                "is_custom_setting": false,
+                "setting_description": "The identifer field that will be displayed on User Context Impersonation Modal",
+                "setting_default_value": "username"
+            },
+            "CHAT_CONTEXT_DISPLAY_CUSTOM_FIELDS":{
+                "setting_basic_name": "Chat Interface Display Custom Fields",
+                "setting_value": "['role', 'is_admin', 'is_active']",
+                "is_custom_setting": false,
+                "setting_description": "List of custom fields that will be displayed on the User Context Impersonation Modal, field must be stricly key/value pair and limit only three",
+                "setting_default_value": null
+            },
+            "CHAT_CONTEXT_DISPLAY_MAX_PAGINATION":{
+                "setting_basic_name": "Chat Interface Display Pagination",
+                "setting_value": 10,
+                "is_custom_setting": false,
+                "setting_description": "Limit the number of custom fields that will be displayed on the User Context Impersonation Modal",
+                "setting_default_value": null
+            }
+
+        },
+        "SQL_RUNNER":{
+            "SQL_FLAVOR":{
+                "setting_basic_name": "SQL Flavor",
+                "setting_value": "postgres",
+                "is_custom_setting": false,
+                "setting_description": "Provide the SQL Flavor of the External Systems Database",
+                "setting_default_value": ""
+            },
+            "EXTERNAL_SYSTEM_DB_CONNECTION_URL":{
+                "setting_basic_name": "SQL Flavor",
+                "setting_value": "postgresql://postgres:postgres@db:5432/external_system_db",
+                "is_custom_setting": false,
+                "setting_description": "Provide External System's Database UR:",
+                "setting_default_value": ""
+            }
+        },
+        "SQL_INJECTORS":{
+            "SQL_INJECTORS_ENABLED":{
+                "setting_basic_name": "Injectors Enabled",
+                "setting_value": false,
+                "is_custom_setting": false,
+                "setting_description": "Master switch for SQL injecting at the end of SQL query. Use this feature with caution",
+                "setting_default_value": false
+            },
+            "DYNAMIC_INJECTION":{
+                "setting_basic_name": "Dynamic Injection",
+                "setting_value": true,
+                "is_custom_setting": false,
+                "setting_description": "Automatically inject WHERE clauses based on context object",
+                "setting_default_value": true
+            }
+        },
+        "ADMIN_AUTH":{
+            "ADMIN_AUTH_TOKEN": {
+                "setting_basic_name": "Tenant SQLExecutor Admin Token",
+                "setting_value": "",
+                "is_custom_setting": false,
+                "setting_description": "ADMIN_AUTH_TOKEN description not provided",
+                "setting_default_value": ""
+            }
+        },
+        "POST_PROCESS_QUERYSCOPE": {
+            "REMOVE_MISSING_COLUMNS_ON_QUERY_SCOPE": {
+                "setting_basic_name": "Remove Missing Columns",
+                "setting_value": "true",
+                "is_custom_setting": false,
+                "setting_description": "Automatically remove columns that don't exist in the schema",
+                "setting_default_value": "true"
+            },
+            "IGNORE_COLUMN_WILDCARDS": {
+                "setting_basic_name": "Ignore Column Wildcards",
+                "setting_value": false,
+                "is_custom_setting": false,
+                "setting_description": "Ignore column wildcards generated by the Model",
+                "setting_default_value": false
+            },
+            "REMOVE_SENSITIVE_COLUMNS":{
+                "setting_basic_name": "Remove sensitive columns",
+                "setting_value": true,
+                "is_custom_setting": false,
+                "setting_description": "Removes sensitive columns that were declared on schema",
+                "setting_default_value": true
+            }
+        },
+        "SCHEMA_RESOLVER":{
+            "REMOVE_ALL_DESCRIPTIONS":{
+                "setting_basic_name": "Remove all descriptions",
+                "setting_value": false,
+                "is_custom_setting": false,
+                "setting_description": "Remove all descriptions regardless of 'exclude_description_on_generate_sql' field",
+                "setting_default_value": false          
+            }
+        },
+        "SQL_GENERATION":{
+            "INCLUDE_QUERY_SCOPE_ON_SQL_GENERATION":{
+                "setting_basic_name": "Include Query Scope on SQL Generation",
+                "setting_value": true,
+                "is_custom_setting": false,
+                "setting_description": "Inclues Query Scope on SQL Generation Prompt, improving complex Text to SQL requests at a cost of more token usage",
+                "setting_default_value": true
+            }
+        }
+    }
+}

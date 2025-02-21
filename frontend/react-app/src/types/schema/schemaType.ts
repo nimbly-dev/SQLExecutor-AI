@@ -123,3 +123,15 @@ export interface UpdateSchemaRequest {
     context_setting: ContextSetting;
     schema_chat_interface_integration?: SchemaChatInterfaceIntegrationSetting;
 }
+
+/*Simple Tables Response*/
+export type SimpleColumnResponse = {
+  column_name: string;
+  is_sensitive_column: boolean;
+};
+type SimpleTableColumnsNameResponse = {
+  table_name: string;
+  columns: SimpleColumnResponse[];
+};
+
+export type SimpleTablesResponse = SimpleTableColumnsNameResponse[];

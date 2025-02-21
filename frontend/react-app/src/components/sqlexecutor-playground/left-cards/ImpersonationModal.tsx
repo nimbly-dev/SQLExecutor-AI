@@ -80,7 +80,8 @@ const ImpersonationModal: React.FC<ImpersonationModalProps> = ({ open, onClose, 
 
   const handleUserSelectWrapper = (user: any) => {
     if (selectedSchema) {
-      handleUserSelect(user, selectedSchema.schema_name);
+      // Pass the entire schema object instead of just the name
+      handleUserSelect(user, selectedSchema);
     }
   };
 

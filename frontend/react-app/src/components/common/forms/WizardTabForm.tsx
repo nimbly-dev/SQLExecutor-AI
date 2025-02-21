@@ -102,10 +102,17 @@ export const WizardTabForm = <T extends Record<string, any>>({
   };
 
   const isTabDisabled = (tabIndex: number): boolean => {
-    if (tabIndex > currentTab && !isTabValid(currentTab)) {
-      return true;
+    let highestValidatedTab = 0;
+    
+    for (let i = 0; i <= Math.max(currentTab, tabIndex); i++) {
+      if (isTabValid(i)) {
+        highestValidatedTab = i;
+      } else {
+        break;
+      }
     }
-    return tabIndex > currentTab + 1;
+
+    return tabIndex > highestValidatedTab + 1;
   };
 
   return (

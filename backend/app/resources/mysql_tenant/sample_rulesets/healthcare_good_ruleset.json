@@ -1,6 +1,7 @@
 {
     "tenant_id": "MYSQL_TENANT",
     "ruleset_name": "healthcare_good_ruleset",
+    "connected_schema_name": "healthcare_good_schema",
     "description": "Ruleset for managing access to healthcare schema based on user roles and assignments.",
     "is_ruleset_enabled": true,
     "conditions": {
@@ -118,43 +119,43 @@
             "tables": {
                 "users": {
                     "columns": {
-                        "allow": "*",
+                        "allow": ["*"],
                         "deny": []
                     }
                 },
                 "departments": {
                     "columns": {
-                        "allow": "*",
+                        "allow": ["*"],
                         "deny": []
                     }
                 },
                 "doctors": {
                     "columns": {
-                        "allow": "*",
+                        "allow": ["*"],
                         "deny": []
                     }
                 },
                 "nurses": {
                     "columns": {
-                        "allow": "*",
+                        "allow": ["*"],
                         "deny": []
                     }
                 },
                 "patients": {
                     "columns": {
-                        "allow": "*",
+                        "allow": ["*"],
                         "deny": []
                     }
                 },
                 "appointments": {
                     "columns": {
-                        "allow": "*",
+                        "allow": ["*"],
                         "deny": []
                     }
                 },
                 "nurse_patient": {
                     "columns": {
-                        "allow": "*",
+                        "allow": ["*"],
                         "deny": []
                     }
                 }
@@ -291,12 +292,9 @@
     },
     "user_specific_access_policy": [],
     "injectors": {
-        "patient_user_scope": {
-            "name": "Patient-Specific Filter",
+       "Patient-Specific Filter": {
             "enabled": true,
-            "condition": {
-                "condition": "${conditions.is_active} AND ${conditions.is_patient}"
-            },
+            "condition": "${conditions.is_active} AND ${conditions.is_patient}",
             "tables": {
                 "appointments": {
                     "filters": "patient_id = ${jwt.custom_fields.id}"

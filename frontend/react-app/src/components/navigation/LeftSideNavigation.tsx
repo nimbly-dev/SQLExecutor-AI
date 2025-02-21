@@ -20,6 +20,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import InfoIcon from '@mui/icons-material/Info';
 import SchemaIcon from '@mui/icons-material/Schema';
+import RuleIcon from '@mui/icons-material/Rule';
 
 interface LeftSideNavigationProps {
   open: boolean;
@@ -33,6 +34,7 @@ const LeftSideNavigation: React.FC<LeftSideNavigationProps> = ({ open, handleDra
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
     { text: 'Playground', icon: <QueryStatsIcon />, path: '/sqlexecutor-playground' },
     { text: 'Schema Management', icon: <SchemaIcon />, path: '/schema-manager' },
+    { text: 'Ruleset Management', icon: <RuleIcon />, path: '/ruleset-manager' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
     { text: 'Docs', icon: <MenuBookIcon />, path: '/docs' },
     { text: 'About', icon: <InfoIcon />, path: '/about' },

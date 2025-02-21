@@ -11,7 +11,8 @@ interface DescriptionTextFormFieldProps {
   maxRows?: number;
   validate?: (value: string) => { type: string; message: string };
   placeholder?: string;
-  required?: boolean;  // Add optional required prop
+  required?: boolean;
+  size?: 'small' | 'medium' | undefined; 
 }
 
 interface LocalStateType {
@@ -27,7 +28,8 @@ export default function DescriptionTextFormField({
   maxRows = 4,
   validate,
   placeholder,
-  required = false,  // Add default value
+  required = false,
+  size = 'small', 
 }: DescriptionTextFormFieldProps) {
   const [localState, setField] = useLocalFormState<LocalStateType>({
     description: description || '',
@@ -59,13 +61,13 @@ export default function DescriptionTextFormField({
       onChange={handleChange}
       onBlur={handleBlur}
       placeholder={placeholder}
-      required={required}  // Add required prop
+      required={required} 
       fullWidth
       multiline
       minRows={minRows}
       maxRows={maxRows}
       variant="outlined"
-      size="small"
+      size={size} // Will be undefined if not provided, letting Material-UI use its default
       error={hasError}
       helperText={hasError ? validationResult.message : ''}
     />

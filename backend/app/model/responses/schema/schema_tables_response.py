@@ -18,3 +18,11 @@ class TableResponse(BaseModel):
 class SchemaTablesResponse(BaseModel):
     schema_name: str
     tables: List[TableResponse]
+    
+class SimpleColumnResponse(BaseModel):
+    column_name: str
+    is_sensitive_column: bool = False
+    
+class SimpleTableColumnsNameResponse(BaseModel):
+    table_name: str
+    columns: List[SimpleColumnResponse]

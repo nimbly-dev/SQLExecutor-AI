@@ -27,7 +27,7 @@ class SqlRunnerService:
             raise ValueError(f"Unsupported SQL flavor: {sql_flavor}")
         
         db_connection_url = build_db_url_based_on_dialect(tenant, sql_flavor, schema=schema_name)
-
+        print(db_connection_url)
         # Conditionally exclude pool settings for SQLite:
         if "sqlite" in db_connection_url.lower():
             engine = create_engine(db_connection_url)

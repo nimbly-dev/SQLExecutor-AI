@@ -11,6 +11,7 @@ from model.tenant.tenant import Tenant
 from model.requests.schema_manager.add_schema_request import AddSchemaRequest
 from model.requests.schema_manager.update_schema_request import UpdateSchemaRequest
 from model.responses.schema.schema_tables_response import SchemaTablesResponse, ColumnResponse, TableResponse
+from utils.ruleset.ruleset_utils import ruleset_exists
 
 class SchemaManagerService:
     
@@ -44,6 +45,15 @@ class SchemaManagerService:
             schema_chat_interface_integration=schema_request.schema_chat_interface_integration
         )
 
+        # Check if filter_rules Ruleset exist
+        # if schema_request.filter_rules:
+        #     for ruleset_name in schema_request.filter_rules:
+        #         if not await ruleset_exists(tenant_id=tenant.tenant_id, ruleset_name=ruleset_name):
+        #             raise HTTPException(
+        #             status_code=404,
+        #             detail=f"Ruleset '{ruleset_name}' not found for tenant '{tenant.tenant_id}'."
+        #             )
+
         collection_schema = mongodb.db["schemas"]
         
         try:
@@ -51,8 +61,8 @@ class SchemaManagerService:
             return Schema(**schema_data.dict())
         except DuplicateKeyError:
             raise HTTPException(
-                status_code=400,
-                detail=f"Schema with the name '{schema_request.schema_name}' already exists for this tenant."
+            status_code=400,
+            detail=f"Schema with the name '{schema_request.schema_name}' already exists for this tenant."
             )
             
     @staticmethod

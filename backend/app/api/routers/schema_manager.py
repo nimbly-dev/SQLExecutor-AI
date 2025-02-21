@@ -2,7 +2,10 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from api.core.services.schema.schema_manager_service import SchemaManagerService
+from api.core.services.schema.schema_tables_service import SchemaTablesService;
+
 from model.requests.schema_manager.add_schema_request import AddSchemaRequest
+from model.responses.schema.schema_tables_response import SchemaTablesResponse
 from model.requests.schema_manager.update_schema_request import UpdateSchemaRequest
 from model.authentication.admin_session_data import AdminSessionData
 
@@ -89,3 +92,13 @@ async def delete_schema(tenant_id: str, schema_name: str,  admin_session_data: A
             detail="You do not have permission to perform this action"
         )
     return await SchemaManagerService.delete_schema(tenant_id=tenant_id, schema_name=schema_name)
+
+# Schema Tables API Endpoints
+@router.get("/{tenant_id}/schemas/{schema_name}/tables")
+async def get_tables(tenant_id: str, schema_name: str, admin_session_data: AdminSessionData = Depends(authenticate_admin_session)):
+    if admin_session_data.role not in ["Schema Admin", "Tenant Admin"]:
+        raise HTTPException(
+            status_code=403,
+            detail="You do not have permission to perform this action"
+        )
+    return await SchemaTablesService.get_tables_of_schema(tenant_id=tenant_id, schema_name=schema_name)
