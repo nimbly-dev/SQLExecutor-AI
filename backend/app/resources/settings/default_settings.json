@@ -93,7 +93,7 @@
             },
             "EXTERNAL_TENANT_MYSQL_DB_HOST": {
                 "setting_basic_name": "Database Host",
-                "setting_value": "mysql-db",
+                "setting_value": "mysql",
                 "is_custom_setting": false,
                 "setting_description": "Hostname or network address of the database server",
                 "setting_default_value": "localhost"
@@ -112,20 +112,6 @@
                 "setting_value": "http://external-system-app:8000/get-user",
                 "is_custom_setting": false,
                 "setting_description": "An external API endpoint used to retrieve user details. The response format must align with the requirements of SQLExecutor.",
-                "setting_default_value": null
-            },
-            "EXTERNAL_API_CONTEXT_GET_USERS_ENDPOINT": {
-                "setting_basic_name": "External Context Get Users API Endpoint",
-                "setting_value": "http://external-system-app:8000/get-users",
-                "is_custom_setting": false,
-                "setting_description": "An external API endpoint used to retrieve context users, used by FRONTEND_SANDBOX_CHAT_INTERFACE to display context users in Impersonate User Modal. The response format must align with the requirements of SQLExecutor.",
-                "setting_default_value": null
-            },
-            "EXTERNAL_API_CONTEXT_GET_USERS_COUNT_ENDPOINT": {
-                "setting_basic_name": "External Context Get Users Count API Endpoint",
-                "setting_value": "http://external-system-app:8000/get-users-context-counts",
-                "is_custom_setting": false,
-                "setting_description": "An external API endpoint used to retrieve total count of context users, used by FRONTEND_SANDBOX_CHAT_INTERFACE to display context users in Impersonate User Modal. The response format must align with the requirements of SQLExecutor.",
                 "setting_default_value": null
             },
             "EXTERNAL_API_CONTEXT_IDENTIFIER_FIELD": {

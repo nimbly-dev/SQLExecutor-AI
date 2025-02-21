@@ -1,13 +1,13 @@
 export interface ExternalContextUserRow {
   context_identifier: string;
-  custom_fields: {
-    [key: string]: string;
-  };
+  context_type: string;
+  custom_fields: Record<string, string>;
+  [key: string]: any; 
 }
 
 export interface GetUserContextsResponse {
   data: ExternalContextUserRow[];
-  page: number;
-  limit: number;
   total_count: number;
+  page: number;
+  page_size: number;
 }

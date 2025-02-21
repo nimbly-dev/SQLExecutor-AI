@@ -20,6 +20,7 @@ async def create_external_session(tenant_id: str,
     """
     Create External Context-Aware Session from External System Context Table
     """
+    print("I am here")
     # Fetch Tenant and Schema using their respective services
     tenant: Tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
     schema: Schema = await SchemaManagerService.get_schema(tenant_id=tenant_id, schema_name=request.schema_name)
@@ -30,11 +31,18 @@ async def create_external_session(tenant_id: str,
         raise HTTPException(status_code=400, detail="API context settings are not defined for the schema.")
 
     # Call the external get-user endpoint with the necessary context
-    response_user_token = await APIContextIntegrationService.call_external_get_user_endpoint(
-        tenant=tenant,
-        api_context=api_context,
-        request=request
-    )
+    
+    try:
+        response_user_token = await APIContextIntegrationService.call_external_get_user_endpoint(
+            tenant=tenant,
+            api_context=api_context,
+            request=request
+        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=424, detail=f"Failed to fetch user context from external system: {str(e)}")
+        
+    print("I am here 2")
 
     # Decode the received JWT token
     decoded_token: DecodedJwtToken = APIContextIntegrationService.decode_json_token(

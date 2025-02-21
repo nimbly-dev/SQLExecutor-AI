@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ExternalSessionData } from 'types/authentication/externalUserSessionData';
 import { fetchContextSession, invalidateContextSession } from 'services/chatInterface';
 import { getSetting } from 'services/tenantSetting';
@@ -6,27 +6,31 @@ import { toast } from 'react-toastify';
 
 export const useContextUser = () => {
   const [sessionData, setSessionData] = useState<ExternalSessionData | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const loadContextSession = async () => {
+  const fetchSession = useCallback(async (contextType: string) => {
     const sessionId = sessionStorage.getItem('contextUserSessionId');
-    
     if (!sessionId) {
       setSessionData(null);
       return;
     }
 
+    setLoading(true);
     try {
       const apiKeyResponse = await getSetting('API_KEYS', 'TENANT_APPLICATION_TOKEN');
       const apiKey = apiKeyResponse.setting_detail.setting_value;
-      const data = await fetchContextSession(sessionId, apiKey);
+      // Make sure context type is properly passed through
+      const data = await fetchContextSession(sessionId, apiKey, contextType.toLowerCase());
       setSessionData(data);
     } catch (error) {
       console.error('Session error:', error);
       sessionStorage.removeItem('contextUserSessionId');
       setSessionData(null);
       toast.error('Session expired or invalid. Please log in again.');
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
   const stopImpersonation = async () => {
     if (sessionData?.session_id) {
@@ -44,13 +48,14 @@ export const useContextUser = () => {
   };
 
   useEffect(() => {
-    loadContextSession();
+    fetchSession('sql');
   }, []);
 
   return {
     sessionData,
+    loading,
     setSessionData,
-    loadContextSession,
+    fetchSession,
     stopImpersonation
   };
 };

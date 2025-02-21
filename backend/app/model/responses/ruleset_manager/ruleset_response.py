@@ -10,6 +10,7 @@ from model.ruleset.injector import Injector
 class RulesetResponse(BaseModel):
     tenant_id: str
     ruleset_name: str
+    connected_schema_name: str
     description: str
     is_ruleset_enabled: bool
     conditions: Optional[Dict[str, str]] = None  

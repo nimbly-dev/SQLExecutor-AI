@@ -1,6 +1,7 @@
 {
     "ruleset_name": "external_system_ruleset",
     "description": "Ruleset for external system defining access for different roles.",
+    "connected_schema_name": "external_system",
     "is_ruleset_enabled": true,
     "conditions": {
       "is_admin": "'admin' in ${jwt.custom_fields.role}",
@@ -290,12 +291,9 @@
     },
     "user_specific_access_policy": [],
     "injectors": {
-      "customer_scope": {
-        "name": "Customer Filter",
+      "Customer Filter": {
         "enabled": true,
-        "condition": {
-          "condition": "${jwt.custom_fields.role} == 'customer'"
-        },
+        "condition": "${jwt.custom_fields.role} == 'customer'",
         "tables": {
           "users": {
             "filters": "user_id = '${jwt.custom_fields.user_id}'"

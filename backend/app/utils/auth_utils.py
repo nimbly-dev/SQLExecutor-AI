@@ -89,8 +89,14 @@ async def authenticate_admin_session(authorization: str = Header(...)) -> AdminS
         raise HTTPException(status_code=500, detail="Invalid session data format")
 
 
-async def validate_api_key(x_api_key: str = Header(...), tenant_id: str = None):
+async def validate_api_key(x_api_key: str = Header(...), tenant_id: str | None = None):
     """Validate API key against tenant settings."""
+    if not tenant_id:
+        # Just validate that API key is present when tenant_id is not available
+        if not x_api_key:
+            raise HTTPException(status_code=403, detail="Invalid API Key")
+        return
+        
     tenant_data = await mongodb.db["tenants"].find_one({"tenant_id": tenant_id})
     if not tenant_data:
         logger.warning("Tenant not found: %s", tenant_id)

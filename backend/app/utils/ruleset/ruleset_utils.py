@@ -1,3 +1,6 @@
+from utils.database import mongodb
+from api.core.services.tenant_manager.tenant_manager_service import TenantManagerService
+
 def extract_ruleset_name(ruleset_placeholder: str) -> str:
     """
     Extract and clean the ruleset name from a placeholder string.
@@ -26,3 +29,14 @@ def resolve_field(data, path):
         else:
             return None
     return data
+
+async def ruleset_exists(tenant_id: str, ruleset_name: str) -> bool:
+    tenant = await TenantManagerService.get_tenant(tenant_id=tenant_id)
+    collection = mongodb.db["rulesets"]
+    
+    ruleset = await collection.find_one(
+        {"tenant_id": tenant.tenant_id, "ruleset_name": ruleset_name},
+        {"_id": 1}
+    )
+    
+    return ruleset is not None

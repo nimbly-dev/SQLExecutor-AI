@@ -37,11 +37,19 @@ export const getUsersContext = async (page: number, orderDirection: string, page
     }
 }
 
-export const createContextSession = async (contextUserIdentifier: string, apiKey: string, schemaName: string): Promise<ExternalSessionData> => {
+export const createContextSession = async (
+  contextUserIdentifier: string, 
+  apiKey: string, 
+  schemaName: string,
+  contextType: string
+): Promise<ExternalSessionData> => {
   try {
     const tenantId = Cookies.get('tenant_id');
+    const baseEndpoint = contextType.toLowerCase() === 'api' ? 'api-context' : 'sql-context';
+    
+    // Both endpoints use the same request structure
     const response = await axios.post(
-      `${BASE_URL}/v1/sql-context/${tenantId}/create-context-session`,
+      `${BASE_URL}/v1/${baseEndpoint}/${tenantId}/create-context-session`,
       {
         context_user_identifier_value: contextUserIdentifier,
         schema_name: schemaName
@@ -71,11 +79,17 @@ export const isSessionExpired = (expiresAt: string): boolean => {
   return now > expiryDate;
 };
 
-export const fetchContextSession = async (sessionId: string, apiKey: string): Promise<ExternalSessionData> => {
+export const fetchContextSession = async (
+  sessionId: string, 
+  apiKey: string, 
+  contextType: string
+): Promise<ExternalSessionData> => {
   try {
     const tenantId = Cookies.get('tenant_id');
+    // Fix the condition to properly handle 'api' type
+    const baseEndpoint = contextType.toLowerCase() === 'api' ? 'api-context' : 'sql-context';
     const response = await axios.get(
-      `${BASE_URL}/v1/sql-context/${tenantId}/fetch-context-session`,
+      `${BASE_URL}/v1/${baseEndpoint}/${tenantId}/fetch-context-session`,
       {
         params: {
           external_session_id: sessionId

@@ -9,6 +9,7 @@ interface PaginatedFormProps<T> {
   pageSizeOptions?: number[];
   filterFunc: (item: T, searchTerm: string) => boolean;
   renderItem: (item: T, index: number) => React.ReactNode;
+  renderHeader?: (searchTerm: string, setSearchTerm: (term: string) => void) => React.ReactNode;
 }
 
 function PaginatedForm<T>({
@@ -18,6 +19,7 @@ function PaginatedForm<T>({
   pageSizeOptions = [5, 10, 15, 20],
   filterFunc,
   renderItem,
+  renderHeader,
 }: PaginatedFormProps<T>) {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -43,14 +45,18 @@ function PaginatedForm<T>({
 
   return (
     <Box className={styles.container}>
-      <TextField
-        fullWidth
-        size="small"
-        placeholder={searchPlaceholder}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        sx={{ mb: 2 }}
-      />
+      {renderHeader ? (
+        renderHeader(searchTerm, setSearchTerm)
+      ) : (
+        <TextField
+          fullWidth
+          size="small"
+          placeholder={searchPlaceholder}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+      )}
       
       {paginatedItems.map((item, index) => (
         <Box 

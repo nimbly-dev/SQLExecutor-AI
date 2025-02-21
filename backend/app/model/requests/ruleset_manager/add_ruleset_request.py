@@ -9,6 +9,7 @@ from model.ruleset.injector import Injector
 
 class AddRulesetRequest(BaseModel):
     ruleset_name: str = Field(..., min_length=8, description="Name of the ruleset (minimum 8 characters).")
+    connected_schema_name: str = Field(..., description="Name of the connected schema.")
     description: str = Field(..., max_length=100, description="Description of the ruleset (maximum 100 characters).")
     is_ruleset_enabled: bool = Field(..., description="Ruleset Enable/Disable Toggle")
     conditions: Optional[Dict[str, str]] = Field(

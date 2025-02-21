@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 import { ExternalContextUserRow } from 'types/chat-interface/contextUsers';
 import { getUsersContext, createContextSession } from 'services/chatInterface';
 import { getSetting } from 'services/tenantSetting';
+import { toast } from 'react-toastify';
+import { SchemaSummary } from 'types/schema/schemaType';
 
 /**
  * Custom hook for user impersonation.
@@ -38,7 +40,7 @@ export const useImpersonation = (onSessionCreated: () => void) => {
    * @param user The selected user.
    * @param schema Schema name required for context session.
    */
-  const handleUserSelect = async (user: ExternalContextUserRow, schema: string) => {
+  const handleUserSelect = async (user: ExternalContextUserRow, schema: SchemaSummary) => {
     console.log('handleUserSelect called with:', user, schema);
 
     const extractedIdentifier = user.context_identifier;
@@ -50,17 +52,22 @@ export const useImpersonation = (onSessionCreated: () => void) => {
     try {
       const apiKeyResponse = await getSetting('API_KEYS', 'TENANT_APPLICATION_TOKEN');
       const apiKey = apiKeyResponse.setting_detail.setting_value;
-      const sessionData = await createContextSession(extractedIdentifier, apiKey, schema);
-      console.log('Session data received:', sessionData);
       
-      if (sessionData && sessionData.session_id) {
-        sessionStorage.setItem('contextUserSessionId', sessionData.session_id);
-        onSessionCreated();
-      } else {
-        throw new Error('Invalid session data received');
-      }
+      // Get context type from schema instead of user
+      const contextType = schema.context_type.toLowerCase();
+      
+      const sessionData = await createContextSession(
+        extractedIdentifier,
+        apiKey,
+        schema.schema_name,
+        contextType
+      );
+      
+      sessionStorage.setItem('contextUserSessionId', sessionData.session_id);
+      onSessionCreated();
     } catch (error) {
-      console.error('Error handling user selection:', error);
+      console.error('Error creating session:', error);
+      toast.error('Failed to impersonate user');
     }
   };
 

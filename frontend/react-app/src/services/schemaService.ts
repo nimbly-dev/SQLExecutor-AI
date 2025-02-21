@@ -1,9 +1,25 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { BASE_URL } from 'utils/apiConfig';
-import { Schema, SchemaResponse, SchemaFilters, SchemaSummary } from 'types/schema/schemaType';
+import { Schema, SchemaResponse, SchemaFilters, SchemaSummary, SimpleTablesResponse } from 'types/schema/schemaType';
 
 const API_URL = `${BASE_URL}/v1/schema-manager`;
+
+export const getSchemaTables = async (schemaName: string): Promise<SimpleTablesResponse> => {
+  const token = Cookies.get('token');
+  const tenant_id = Cookies.get('tenant_id');
+  
+  try {
+    const response = await axios.get(
+      `${API_URL}/${tenant_id}/schemas/${schemaName}/tables`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Get schema tables error:', error);
+    throw error;
+  }
+}
 
 export const getSchemas = async (): Promise<SchemaSummary[]> => {
     const token = Cookies.get('token');

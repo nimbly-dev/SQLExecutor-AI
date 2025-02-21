@@ -1,0 +1,46 @@
+.tooltip {
+  max-width: 400px;
+  padding: 16px;
+  border-radius: 4px;
+
+  :global(.MuiBox-root) {
+    margin-bottom: 12px;
+  }
+}
+
+.codeBlock {
+  font-family: monospace;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+
+  @media (max-width: 600px) {
+    font-size: 0.75rem;
+  }
+
+  // Theme-aware styles will be applied via CSS variables
+  background-color: var(--code-block-bg);
+  color: var(--code-block-color);
+}
+
+.exampleLabel {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--primary-color);
+}
+
+.description {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  color: var(--text-secondary);
+}
+
+.helpIcon {
+  margin-left: 8px;
+  cursor: help;
+  color: var(--primary-color);
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
