@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { lightTheme } from './themes/lightTheme';
 import { darkTheme } from './themes/darkTheme';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 import MainLayout from './components/layout/MainLayout';
 import LoginPage from 'pages/LoginPage';
 import SQLExecutorPlayground from 'pages/SQLExecutorPlayground';
@@ -20,12 +20,7 @@ import RulesetView from 'pages/ruleset-manager/RulesetView';
 import RulesetAddWizard from 'pages/ruleset-manager/RulesetAddWizard';
 import TenantSettingsManager from 'pages/TenantSettingsManager';
 import TenantSettingCategoryDetailsView from 'pages/tenant-setting-manager/TenantSettingCategoryDetailsView';
-
-// Protected Route Component
-const ProtectedRoute: React.FC = () => {
-  const { isLoggedIn } = useAuth();
-  return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
-};
+import ProtectedRoute from './routes/ProtectedRoute';
 
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -39,30 +34,43 @@ const App: React.FC = () => {
       <Router>
         <AuthProvider>
           <Routes>
-            {/* Public Route */}
+            {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
-
-            {/* Protected Routes */}
+            <Route path="/" element={<Navigate to="/getting-started" replace />} />
+            
             <Route element={<ProtectedRoute />}>
-              <Route element={<MainLayout darkMode={darkMode} toggleTheme={toggleTheme} />}>
-                <Route path="/getting-started" element={<LandingPage />} />
-                <Route path="/sqlexecutor-playground" element={<SQLExecutorPlayground />} />
-                <Route path="/schema-manager" element={<SchemaManager />} />
-                {/*Schema Child-links below*/}
-                <Route path="/schema-manager/view/:schema_name" element={<SchemaView />} />
-                <Route path="/schema-manager/add" element={<SchemaAddWizard />} />
+              <Route path="/*" element={
+                <MainLayout darkMode={darkMode} toggleTheme={toggleTheme}>
+                  <Routes>
+                    {/* Core Routes */}
+                    <Route path="/getting-started" element={<LandingPage />} />
+                    <Route path="/sqlexecutor-playground" element={<SQLExecutorPlayground />} />
 
-                <Route path="/ruleset-manager" element={<RulesetManager />} />
-                {/*Ruleset Child-links below*/}
-                <Route path="/ruleset-manager/view/:ruleset_name" element={<RulesetView />} />
-                <Route path="/ruleset-manager/add/" element={<RulesetAddWizard />} />
+                    {/* Schema Manager Routes */}
+                    <Route path="/schema-manager">
+                      <Route index element={<SchemaManager />} />
+                      <Route path="view/:schema_name" element={<SchemaView />} />
+                      <Route path="add" element={<SchemaAddWizard />} />
+                    </Route>
 
-                {/*Tenant Settings Child-links below*/}
-                <Route path="/tenant-settings-manager" element={<TenantSettingsManager />} /> 
-                <Route path="/tenant-settings-manager/:categoryKey" element={<TenantSettingCategoryDetailsView />} />
-              </Route>
-              {/* Wildcard inside Protected Routes */}
-              <Route path="*" element={<Navigate to="/getting-started" replace />} />
+                    {/* Ruleset Manager Routes */}
+                    <Route path="/ruleset-manager">
+                      <Route index element={<RulesetManager />} />
+                      <Route path="view/:ruleset_name" element={<RulesetView />} />
+                      <Route path="add" element={<RulesetAddWizard />} />
+                    </Route>
+
+                    {/* Tenant Settings Routes */}
+                    <Route path="/tenant-settings-manager">
+                      <Route index element={<TenantSettingsManager />} />
+                      <Route path=":categoryKey" element={<TenantSettingCategoryDetailsView />} />
+                    </Route>
+
+                    {/* Catch-all route - must be last */}
+                    <Route path="*" element={<Navigate to="/getting-started" replace />} />
+                  </Routes>
+                </MainLayout>
+              } />
             </Route>
           </Routes>
         </AuthProvider>
