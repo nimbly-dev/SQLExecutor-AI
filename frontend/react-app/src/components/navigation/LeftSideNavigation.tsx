@@ -1,3 +1,4 @@
+// LeftSideNavigation.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -27,8 +28,7 @@ interface LeftSideNavigationProps {
 }
 
 const LeftSideNavigation: React.FC<LeftSideNavigationProps> = ({ open, handleDrawerClose }) => {
-  const navigate = useNavigate(); 
-  
+  const navigate = useNavigate();
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
     { text: 'Playground', icon: <ApiIcon />, path: '/sqlexecutor-playground' },
@@ -51,10 +51,10 @@ const LeftSideNavigation: React.FC<LeftSideNavigationProps> = ({ open, handleDra
           width: open ? 240 : 60,
           boxSizing: 'border-box',
           transition: 'width 0.3s',
-          position: open ? 'fixed' : 'fixed', // always fixed to remain in viewport
+          position: 'fixed',
           top: 0,
           left: 0,
-          height: '100vh', // full viewport height
+          height: '100vh',
         },
       }}
     >
@@ -63,13 +63,11 @@ const LeftSideNavigation: React.FC<LeftSideNavigationProps> = ({ open, handleDra
           {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </IconButton>
       </Box>
-
       <Divider />
-
       <List>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
-            <ListItemButton onClick={() => navigate(item.path)}> {/* Navigate on click */}
+            <ListItemButton onClick={() => navigate(item.path)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               {open && <ListItemText primary={item.text} />}
             </ListItemButton>
