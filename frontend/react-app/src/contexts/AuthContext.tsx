@@ -11,7 +11,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const redirecting = useRef<boolean>(false); // Prevent multiple redirects
+  const redirecting = useRef<boolean>(false);
+  const currentPath = useRef<string>(window.location.pathname);
 
   const validateToken = (): boolean => {
     const token = Cookies.get('token');
@@ -20,7 +21,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const decoded: any = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-      return decoded.exp > currentTime;
+      // Add 5 second buffer for token expiration
+      return decoded.exp > currentTime + 5;
     } catch {
       return false;
     }
@@ -40,37 +42,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const handleSessionExpiry = () => {
     if (!redirecting.current) {
-      redirecting.current = true; // Prevent multiple triggers
+      redirecting.current = true;
       clearAuthState();
       toast.error('Session expired. Redirecting to login...');
-      navigate('/login'); // Redirect immediately
+      navigate('/login', { replace: true });
     }
   };
 
   const syncAuthState = () => {
-    const token = Cookies.get('token');
     const hasValidToken = validateToken();
-    setIsLoggedIn(!!token && hasValidToken);
-
-    if (token && !hasValidToken) {
-      handleSessionExpiry(); 
+    setIsLoggedIn(hasValidToken);
+    
+    if (!hasValidToken && !redirecting.current) {
+      handleSessionExpiry();
     }
   };
 
   useEffect(() => {
     syncAuthState();
-
-    intervalRef.current = setInterval(() => {
-      const hasValidToken = validateToken();
-      if (!hasValidToken) {
-        handleSessionExpiry(); 
-      }
-    }, 60000); 
+    intervalRef.current = setInterval(syncAuthState, 60000);
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      redirecting.current = false;
     };
-  }, [navigate]);
+  }, []);
 
   const login = () => {
     syncAuthState();
