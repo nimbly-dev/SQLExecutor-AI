@@ -1,5 +1,4 @@
 // AppBar.tsx
-
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -12,52 +11,70 @@ interface AppBarProps {
   toggleTheme: () => void;
 }
 
-const AppBarComponent: React.FC<AppBarProps> = ({ open, handleDrawerOpen, darkMode, toggleTheme }) => {
+const drawerWidth = 240;
+
+const AppBarComponent: React.FC<AppBarProps> = ({
+  open,
+  handleDrawerOpen,
+  darkMode,
+  toggleTheme,
+}) => {
   return (
     <AppBar
       position="fixed"
-      sx={{
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-        transition: (theme) =>
-          theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
-        ...(open && {
-          marginLeft: 240, // Ensure this matches Drawer width
-          width: `calc(100% - 240px)`,
-          transition: (theme) =>
-            theme.transitions.create(['width', 'margin'], {
-              easing: theme.transitions.easing.easeOut,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
+      sx={(theme) => ({
+        // Use the custom property from the theme for background color.
+        backgroundColor: theme.custom.appBarBg,
+        opacity: 1,
+        borderRadius: 0,
+        border: 'none',
+        boxSizing: 'border-box',
+        left: open ? `${drawerWidth}px` : 0,
+        width: open ? `calc(100% - ${drawerWidth}px)` : '100%',
+        transition: theme.transitions.create(['left', 'width'], {
+          easing: open ? theme.transitions.easing.easeOut : theme.transitions.easing.sharp,
+          duration: open
+            ? theme.transitions.duration.enteringScreen
+            : theme.transitions.duration.leavingScreen,
         }),
-      }}
+      })}
     >
       <Toolbar
         sx={{
+          // Remove any hard-coded background; let the AppBar's background show through.
+          backgroundColor: 'transparent',
+          opacity: 1,
+          position: 'relative',
           minHeight: 64,
-          display: 'flex',
-          alignItems: 'center', 
+          px: 2,
         }}
       >
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          edge="start"
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {!open && (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+          <Typography variant="h6" noWrap component="div">
+            SQLExecutor
+          </Typography>
+        </Box>
+        <Box
           sx={{
-            marginRight: 2,
-            ...(open && { display: 'none' }), // Hide if drawer is open
+            position: 'absolute',
+            right: 16,
+            top: '50%',
+            transform: 'translateY(-50%)',
           }}
         >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" noWrap component="div">
-          SQLExecutor
-        </Typography>
-        <Box sx={{ flexGrow: 1 }} />
-        <MyAccount darkMode={darkMode} toggleTheme={toggleTheme} />
+          <MyAccount darkMode={darkMode} toggleTheme={toggleTheme} />
+        </Box>
       </Toolbar>
     </AppBar>
   );
